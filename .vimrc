@@ -23,6 +23,9 @@ Plugin 'Solarized'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -51,6 +54,7 @@ set mouse=a
 
 syntax on
 set background=dark
+"let g:solarized_termtrans =   1
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
 let g:solarized_italic=0
@@ -106,4 +110,9 @@ let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
+
+"Snippets
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
