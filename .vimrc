@@ -23,8 +23,6 @@ Plugin 'Solarized'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 
 
 call vundle#end()            " required
