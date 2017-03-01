@@ -147,3 +147,5 @@ let php_folding=0
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
+" dl vundle
+" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
