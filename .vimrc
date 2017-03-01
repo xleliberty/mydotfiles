@@ -2,8 +2,6 @@ set nocompatible              " be iMproved, required
 
 filetype off                  " required
 
-" get vundle
-" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -18,17 +16,27 @@ Plugin 'joonty/vdebug'
 Plugin 'fugitive.vim'
 Plugin 'php.vim'
 Plugin 'shawncplus/phpcomplete.vim'
-Plugin 'jiangmiao/auto-pairs'
 Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'ervandew/supertab'
 Plugin 'Solarized'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'ctrlpvim/ctrlp.vim'
-
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'Tagbar'
+Plugin 'mileszs/ack.vim'
+Plugin 'csv.vim'
+Plugin 'surround.vim'
+Plugin 'commentary.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'FredKSchott/CoVim'
+Plugin 'MicahElliott/Rocannon'
+"Plugin 'phpfolding.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+set omnifunc=syntaxcomplete#Complete
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -46,13 +54,23 @@ set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set expandtab
+set backspace=indent,eol,start
 
 set smartindent
 set autoindent
 
-set mouse=a
+set mouse=r
 
 syntax on
+autocmd FileType * set formatoptions=croql
+set autoindent
+set autowrite
+
+" search
+set hlsearch
+set incsearch
+
+
 set background=dark
 "let g:solarized_termtrans =   1
 let g:solarized_visibility = "high"
@@ -115,4 +133,17 @@ let g:NERDTreePatternMatchHighlightFullName = 1
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" Ack
+let g:ackprg = 'ag --vimgrep --smart-case'                                                   
+cnoreabbrev ag Ack                                                                           
+cnoreabbrev aG Ack                                                                           
+cnoreabbrev Ag Ack                                                                           
+cnoreabbrev AG Ack
+
+let php_folding=0
+
+"emmet
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
 
