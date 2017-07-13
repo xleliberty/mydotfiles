@@ -2,40 +2,45 @@ set nocompatible              " be iMproved, required
 
 filetype off                  " required
 
+"w0rp/ale
+let &runtimepath.=',~/.vim/bundle/ale'
+
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'pearofducks/ansible-vim'
 Plugin 'vim-airline/vim-airline'
-Plugin 'Syntastic'
 Plugin 'https://github.com/scrooloose/nerdtree.git'
 Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'joonty/vdebug'
+"Plugin 'joonty/vdebug'
 Plugin 'fugitive.vim'
 Plugin 'php.vim'
 Plugin 'shawncplus/phpcomplete.vim'
 Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'ervandew/supertab'
-Plugin 'Solarized'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 Plugin 'Tagbar'
 Plugin 'mileszs/ack.vim'
 Plugin 'csv.vim'
-Plugin 'surround.vim'
-Plugin 'commentary.vim'
+"Plugin 'surround.vim'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'mattn/emmet-vim'
-Plugin 'FredKSchott/CoVim'
-Plugin 'MicahElliott/Rocannon'
-"Plugin 'phpfolding.vim'
+Plugin 'pearofducks/ansible-vim'
+Plugin 'hashivim/vim-terraform'
+Plugin 'hashivim/vim-packer'
+Plugin 'hashivim/vim-vaultproject'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'w0rp/ale'
+Plugin 'Valloric/YouCompleteMe'
+"Plugin 'ruanyl/vim-fixmyjs'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+
 set omnifunc=syntaxcomplete#Complete
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
@@ -50,11 +55,13 @@ set omnifunc=syntaxcomplete#Complete
 " Put your non-Plugin stuff after this line
 set encoding=utf8
 set nu
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 set backspace=indent,eol,start
+set cursorline
+set colorcolumn=100
 
 set smartindent
 set autoindent
@@ -72,11 +79,12 @@ set incsearch
 
 
 set background=dark
-"let g:solarized_termtrans =   1
+let g:solarized_termtrans =   1
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
 let g:solarized_italic=0
-colorscheme solarized
+colorscheme solarized8_dark
+"colorscheme solarized
 
 " Ansible
 let g:ansible_name_highlight = 'd'
@@ -86,17 +94,10 @@ let g:ansible_name_highlight = 'd'
 " Status line
 set laststatus=2
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
 
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_php_checkers = ['php']
+let g:ale_linters = {'javascript': ['eslint'],}
 
 "ctrlp
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -105,8 +106,9 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-let g:nerdtree_tabs_open_on_console_startup=2
-let g:nerdtree_tabs_focus_on_files=1
+"let g:nerdtree_tabs_open_on_console_startup=2
+"let g:nerdtree_tabs_focus_on_files=1
+let NERDTreeQuitOnOpen=1
 map <C-n> :NERDTreeToggle<CR>
 
 "remap help link
@@ -147,5 +149,21 @@ let php_folding=0
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 
+nnoremap <silent> <F5> :!clear;python %<CR>
+nnoremap <silent> <F4> :!clear;php %<CR>
+
+"tagBar
+nmap <F8> :TagbarToggle<CR>
+
+"elm auto format
+let g:elm_format_autosave = 1
+
+"fixMyJs
+let g:fixmyjs_engine = 'eslint'
+"
+"
 " dl vundle
 " git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+"command for xml formatting with gg=G
+set equalprg=xmllint\ --format\ -
