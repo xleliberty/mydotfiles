@@ -1,0 +1,33 @@
+---
+services:
+  proxy:
+    image: traefik:latest
+    restart: always
+    networks:
+      - shared
+      - proxy_network
+    ports:
+      - 0.0.0.0:80:80
+      - 0.0.0.0:443:443
+      - 0.0.0.0:1080:1080
+    environment:
+      - "TZ=Europe/Paris"
+      - DOCKER_API_VERSION=1.40
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/log/traefik.log:/var/log/traefik.log:rw"
+      - "./config/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "./config/traefik/include.d/:/etc/traefik/dynamic/:ro"
+      - "./config/traefik/certs:/certs:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=Host(`traefik.${DOMAIN_USERNAME}.localhost`) || Host(`traefik.eliberty.loc`)"
+      - "traefik.http.routers.proxy.service=api@internal"
+      - "traefik.http.routers.proxy.tls=true"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      - "Project=eliberty.proxy"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '100k'
+        max-file: '20'

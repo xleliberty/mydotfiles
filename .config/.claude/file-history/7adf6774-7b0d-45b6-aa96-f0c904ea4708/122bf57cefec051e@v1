@@ -1,0 +1,42 @@
+<?php
+// src/Database/PageTracker.php
+namespace XsaltoPdsFid\Database;
+
+use Doctrine\DBAL\Connection;
+
+class PageTracker
+{
+    public function __construct(private readonly Connection $connection) {}
+
+    public function isDownloaded(int $offset, int $size): bool
+    {
+        $count = $this->connection->fetchOne(
+            'SELECT COUNT(*) FROM pages WHERE offset = :offset AND size = :size AND status = :status',
+            ['offset' => $offset, 'size' => $size, 'status' => 'completed']
+        );
+        return (int) $count > 0;
+    }
+
+    public function getMaxDownloadedOffset(): ?int
+    {
+        $result = $this->connection->fetchOne(
+            'SELECT MAX(offset) FROM pages WHERE status = :status',
+            ['status' => 'completed']
+        );
+        return $result !== false && $result !== null ? (int) $result : null;
+    }
+
+    public function markDownloaded(int $offset, int $size, int $recordCount): void
+    {
+        $this->connection->executeStatement(
+            'INSERT INTO pages (offset, size, downloaded_at, record_count, status)
+             VALUES (:offset, :size, NOW(), :record_count, :status)
+             ON CONFLICT (offset) DO UPDATE SET
+                size          = EXCLUDED.size,
+                downloaded_at = NOW(),
+                record_count  = EXCLUDED.record_count,
+                status        = EXCLUDED.status',
+            ['offset' => $offset, 'size' => $size, 'record_count' => $recordCount, 'status' => 'completed']
+        );
+    }
+}

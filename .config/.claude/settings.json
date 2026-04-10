@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_context7_context7__query-docs"
+    ]
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "terraform-patterns@claude-code-skills": true,
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "supabase@claude-plugins-official": true,
+    "atlassian@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "stripe@claude-plugins-official": true,
+    "php-lsp@claude-plugins-official": true,
+    "deploy-on-aws@claude-plugins-official": true,
+    "imessage@claude-plugins-official": true,
+    "aws-architect@claude-code-skills": true,
+    "code-to-prd@claude-code-skills": true,
+    "docker-development@claude-code-skills": true,
+    "engineering-advanced-skills@claude-code-skills": true,
+    "engineering-skills@claude-code-skills": true,
+    "fullstack-engineer@claude-code-skills": true,
+    "pw@claude-code-skills": true,
+    "research-summarizer@claude-code-skills": true,
+    "docker-validation@rknall-custom-skills": true,
+    "svg-logo-designer@rknall-custom-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-skills": {
+      "source": {
+        "source": "github",
+        "repo": "alirezarezvani/claude-skills"
+      }
+    },
+    "rknall-custom-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/rknall/claude-skills.git"
+      }
+    }
+  }
+}

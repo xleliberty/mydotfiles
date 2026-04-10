@@ -1,0 +1,22 @@
+---
+services:
+  rabbit:
+    image: 004794120172.dkr.ecr.eu-west-1.amazonaws.com/eliberty-master/rabbitmq:1.2.0-dev
+    restart: always
+    networks:
+      - shared
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.${DOMAIN_USERNAME}.localhost`) || Host(`rabbitmq.eliberty.loc`)"
+      - "traefik.http.routers.rabbitmq.tls=true"
+      - "traefik.http.routers.rabbitmq.entrypoints=websecure"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+      - "Project=eliberty.shared"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: '100k'
+        max-file: '20'

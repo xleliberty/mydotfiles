@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1.7
+# -------- Stage 1: vendor --------
+FROM composer:2 AS vendor
+
+WORKDIR /app
+
+COPY composer.json composer.lock* ./
+RUN --mount=type=cache,target=/tmp/cache \
+    composer install \
+        --no-dev \
+        --no-scripts \
+        --no-interaction \
+        --prefer-dist \
+        --optimize-autoloader
+
+# -------- Stage 2: runtime --------
+FROM dunglas/frankenphp:1-php8.4
+
+ENV APP_ENV=prod \
+    APP_DEBUG=0 \
+    SERVER_NAME=":80"
+
+# System deps
+RUN install-php-extensions \
+    intl \
+    opcache \
+    zip
+
+# Worker-mode tuning
+COPY docker/Caddyfile /etc/caddy/Caddyfile
+COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
+
+WORKDIR /app
+
+# App source + vendored deps
+COPY --from=vendor /app/vendor ./vendor
+COPY . .
+
+# Warm the Symfony cache for prod
+RUN mkdir -p var/cache var/log \
+ && php bin/console cache:clear --no-debug \
+ && chown -R www-data:www-data var
+
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://127.0.0.1/healthz || exit 1

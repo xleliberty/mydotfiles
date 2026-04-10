@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SELECTION=$(psql -h localhost -d redpill_dev -t -A -F $'\t' \
+    -c "SELECT id, server_name FROM websites WHERE active = true ORDER BY server_name;" \
+    | fzf --prompt="Select website: " --with-nth=2 --delimiter=$'\t')
+
+if [[ -z "$SELECTION" ]]; then
+    echo "No website selected, aborting." >&2
+    exit 1
+fi
+
+WEBSITE_ID=$(echo "$SELECTION" | cut -f1)
+WEBSITE_NAME=$(echo "$SELECTION" | cut -f2)
+
+export REDPILL_WEBSITE_ID="$WEBSITE_ID"
+echo "Starting server for website: $WEBSITE_NAME (id=$WEBSITE_ID)"
+
+symfony local:server:start

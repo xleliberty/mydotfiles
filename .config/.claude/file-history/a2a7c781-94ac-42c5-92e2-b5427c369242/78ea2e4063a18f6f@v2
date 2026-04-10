@@ -1,0 +1,11 @@
+# Copy to .env.local and fill in your personal dev values.
+# NEVER commit .env.local.
+
+APP_ENV=dev
+APP_DEBUG=1
+APP_SECRET=local-dev-secret-change-me
+
+STRIPE_CLIENT_ID=ca_your_test_client_id
+STRIPE_CLIENT_SECRET=sk_test_your_secret
+STRIPE_REDIRECT_URI=http://localhost:8080/oauth/callback
+STRIPE_OAUTH_BASE_URL=https://connect.stripe.com

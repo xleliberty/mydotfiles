@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Controller;
+
+use App\Controller\HomeController;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+#[CoversClass(HomeController::class)]
+final class HomeControllerTest extends WebTestCase
+{
+    #[Test]
+    public function homePageRendersCta(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('a.cta', 'Connecter mon compte');
+    }
+
+    #[Test]
+    public function healthzReturnsOk(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/healthz');
+
+        self::assertResponseIsSuccessful();
+        self::assertJson($client->getResponse()->getContent() ?: '');
+    }
+}

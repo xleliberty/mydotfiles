@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Stripe;
+
+use App\Stripe\Dto\StripeOAuthTokenResponse;
+use App\Stripe\StripeOAuthClient;
+use App\Stripe\StripeOAuthException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
+
+#[CoversClass(StripeOAuthClient::class)]
+#[CoversClass(StripeOAuthTokenResponse::class)]
+#[CoversClass(StripeOAuthException::class)]
+final class StripeOAuthClientTest extends TestCase
+{
+    private const string BASE = 'https://connect.stripe.test';
+
+    #[Test]
+    public function itExchangesCodeForToken(): void
+    {
+        $http = new MockHttpClient([
+            new MockResponse(json_encode([
+                'access_token' => 'sk_test_access',
+                'refresh_token' => 'rt_test',
+                'stripe_user_id' => 'acct_123',
+                'token_type' => 'bearer',
+                'scope' => 'read_write',
+                'livemode' => false,
+            ], \JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = new StripeOAuthClient($http, new NullLogger(), 'ca_client', 'sk_secret', self::BASE);
+        $token = $client->exchangeCode('code_abc');
+
+        self::assertSame('acct_123', $token->stripeUserId);
+        self::assertSame('sk_test_access', $token->accessToken);
+        self::assertFalse($token->livemode);
+        self::assertStringEndsWith('cess', $token->maskedAccessToken());
+        self::assertStringStartsWith('*', $token->maskedAccessToken());
+    }
+
+    #[Test]
+    public function itFailsOnHttpError(): void
+    {
+        $http = new MockHttpClient([
+            new MockResponse('{"error":"invalid_grant"}', ['http_code' => 400]),
+        ]);
+
+        $client = new StripeOAuthClient($http, new NullLogger(), 'ca_client', 'sk_secret', self::BASE);
+
+        $this->expectException(StripeOAuthException::class);
+        $client->exchangeCode('bad_code');
+    }
+
+    #[Test]
+    public function itFailsOnMalformedJson(): void
+    {
+        $http = new MockHttpClient([
+            new MockResponse('not json'),
+        ]);
+
+        $client = new StripeOAuthClient($http, new NullLogger(), 'ca_client', 'sk_secret', self::BASE);
+
+        $this->expectException(StripeOAuthException::class);
+        $client->exchangeCode('code_abc');
+    }
+
+    #[Test]
+    public function itFailsOnMissingFields(): void
+    {
+        $http = new MockHttpClient([
+            new MockResponse(json_encode(['access_token' => 'x'], \JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = new StripeOAuthClient($http, new NullLogger(), 'ca_client', 'sk_secret', self::BASE);
+
+        $this->expectException(StripeOAuthException::class);
+        $client->exchangeCode('code_abc');
+    }
+}

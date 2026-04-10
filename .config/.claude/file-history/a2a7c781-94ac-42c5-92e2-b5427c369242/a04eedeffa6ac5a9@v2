@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Orchestrates a full deploy for the given environment.
+# Usage: IMAGE_TAG=<sha> ./deploy/deploy.sh preprod
+set -euo pipefail
+cd "$(dirname "$0")"
+# shellcheck source=lib.sh
+source "./lib.sh"
+
+ENV_ARG="${1:-}"
+[[ -n "$ENV_ARG" ]] || die "Usage: $0 <preprod|prod>"
+: "${IMAGE_TAG:?IMAGE_TAG env var required (git sha recommended)}"
+
+log "== deploy $ENV_ARG (image tag: $IMAGE_TAG) =="
+./ensure-cluster.sh        "$ENV_ARG"
+./ensure-target-group.sh   "$ENV_ARG"
+./ensure-listener-rule.sh  "$ENV_ARG"
+./ensure-task-definition.sh "$ENV_ARG"
+./ensure-service.sh        "$ENV_ARG"
+log "== deploy $ENV_ARG done =="

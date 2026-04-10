@@ -1,0 +1,16 @@
+.git
+.github
+var/cache
+var/log
+vendor
+node_modules
+tests
+.env.local
+.env.*.local
+.idea
+.vscode
+docs
+deploy
+Makefile
+README.md
+CLAUDE.md

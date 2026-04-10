@@ -1,0 +1,33 @@
+-- database/schema.sql
+-- Run as superuser:  psql -U postgres -f database/schema.sql
+
+CREATE DATABASE xsalto_fidelity;
+
+\c xsalto_fidelity;
+
+CREATE TABLE IF NOT EXISTS contacts (
+    id          VARCHAR(50)  PRIMARY KEY,
+    lastname    VARCHAR(255),
+    firstname   VARCHAR(255),
+    email       VARCHAR(255),
+    address1    VARCHAR(255),
+    address2    VARCHAR(255),
+    address3    VARCHAR(255),
+    zipcode     VARCHAR(20),
+    city        VARCHAR(255),
+    country     VARCHAR(10),
+    balance     INTEGER,
+    lastmove    TIMESTAMP,
+    language    VARCHAR(10),
+    skiers      JSONB,
+    resorts     JSONB,
+    created     TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pages (
+    offset       INTEGER      PRIMARY KEY,
+    size         INTEGER      NOT NULL DEFAULT 100,
+    downloaded_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    record_count INTEGER,
+    status       VARCHAR(20)  NOT NULL DEFAULT 'completed'
+);

@@ -1,0 +1,120 @@
+<?php
+// tests/Mapper/ContactMapperTest.php
+namespace XsaltoPdsFid\Tests\Mapper;
+
+use PHPUnit\Framework\TestCase;
+use XsaltoPdsFid\Mapper\ContactMapper;
+
+class ContactMapperTest extends TestCase
+{
+    private ContactMapper $mapper;
+
+    protected function setUp(): void
+    {
+        $this->mapper = new ContactMapper();
+    }
+
+    public function testMapsBasicContactAttributes(): void
+    {
+        $contact = [
+            'id' => '6q85iaor8ayw',
+            'attributes' => [
+                'LastName'  => 'STONE',
+                'FirstName' => 'LUKE',
+                'Email'     => 'luke_stone@hotmail.com',
+                'Address1'  => '60 Long Garden Walk',
+                'Address2'  => null,
+                'Address3'  => null,
+                'ZipCode'   => 'GU9 7HX',
+                'City'      => 'Farnham',
+                'Language'  => null,
+                'LASTMOVE'  => '2026-03-28 10:13:06',
+                'Balance'   => 360,
+                'created'   => '2019-03-30 10:08:43',
+            ],
+            'relationships' => [
+                'Country' => ['data' => ['type' => 'countries', 'id' => 'CH']],
+                'Resorts' => ['data' => [['type' => 'resorts', 'id' => 'LesGets']]],
+                'skiers'  => ['data' => []],
+            ],
+        ];
+
+        $row = $this->mapper->mapToRow($contact);
+
+        $this->assertSame('6q85iaor8ayw', $row['id']);
+        $this->assertSame('STONE', $row['lastname']);
+        $this->assertSame('LUKE', $row['firstname']);
+        $this->assertSame('luke_stone@hotmail.com', $row['email']);
+        $this->assertSame('60 Long Garden Walk', $row['address1']);
+        $this->assertNull($row['address2']);
+        $this->assertSame('GU9 7HX', $row['zipcode']);
+        $this->assertSame('Farnham', $row['city']);
+        $this->assertSame('CH', $row['country']);
+        $this->assertSame(360, $row['balance']);
+        $this->assertSame('2026-03-28 10:13:06', $row['lastmove']);
+        $this->assertNull($row['language']);
+        $this->assertSame('2019-03-30 10:08:43', $row['created']);
+    }
+
+    public function testMapsResortsAsJson(): void
+    {
+        $contact = [
+            'id' => 'test-id',
+            'attributes' => [],
+            'relationships' => [
+                'Resorts' => ['data' => [['type' => 'resorts', 'id' => 'LesGets']]],
+                'skiers'  => ['data' => []],
+            ],
+        ];
+
+        $row = $this->mapper->mapToRow($contact);
+
+        $this->assertSame('["LesGets"]', $row['resorts']);
+    }
+
+    public function testMapsSkiersAsJson(): void
+    {
+        $skierData = [['id' => 'skier1', 'attributes' => ['LastName' => 'STONE']]];
+        $contact = [
+            'id' => 'test-id',
+            'attributes' => [],
+            'relationships' => ['skiers' => ['data' => $skierData]],
+        ];
+
+        $row = $this->mapper->mapToRow($contact);
+
+        $this->assertSame(json_encode($skierData), $row['skiers']);
+    }
+
+    public function testHandlesMissingRelationships(): void
+    {
+        $contact = [
+            'id' => 'test-id',
+            'attributes' => ['Balance' => '150'],
+            'relationships' => [],
+        ];
+
+        $row = $this->mapper->mapToRow($contact);
+
+        $this->assertNull($row['country']);
+        $this->assertNull($row['resorts']);
+        $this->assertNull($row['skiers']);
+        $this->assertSame(150, $row['balance']);
+    }
+
+    public function testHandlesNullRelationshipData(): void
+    {
+        $contact = [
+            'id' => 'test-id',
+            'attributes' => ['Balance' => 50],
+            'relationships' => [
+                'Country' => ['data' => null],
+            ],
+        ];
+
+        $row = $this->mapper->mapToRow($contact);
+
+        $this->assertNull($row['country']);
+        $this->assertSame(50, $row['balance']);
+    }
+}

@@ -1,0 +1,55 @@
+<?php
+
+namespace Tests\Unit\Eliberty\RedpillBundle\ExternalActivity;
+
+use Eliberty\RedpillBundle\Enum\ExternalBookingProvider;
+use Eliberty\RedpillBundle\ExternalActivity\AxBooking\Rest\AxBookingHandler;
+use Eliberty\RedpillBundle\ExternalActivity\ElibertyBooking\Rest\ElibertyBookingHandler;
+use Eliberty\RedpillBundle\ExternalActivity\ExternalActivityHandlerFactory;
+use Eliberty\RedpillBundle\ExternalActivity\Koralp\Rest\KoralpHandler;
+use Eliberty\RedpillBundle\ExternalActivity\TeamaxessReservation\Rest\TeamaxessReservationHandler;
+use PHPUnit\Framework\TestCase;
+
+class ExternalActivityHandlerFactoryTest extends TestCase
+{
+    protected ExternalActivityHandlerFactory $externalActivityHandlerFactory;
+
+    protected function setUp(): void
+    {
+        $this->externalActivityHandlerFactory = new ExternalActivityHandlerFactory();
+
+        $axBookingHandler            = $this->createMock(AxBookingHandler::class);
+        $elibertyBookingHandler      = $this->createMock(ElibertyBookingHandler::class);
+        $koralpHandler               = $this->createMock(KoralpHandler::class);
+        $teamaxessReservationHandler = $this->createMock(TeamaxessReservationHandler::class);
+
+        $this->externalActivityHandlerFactory->add($axBookingHandler, AxBookingHandler::class);
+        $this->externalActivityHandlerFactory->add($elibertyBookingHandler, ElibertyBookingHandler::class);
+        $this->externalActivityHandlerFactory->add($koralpHandler, KoralpHandler::class);
+        $this->externalActivityHandlerFactory->add($teamaxessReservationHandler, TeamaxessReservationHandler::class);
+    }
+
+    /**
+     * @dataProvider bookingHandlerProvider
+     */
+    public function testItShouldBeReturnABookingHandler(string $classExpected, string $externalActivityHandlerCode): void
+    {
+        $handler = $this->externalActivityHandlerFactory->getHandler($externalActivityHandlerCode);
+
+        $this->assertInstanceOf($classExpected, $handler);
+    }
+
+    public function bookingHandlerProvider(): \Generator
+    {
+        yield 'AxBooking' => [AxBookingHandler::class, ExternalBookingProvider::AX_BOOKING];
+        yield 'Eliberty Booking' => [ElibertyBookingHandler::class, ExternalBookingProvider::ELIBERTY_BOOKING];
+        yield 'Koralp' => [KoralpHandler::class, ExternalBookingProvider::KORALP];
+        yield 'TeamAxess Reservation' => [TeamaxessReservationHandler::class, ExternalBookingProvider::TEAMAXESS_RESERVATION];
+    }
+
+    public function testItShouldReturnAnUnexpectedValueException(): void
+    {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->externalActivityHandlerFactory->getHandler('uuid');
+    }
+}

@@ -1,0 +1,22 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        image: stripeconnect-website:local
+        container_name: stripeconnect-website
+        ports:
+            - "8080:80"
+        environment:
+            APP_ENV: dev
+            APP_DEBUG: "1"
+            APP_SECRET: ${APP_SECRET:-change-me-in-env-local}
+            STRIPE_CLIENT_ID: ${STRIPE_CLIENT_ID:-ca_your_test_client_id}
+            STRIPE_CLIENT_SECRET: ${STRIPE_CLIENT_SECRET:-sk_test_your_secret}
+            STRIPE_REDIRECT_URI: ${STRIPE_REDIRECT_URI:-http://localhost:8080/oauth/callback}
+            STRIPE_OAUTH_BASE_URL: ${STRIPE_OAUTH_BASE_URL:-https://connect.stripe.com}
+        volumes:
+            - ./:/app:cached
+            - /app/vendor
+            - /app/var
+        restart: unless-stopped

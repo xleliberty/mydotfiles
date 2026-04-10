@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Create the ECS service the first time, or update it on subsequent runs.
+set -euo pipefail
+cd "$(dirname "$0")"
+# shellcheck source=lib.sh
+source "./lib.sh"
+load_env "${1:-}"
+
+td_arn="$(cat /tmp/stripeconnect-website-td-arn 2>/dev/null || true)"
+tg_arn="$(cat /tmp/stripeconnect-website-tg-arn 2>/dev/null || true)"
+[[ -n "$td_arn" ]] || die "task definition arn unknown — run ensure-task-definition.sh first"
+[[ -n "$tg_arn" ]] || die "target group arn unknown — run ensure-target-group.sh first"
+
+# Build awsvpcConfiguration
+subnets_csv="$(echo "$SUBNETS" | tr ' ' ',')"
+awsvpc_cfg="awsvpcConfiguration={subnets=[$subnets_csv],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}"
+
+existing="$(aws ecs describe-services \
+    --cluster "$CLUSTER_NAME" \
+    --services "$SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[?status==`ACTIVE`].serviceName' \
+    --output text 2>/dev/null || true)"
+
+if [[ "$existing" == "$SERVICE_NAME" ]]; then
+    log "updating service $SERVICE_NAME → $td_arn"
+    aws ecs update-service \
+        --cluster "$CLUSTER_NAME" \
+        --service "$SERVICE_NAME" \
+        --task-definition "$td_arn" \
+        --desired-count "$DESIRED_COUNT" \
+        --force-new-deployment \
+        --region "$AWS_REGION" >/dev/null
+else
+    log "creating service $SERVICE_NAME"
+    aws ecs create-service \
+        --cluster "$CLUSTER_NAME" \
+        --service-name "$SERVICE_NAME" \
+        --task-definition "$td_arn" \
+        --desired-count "$DESIRED_COUNT" \
+        --launch-type FARGATE \
+        --network-configuration "$awsvpc_cfg" \
+        --load-balancers "targetGroupArn=$tg_arn,containerName=app,containerPort=80" \
+        --deployment-configuration "maximumPercent=200,minimumHealthyPercent=100" \
+        --health-check-grace-period-seconds 60 \
+        --region "$AWS_REGION" >/dev/null
+fi
+
+log "waiting for service to reach stable state…"
+aws ecs wait services-stable \
+    --cluster "$CLUSTER_NAME" \
+    --services "$SERVICE_NAME" \
+    --region "$AWS_REGION"
+log "service stable ✓"

@@ -1,0 +1,26 @@
+ENV=prod
+AWS_REGION=eu-west-1
+ACCOUNT_ID=004794120172
+
+CLUSTER_NAME=stripeconnect-website-prod-cluster
+SERVICE_NAME=stripeconnect-website-prod-svc
+TG_NAME=stripeconnect-website-prod-tg
+TASK_FAMILY=stripeconnect-website-prod
+LOG_GROUP=/ecs/stripeconnect-website-prod
+
+# TODO: fill in production ALB + networking when provided by ops
+ALB_ARN=
+LISTENER_ARN=
+VPC_ID=
+SUBNETS=""
+SECURITY_GROUP=
+
+HOST=stripeconnect.eliberty.fr
+ECR_REPO=stripeconnect-website
+
+DESIRED_COUNT=2
+CPU=512
+MEMORY=1024
+
+TASK_EXECUTION_ROLE_ARN=arn:aws:iam::004794120172:role/ecsTaskExecutionRole
+TASK_ROLE_ARN=arn:aws:iam::004794120172:role/stripeconnect-website-prod-task

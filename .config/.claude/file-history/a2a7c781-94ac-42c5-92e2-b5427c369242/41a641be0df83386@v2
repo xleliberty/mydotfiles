@@ -1,0 +1,60 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Security;
+
+use Symfony\Component\HttpFoundation\RequestStack;
+
+/**
+ * Generates and validates a short-lived CSRF `state` value for the Stripe
+ * OAuth flow. The value is persisted in the user's session and consumed
+ * (one-shot) on callback.
+ */
+final readonly class OAuthStateManager
+{
+    private const string SESSION_KEY = 'stripe_oauth_state';
+    private const int TTL_SECONDS = 600;
+
+    public function __construct(
+        private RequestStack $requestStack,
+    ) {
+    }
+
+    public function generate(): string
+    {
+        $state = bin2hex(random_bytes(32));
+        $session = $this->requestStack->getSession();
+        $session->set(self::SESSION_KEY, [
+            'value' => $state,
+            'expires_at' => time() + self::TTL_SECONDS,
+        ]);
+
+        return $state;
+    }
+
+    /**
+     * Validates the incoming state and clears it from the session regardless
+     * of the outcome (single-use).
+     */
+    public function consume(?string $incoming): bool
+    {
+        $session = $this->requestStack->getSession();
+        $stored = $session->get(self::SESSION_KEY);
+        $session->remove(self::SESSION_KEY);
+
+        if (null === $incoming || '' === $incoming || !\is_array($stored)) {
+            return false;
+        }
+
+        if (!isset($stored['value'], $stored['expires_at'])) {
+            return false;
+        }
+
+        if ($stored['expires_at'] < time()) {
+            return false;
+        }
+
+        return hash_equals((string) $stored['value'], $incoming);
+    }
+}

@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Controller;
+
+use App\Controller\ConnectController;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+#[CoversClass(ConnectController::class)]
+final class ConnectControllerTest extends WebTestCase
+{
+    #[Test]
+    public function itRedirectsToStripeAuthorizeUrl(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/connect');
+
+        self::assertResponseRedirects();
+        $location = $client->getResponse()->headers->get('Location') ?? '';
+        self::assertStringContainsString('/oauth/authorize', $location);
+        self::assertStringContainsString('client_id=', $location);
+        self::assertStringContainsString('state=', $location);
+        self::assertStringContainsString('response_type=code', $location);
+        self::assertStringContainsString('scope=read_write', $location);
+    }
+}

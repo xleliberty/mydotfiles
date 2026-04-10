@@ -1,0 +1,17 @@
+http:
+  routers:
+    http-catchall:
+      rule: "HostRegexp(`.+\\.(loc|localhost)`)"
+      entryPoints:
+        - web
+        # Websecure logically not needed, but fix brainless redirect to http on redpill root -> lang
+        - websecure
+      middlewares:
+        - redirect-to-https
+      service: "httpsredirector"
+
+  services:
+    httpsredirector:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:80"

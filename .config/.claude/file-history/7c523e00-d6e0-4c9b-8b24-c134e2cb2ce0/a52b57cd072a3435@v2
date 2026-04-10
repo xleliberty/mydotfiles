@@ -1,0 +1,164 @@
+# ElibertyBookingV2 provider implementation
+
+## Context
+
+The booking team has shipped a new REST API to replace the legacy Eliberty booking backend. We need a new provider `ElibertyBookingV2` that plugs into the existing `ExternalActivityHandlerInterface` so bookable products can be served by the new backend without changing the funnel or other providers.
+
+The new API is two-tier:
+- **Admin API** (`booking-admin-api.json`) — exposes `POST /login` (returns JWT) and `GET /admin/timeslot/list/{resourceUuid}` for availability.
+- **Client API** (`booking-api-swagger.json`) — exposes prebook / extend / confirm endpoints under `/client/booking/*`.
+
+Both APIs are authenticated with the same Bearer JWT issued by `/login` (per user decision), and every protected call requires the multi-tenant header `x-tenant-slag` whose value is read from ConfigManager key `booking.v2.tenant-slag`.
+
+The new provider must satisfy the same `ExternalActivityHandlerInterface` contract as `AxBooking`, `ElibertyBooking`, `Koralp`, `TeamaxessReservation`, so the existing `BookingService` / `BookingHelper` / cart funnel keep working unchanged. Existing providers stay untouched.
+
+PHP 7.4. All code must pass phpcs, phpstan level 1, and ship with PHPUnit unit tests using the `MockHandler`-based pattern already in `tests/Unit/.../ElibertyBookingHandlerTest.php`.
+
+## Architectural decisions (locked)
+
+1. **Auth**: a single JWT obtained from `POST /login` is used as `Authorization: Bearer` on both admin and client endpoints.
+2. **synchronizeBooking** = `POST /client/booking/prebook/extend/{bookingUuid}` only. No booker mutation between prebook and confirm.
+3. **createBooking** payload uses real Order data with `BaseApiHelper` fallback chain (firstname/lastname/email/phone), defaulting to existing constants when missing.
+4. **No refactor** of existing providers / `BaseApiHelper`. All new code lives under `ExternalActivity/ElibertyBookingV2/`.
+
+## Files to create
+
+```
+src/RedpillBundle/ExternalActivity/ElibertyBookingV2/
+└── Rest/
+    ├── ClientFactory.php            # Builds JWT-authenticated Guzzle client
+    ├── TokenProvider.php            # Login + Redis-cached JWT, re-login on 401
+    ├── ApiHelper.php                # Param builders + response → entity mappers
+    └── ElibertyBookingV2Handler.php # Implements ExternalActivityHandlerInterface
+
+tests/Unit/Eliberty/RedpillBundle/ExternalActivity/ElibertyBookingV2/
+└── Rest/
+    ├── ElibertyBookingV2HandlerTest.php
+    ├── TokenProviderTest.php
+    └── ApiHelperTest.php
+
+tests/Unit/Eliberty/RedpillBundle/ExternalActivity/ElibertyBookingV2/Fixtures/
+├── login_ok.json
+├── timeslot_list.json
+├── booking_create.json
+└── booking_confirm.json
+```
+
+## Files to modify
+
+| File | Change |
+|---|---|
+| `src/RedpillBundle/Enum/ExternalBookingProvider.php` | Add constant `ELIBERTY_BOOKING_V2 = 'eliberty_booking_v2'` and append it to the `$values` array. |
+| `src/RedpillBundle/Resources/config/services.yml` | Add 4 service definitions (Handler, ApiHelper, ClientFactory, TokenProvider) with the appropriate bindings. The handler is auto-tagged because the existing interface autoconfiguration adds `external_activity.handler` to anything implementing `ExternalActivityHandlerInterface`. Verify with phpunit factory test. |
+
+No DB migration: the new provider stores nothing new. It re-uses `SubContingent` and `ExternalBooking` entities, distinguished by `type = 'eliberty_booking_v2'`.
+
+## Configuration keys (ConfigManager)
+
+| Key | Type | Purpose |
+|---|---|---|
+| `booking.v2.tenant-slag` | string | sent as `x-tenant-slag` header on every call (key name dictated by spec) |
+| `booking.v2.admin_base_url` | string | base URL for `/login` and `/admin/*` |
+| `booking.v2.client_base_url` | string | base URL for `/client/*` |
+| `booking.v2.username` | string | super-admin login |
+| `booking.v2.password` | string | super-admin password |
+| `booking.v2.cache_expiration_time` | int | timeslot list TTL (default 300, falls back to existing `booking.cache_expiration_time`) |
+| `booking.v2.token_safety_margin` | int | seconds subtracted from JWT TTL before treating it as expired (default 30) |
+
+These are read via the existing `ConfigManager::getStringOption()` / `getIntOption()` API. The product still carries the resource UUID in `Product::getExternalActivityResourceId()` (the existing field — the spec confirms `resource_id → resourceUuid`).
+
+## Component design
+
+### `TokenProvider`
+Single responsibility: hand out a valid JWT.
+
+- Dependencies: `GuzzleHttp\Client` (built once with `admin_base_url`), `ConfigManager`, `CacheInterface $redisCache` (`@generic_cache`), `LoggerInterface $loggerBooking`.
+- Public API: `getToken(): string`, `invalidate(): void`.
+- Cache key: `md5('booking_v2_jwt_' . tenantSlag . '_' . username)`.
+- On miss / expired: `POST /login` with `{username, password, tenantSlag}` → cache `access_token` with TTL `expires_in - safety_margin`.
+- Logs success/failure on the `booking` channel; throws `ExternalActivityException` on failed login (so calling handler can wrap it consistently).
+
+> Rationale: keeping token logic out of the handler is the only abstraction we add. We do **not** introduce a new shared JWT helper across providers (per refactor scope decision).
+
+### `ClientFactory`
+- Builds a `GuzzleHttp\Client` configured for the **client API** base URL with a tiny middleware that:
+  1. Adds `Authorization: Bearer <TokenProvider::getToken()>`
+  2. Adds `x-tenant-slag: <ConfigManager::getStringOption('booking.v2.tenant-slag')>`
+  3. On 401 response → `TokenProvider::invalidate()`, retry **once**.
+- Also exposes `getAdminClient()` returning a similar client bound to `admin_base_url` (used only by `getSubContingents*`).
+- The retry-on-401 middleware is the only "magic" — implemented as a simple closure pushed onto the `HandlerStack`, not a new framework.
+
+### `ApiHelper`
+Mirrors the role of existing per-provider `ApiHelper` classes; extends `BaseApiHelper` to inherit booker fallback / logging / cache key helpers.
+
+Responsibilities:
+
+- `buildCreateBookingPayload(Order, SubContingentData): array` — assembles the `RequestCreateBookingDto` body. Uses `BaseApiHelper::getBookerName('firstname'/'lastname', ...)`, `getBookerPhone(...)`, plus the order's email. `bookingDetail.productId = $product->getCode()`, `pricePaid` in cents from the matching order item, `currency = 'EUR'` (constant for now — flag if multi-currency needed), `origin = 'ESHOP'`, `orderDate = today`, `customerUserId = (string) $order->getId()`.
+- `buildConfirmBookingPayload(Order, ExternalBooking): array` — same `bookingDetail` shape, re-using stored ExternalBooking data when available.
+- `mapTimeslotToSubContingent(array $timeslot, Product, WebInstance): SubContingent` — finds-or-creates by `externalId = $timeslot['uuid']`, sets `quotaAvailable = capacity - occupiedSlots`, `quotaInUse = occupiedSlots`, `date` from `startDate + startTime` (minutes), `dailyBooking = false`, `type = ELIBERTY_BOOKING_V2`.
+- `mapBookingResponseToExternalBooking(array $response, ?SubContingent, ?ExternalBooking): ExternalBooking` — sets `externalId = $response['uuid']`, status from `isCanceled` (`true` → CANCELLED, `false` → INIT/CART/CONFIRMED depending on caller), copies booker fields.
+- `getDateRangeForAvailability(Product): array{from:string,to:string}` — re-uses the existing `Season::getCurrentSeason()` pattern from `getDaysAvailabilityTrait` (read it: `src/RedpillBundle/ExternalActivity/Traits/getDaysAvailabilityTrait.php:1-39`).
+
+### `ElibertyBookingV2Handler` — interface mapping
+
+| Interface method | Implementation |
+|---|---|
+| `getDaysAvailability(Product)` | `GET /admin/timeslot/list/{resourceUuid}?dateFrom=...&dateTo=...` (admin client). Return distinct `startDate` values. **Cached** in Redis by `getRedisKey()`. |
+| `getSubContingentsBetweenDates(Product, $start, $end)` | Same admin endpoint, narrower range. Map every timeslot via `ApiHelper::mapTimeslotToSubContingent()`. **Cached**. |
+| `getSubContingent(Product, $date, $id, $withCache)` | Try DB lookup by `(externalId=$id, webinstance, type=v2)`; on miss, call `getSubContingentsBetweenDates` for that single day and re-query DB. |
+| `createBooking(Order, SubContingentData)` | `POST /client/booking/{timeSlotUuid}` with `isItPreBooking=true` and the payload from `buildCreateBookingPayload`. Map response → ExternalBooking with status INIT, persist. |
+| `synchronizeBooking(Order, ExternalBooking)` | `POST /client/booking/prebook/extend/{bookingUuid}`. Update `updatedAt`. Status stays as is. |
+| `confirmBooking(Order, ExternalBooking)` | `POST /client/booking/prebook/confirm/{bookingUuid}` with `buildConfirmBookingPayload`. Set status CONFIRMED. |
+| `findBooking($externalBookingId, WebInstance, ?$item)` | DB-only lookup (mirrors v1). The new API has no read-by-id endpoint. |
+
+All public methods wrap external errors (`GuzzleHttp\Exception\RequestException`, `\Throwable`) into `ExternalActivityException` via `BaseApiHelper::parseAndLogException()`.
+
+## Existing utilities to reuse (do NOT reimplement)
+
+- `Eliberty\RedpillBundle\ExternalActivity\Helpers\BaseApiHelper` — booker fallback chain, redis key builder, cache TTL, logger.
+- `Eliberty\RedpillBundle\ExternalActivity\Models\{SubContingent, ExternalBooking, SubContingentData}` — the data carriers used by the funnel.
+- `Eliberty\RedpillBundle\ExternalActivity\ExternalActivityHandlerFactory` — auto-resolves the handler by class name from the provider enum string `eliberty_booking_v2` → `ElibertyBookingV2\Rest\ElibertyBookingV2Handler`. Naming MUST match exactly.
+- `Eliberty\RedpillBundle\Entity\Season::getCurrentSeason()` — date range for availability (same usage as `getDaysAvailabilityTrait`).
+- `@generic_cache` (`Psr\SimpleCache\CacheInterface`) — bound as `$redisCache`.
+- `@monolog.logger.booking` — bound as `$loggerBooking`.
+
+## Build sequence
+
+1. **Enum + service skeleton** — add `ELIBERTY_BOOKING_V2` constant; create empty handler class so the factory naming convention test passes.
+2. **TokenProvider** + unit test (mock Guzzle MockHandler, mock cache, assert login on miss, no login on hit, re-login on `invalidate()`).
+3. **ClientFactory** + unit test (assert headers added, assert one retry on 401).
+4. **ApiHelper** + unit test for each mapping function (use fixtures).
+5. **Handler** — implement methods one at a time, each with a focused unit test that mocks `ClientFactory::getClient()` / `getAdminClient()` with `MockHandler`. Mirror the structure of `ElibertyBookingHandlerTest`.
+6. **Wire services** in `services.yml`; verify with `ExternalActivityHandlerFactoryTest` (extend it to assert the v2 handler resolves).
+7. **Run quality gates**: `composer cs-fix && composer stan && composer ci:tests:unit`.
+
+## Verification
+
+Local / CI:
+
+```bash
+docker compose exec redpill php vendor/bin/phpunit --configuration config/phpunit.xml.dist \
+  --filter ElibertyBookingV2
+
+docker compose exec redpill php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff \
+  src/RedpillBundle/ExternalActivity/ElibertyBookingV2
+
+docker compose exec redpill php vendor/bin/phpstan analyse -c phpstan.neon.dist -l 1 \
+  src/RedpillBundle/ExternalActivity/ElibertyBookingV2
+```
+
+End-to-end smoke (manual, on a dev tenant configured with the v2 keys):
+
+1. Set `booking.v2.*` keys in ConfigManager for a dev webinstance.
+2. Mark a test product `externalBookingProvider = 'eliberty_booking_v2'` and set its `externalActivityResourceId` to a real `resourceUuid`.
+3. Hit the funnel that lists availabilities (existing controller calling `BookingService`) — confirm timeslots are returned and `SubContingent` rows are persisted with `type = eliberty_booking_v2`.
+4. Add the product to a cart → confirm `POST /client/booking/{uuid}` is hit, `ExternalBooking` row created, status `INIT`.
+5. Trigger sync (cart refresh) → confirm `/prebook/extend/...` call.
+6. Pay the order → confirm `/prebook/confirm/...` call and status flips to `CONFIRMED`.
+7. Force a 401 (invalidate the cached token in Redis) → confirm middleware re-logins transparently.
+
+## Open items to flag during implementation
+
+- `currency = 'EUR'` is hardcoded; if any tenant uses another currency, surface a TODO and a config knob.
+- The new API has no `findBooking` by ID endpoint; if the funnel ever needs to recover a lost booking from the remote system, this will need a follow-up.
+- `customerUserId` is filled with `(string) $order->getId()`. If the v2 backend expects a stable cross-system identifier (e.g. customer GUID), revisit during smoke test.

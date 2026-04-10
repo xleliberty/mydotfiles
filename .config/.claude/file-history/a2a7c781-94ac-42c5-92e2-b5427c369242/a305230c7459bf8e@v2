@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Stripe;
+
+use App\Stripe\Dto\StripeOAuthTokenResponse;
+use Psr\Log\LoggerInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+/**
+ * Thin wrapper around Stripe's OAuth token endpoint.
+ *
+ * We intentionally do NOT use the stripe/stripe-php SDK — a single POST is
+ * all we need for this site.
+ */
+final readonly class StripeOAuthClient
+{
+    public function __construct(
+        private HttpClientInterface $httpClient,
+        private LoggerInterface $logger,
+        #[\SensitiveParameter] private string $clientId,
+        #[\SensitiveParameter] private string $clientSecret,
+        private string $oauthBaseUrl,
+    ) {
+    }
+
+    /**
+     * Exchanges an authorization code for an access token.
+     *
+     * @throws StripeOAuthException when the exchange fails for any reason
+     */
+    public function exchangeCode(string $code): StripeOAuthTokenResponse
+    {
+        $url = rtrim($this->oauthBaseUrl, '/').'/oauth/token';
+
+        try {
+            $response = $this->httpClient->request('POST', $url, [
+                'body' => [
+                    'client_secret' => $this->clientSecret,
+                    'code' => $code,
+                    'grant_type' => 'authorization_code',
+                ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $status = $response->getStatusCode();
+            $content = $response->getContent(throw: false);
+        } catch (ExceptionInterface $e) {
+            $this->logger->error('stripe.connect.token_exchange_failed', [
+                'reason' => 'transport_error',
+                'error' => $e->getMessage(),
+            ]);
+            throw new StripeOAuthException('Transport error while calling Stripe OAuth token endpoint.', previous: $e);
+        }
+
+        if ($status < 200 || $status >= 300) {
+            $this->logger->error('stripe.connect.token_exchange_failed', [
+                'reason' => 'http_error',
+                'status' => $status,
+                'body' => $content,
+            ]);
+            throw new StripeOAuthException(\sprintf('Stripe returned HTTP %d on token exchange.', $status));
+        }
+
+        try {
+            /** @var array<string, mixed> $payload */
+            $payload = json_decode($content, true, flags: \JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            $this->logger->error('stripe.connect.token_exchange_failed', [
+                'reason' => 'invalid_json',
+                'error' => $e->getMessage(),
+            ]);
+            throw new StripeOAuthException('Invalid JSON returned by Stripe OAuth endpoint.', previous: $e);
+        }
+
+        try {
+            return StripeOAuthTokenResponse::fromArray($payload);
+        } catch (\InvalidArgumentException $e) {
+            $this->logger->error('stripe.connect.token_exchange_failed', [
+                'reason' => 'invalid_payload',
+                'error' => $e->getMessage(),
+            ]);
+            throw new StripeOAuthException('Invalid payload shape from Stripe OAuth endpoint.', previous: $e);
+        }
+    }
+
+    public function clientId(): string
+    {
+        return $this->clientId;
+    }
+}

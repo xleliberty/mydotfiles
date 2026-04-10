@@ -1,0 +1,31 @@
+<?php
+// src/Mapper/ContactMapper.php
+namespace XsaltoPdsFid\Mapper;
+
+class ContactMapper
+{
+    public function mapToRow(array $contact): array
+    {
+        $attr = $contact['attributes'] ?? [];
+        $rels = $contact['relationships'] ?? [];
+
+        return [
+            'id'        => $contact['id'],
+            'lastname'  => $attr['LastName'] ?? null,
+            'firstname' => $attr['FirstName'] ?? null,
+            'email'     => $attr['Email'] ?? null,
+            'address1'  => $attr['Address1'] ?? null,
+            'address2'  => $attr['Address2'] ?? null,
+            'address3'  => $attr['Address3'] ?? null,
+            'zipcode'   => $attr['ZipCode'] ?? null,
+            'city'      => $attr['City'] ?? null,
+            'country'   => is_array($rels['Country']['data'] ?? null) ? ($rels['Country']['data']['id'] ?? null) : null,
+            'balance'   => isset($attr['Balance']) ? (int) $attr['Balance'] : null,
+            'lastmove'  => $attr['LASTMOVE'] ?? null,
+            'language'  => $attr['Language'] ?? null,
+            'skiers'    => isset($rels['skiers']['data']) ? json_encode($rels['skiers']['data']) : null,
+            'resorts'   => isset($rels['Resorts']['data']) ? json_encode(array_column($rels['Resorts']['data'], 'id')) : null,
+            'created'   => $attr['created'] ?? null,
+        ];
+    }
+}

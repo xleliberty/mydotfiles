@@ -1,0 +1,1159 @@
+# ApiClient Infrastructure - Complete Analysis
+
+## 1. DIRECTORY TREE
+
+```
+/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/
+├── Infra/                              # Core infrastructure (reusable)
+│   ├── Client/
+│   │   ├── ApiClientInterface.php
+│   │   ├── AuthJwtApiClient.php
+│   │   ├── BaseApiClient.php
+│   │   ├── BaseHttpClient.php
+│   │   └── ParameterizedClientFactory.php
+│   ├── Error/
+│   │   └── Token/
+│   │       ├── TokenErrorInterface.php
+│   │       ├── StatusCodeTokenError.php
+│   │       ├── ApiPlatformTokenError.php
+│   │       └── ApiIngenieTokenError.php
+│   ├── Param/
+│   │   ├── ApiParametersInterface.php
+│   │   ├── ApiClientParametersInterface.php
+│   │   ├── ApiClientParameters.php
+│   │   ├── ApiParameters.php
+│   │   └── ApiConfigParameters.php
+│   ├── Response/
+│   │   ├── ApiResponseInterface.php
+│   │   ├── ApiResponseErrorInterface.php
+│   │   ├── ApiResponse.php
+│   │   └── ApiResponseError.php
+│   └── Token/
+│       ├── ApiTokenInterface.php
+│       ├── TokenInterface.php
+│       ├── TokenCacheKey.php
+│       ├── JwtToken.php
+│       └── RedisApiToken.php
+├── DciPump/                            # Concrete client example
+│   └── DciPumpApiClient.php
+├── Ingenie/                            # Concrete client with service
+│   ├── IngenieConfig.php
+│   ├── IngenieService.php
+│   ├── IngenieCustomerBuilder.php
+│   ├── IngenieResourceSpecification.php
+│   ├── Repository/
+│   │   ├── IngenieApiRepository.php
+│   │   └── IngenieContactRepository.php
+│   └── ValueObject/
+│       ├── IngenieCustomer.php
+│       ├── IngenieCriteria.php
+│       ├── IngenieAddress.php
+│       └── IngeniePhone.php
+├── IoMedia/
+│   └── BenefitApiClient.php
+└── Trinity/
+    └── Resources/
+        ├── BaseTrinityApiClient.php
+        ├── ContactTrinityApiClient.php
+        ├── ContractTrinityApiClient.php
+        ├── OrderTrinityApiClient.php
+        ├── KeycardTrinityApiClient.php
+        └── AxBookingTrinityApiClient.php
+```
+
+---
+
+## 2. CORE INTERFACES AND CLASSES
+
+### ApiClientInterface
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Client/ApiClientInterface.php`
+
+```php
+interface ApiClientInterface
+{
+    /**
+     * Api client call.
+     *
+     * @param array<string, mixed> $options
+     */
+    public function call(string $method, string $uri = '', array $options = []): ApiResponseInterface;
+}
+```
+
+**Key Method:**
+- `call(string $method, string $uri, array $options)` → Returns `ApiResponseInterface`
+
+---
+
+### ApiResponseInterface
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Response/ApiResponseInterface.php`
+
+```php
+interface ApiResponseInterface
+{
+    public function getCode(): int;
+    
+    /**
+     * @return array<string, mixed>
+     */
+    public function getData(): array;
+    
+    /**
+     * @return mixed
+     */
+    public function getValue(string $key);
+    
+    public function getUrl(): string;
+    
+    /**
+     * @param array<int, mixed> $match
+     */
+    public function isValueMatch(string $key, array $match): bool;
+}
+```
+
+---
+
+### ApiResponseErrorInterface
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Response/ApiResponseErrorInterface.php`
+
+```php
+interface ApiResponseErrorInterface extends ApiResponseInterface
+{
+    public function getErrorMesssage(): string;  // Note: typo in original code (Messsgge)
+}
+```
+
+---
+
+### ApiResponse & ApiResponseError
+**Files:**
+- `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Response/ApiResponse.php`
+- `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Response/ApiResponseError.php`
+
+**ApiResponse (Lines 10-75):**
+- Constructor: `__construct(int $code, array $data, string $url)`
+- Implements all interface methods
+
+**ApiResponseError (Lines 10-16):**
+- Extends `ApiResponse`
+- Implements `ApiResponseErrorInterface`
+- `getErrorMesssage()` converts data to string: `urldecode(str_replace('=', ': ', http_build_query($this->getData(), '', ', ')))`
+
+---
+
+### ApiClientParameters (Base Class)
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Param/ApiClientParameters.php` (Lines 16-84)
+
+```php
+class ApiClientParameters implements ApiClientParametersInterface
+{
+    private ?ApiParametersInterface $apiParameters;
+
+    public function __construct(?ApiParametersInterface $apiParameters = null)
+    
+    public function getParameters(): array
+    public function getParameter(string $key)
+    public function hasParameter(string $key): bool
+    public function getStringParameter(string $key, bool $throwError = false): ?string
+    public function getArrayParameter(string $key, bool $throwError = false): ?array
+}
+```
+
+---
+
+### AuthJwtApiClient
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Client/AuthJwtApiClient.php` (Lines 1-197)
+
+**Constructor (Lines 61-75):**
+```php
+public function __construct(
+    HttpClientInterface $client,
+    ApiParametersInterface $apiParameters,
+    ApiTokenInterface $apiToken,
+    TokenErrorInterface $tokenError,
+    LoggerInterface $logger,
+    IdentityService $identityService
+)
+```
+
+**Key Dependencies:**
+- Line 70: `$this->apiClient = new BaseApiClient($client, $logger);`
+- Line 71: `$this->apiToken = $apiToken;`
+- Line 72: `$this->tokenError = $tokenError;`
+
+**Main Flow - call() Method (Lines 90-117):**
+```php
+public function call(string $method, string $uri = '', array $options = []): ApiResponseInterface
+{
+    // 1. Set hash key from parameters
+    $this->apiToken->setHashKey($this->getParameters());
+    
+    // 2. Check if valid token exists; if not, login
+    if (!$this->apiToken->hasValidToken()) {
+        $this->login();  // Line 94
+    }
+
+    // 3. Make authenticated call
+    $apiResponse = $this->authenticatedCall($method, $uri, $options);
+
+    // 4. If success, return response
+    if (!$apiResponse instanceof ApiResponseErrorInterface) {
+        return $apiResponse;
+    }
+
+    // 5. If error but NOT token error, throw exception
+    $errorMessage = $apiResponse->getErrorMesssage();
+    if (!$this->tokenError->isInvalidToken($apiResponse)) {
+        // Line 106-110: Throw ApiClientException (4xx) or ApiRetryableException (5xx)
+    }
+
+    // 6. If 401/token error: re-login and retry once
+    $this->logger->debug(sprintf('New token required ! %s', $errorMessage));
+    $this->login();
+    return $this->authenticatedCall($method, $uri, $options);
+}
+```
+
+**Login Method (Lines 130-162):**
+```php
+private function login(): void
+{
+    // Get parameters (all required with throwError=true)
+    $loginUri = $this->getStringParameter('login_uri', true);
+    $loginMultiTenantHeaderKey = $this->getStringParameter('login_multi_tenant_header_key');
+    $credentials = $this->getArrayParameter('credentials', true);
+    $responseTokenKey = $this->getStringParameter('response_token_key') ?? 'token';
+    $loginDataKey = $this->getStringParameter('login_data_key') ?? 'json';
+
+    // Build options
+    $options = [$loginDataKey => $credentials];
+
+    // Optional: Multi-tenant header
+    if ($loginMultiTenantHeaderKey) {
+        $headerValue = str_ends_with(strtolower($loginMultiTenantHeaderKey), '-id')
+            ? $this->identityService->getCurrentWebinstance()->getId()
+            : $this->identityService->getCurrentWebinstance()->getShortname();
+        $options['headers'][$loginMultiTenantHeaderKey] = $headerValue;
+    }
+
+    // Call login endpoint (Line 147)
+    $apiResponse = $this->apiClient->call('POST', $loginUri, $options);
+
+    // Extract token (Line 154)
+    if (!\is_string($newToken = $apiResponse->getValue($responseTokenKey))) {
+        throw new ApiTokenException(...);
+    }
+
+    // Store token (Line 161)
+    $this->apiToken->setToken($newToken);
+}
+```
+
+**Hashing & Parameters:**
+- Line 92: `$this->apiToken->setHashKey($this->getParameters());`
+- Credentials (except password) + URI used as discriminant (see TokenCacheKey.php lines 57-77)
+
+**Token Invalid Detection (Line 105):**
+- `$this->tokenError->isInvalidToken($apiResponse)` → Delegate to TokenErrorInterface implementation
+
+---
+
+### ApiTokenInterface
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Token/ApiTokenInterface.php` (Lines 1-43)
+
+```php
+interface ApiTokenInterface
+{
+    /**
+     * @throws ApiTokenException
+     */
+    public function setToken(string $token): self;
+
+    /**
+     * @throws ApiTokenException
+     */
+    public function getToken(): ?string;
+
+    /**
+     * @throws ApiTokenException
+     */
+    public function hasValidToken(): bool;
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function setHashKey(array $parameters): void;
+
+    public function getHashKey(): ?string;
+}
+```
+
+---
+
+### RedisApiToken
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Token/RedisApiToken.php` (Lines 1-90)
+
+**Constructor (Lines 23-31):**
+```php
+public function __construct(
+    CacheInterface $redisCache,
+    TokenInterface $token,
+    LoggerInterface $logger
+)
+```
+
+**Dependencies:**
+- `$redisCache` — PSR-16 cache (Redis)
+- `$token` — TokenInterface (typically JwtToken)
+- `$logger` — Psr\Log\LoggerInterface
+
+**setToken() (Lines 38-55):**
+```php
+public function setToken(string $token): self
+{
+    if (null === $this->getHashKey()) {
+        throw new ApiTokenException('Token hash key need to be set before storing token into redis cache');
+    }
+
+    // Line 44: Get TTL from token (remaining seconds)
+    $ttl = $this->token->set($token)->getTtl();
+
+    try {
+        // Line 47: Store in Redis with TTL
+        $this->cache->set($this->getHashKey(), $token, $ttl);
+    } catch (InvalidArgumentException $e) {
+        throw new ApiTokenException(...);
+    }
+
+    $this->logger->debug('Token store into redis cache', ['token' => $token]);
+    return $this;
+}
+```
+
+**getToken() (Lines 62-81):**
+```php
+public function getToken(): ?string
+{
+    if (null === $this->getHashKey()) {
+        throw new ApiTokenException('Token hash key need to be set before accessing token from redis cache');
+    }
+
+    try {
+        // Line 69: Retrieve from Redis
+        $cachedToken = $this->cache->get($this->getHashKey());
+    } catch (InvalidArgumentException $e) {
+        throw new ApiTokenException(...);
+    }
+
+    // Line 74: Check if token is still valid (not expired)
+    if (\is_string($cachedToken) && !$this->token->set($cachedToken)->isExpired()) {
+        $this->logger->debug('Valid token found in cache', ['token' => $cachedToken]);
+        return $cachedToken;
+    }
+
+    return null;
+}
+```
+
+**hasValidToken() (Lines 86-89):**
+```php
+public function hasValidToken(): bool
+{
+    return (bool) $this->getToken();
+}
+```
+
+---
+
+### TokenCacheKey
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Token/TokenCacheKey.php` (Lines 1-78)
+
+**setHashKey() (Lines 29-37):**
+```php
+public function setHashKey(array $parameters): void
+{
+    $apiDiscriminantValues = $this->getDiscriminant($parameters);
+    if ($this->discriminantValues !== $apiDiscriminantValues) {
+        $this->discriminantValues = $apiDiscriminantValues;
+
+        // Line 35: Compute MD5 hash of discriminant values
+        $this->hashKey = CacheUtils::computeKey($this->discriminantValues);
+    }
+}
+```
+
+**getDiscriminant() (Lines 56-77):**
+```php
+protected function getDiscriminant(array $parameters): array
+{
+    // Extract credentials except excluded keys (default: ['password'])
+    $credentials = $parameters['credentials'] ?? null;
+    if (\is_array($credentials)) {
+        $keysExcluded = \is_array($parameters['cache_keys_excluded'] ?? null)
+            ? $parameters['cache_keys_excluded']
+            : ['password'];
+        foreach ($credentials as $key => $value) {
+            if (\in_array($key, $keysExcluded)) {
+                continue;
+            }
+            $discriminant[$key] = $value;
+        }
+    }
+
+    // Get URI (discriminant_uri > base_uri > main_uri)
+    $discriminant_uri = $parameters['discriminant_uri']
+        ?? ($parameters['base_uri'] ?? ($parameters['main_uri'] ?? null));
+    if (null === $discriminant_uri) {
+        throw new ApiConfigException('Unable to find api key parameter...');
+    }
+
+    $discriminant['uri'] = $discriminant_uri;
+    return $discriminant;
+}
+```
+
+**Cache Key Computation:**
+- Uses `CacheUtils::computeKey()` → MD5 hash of `key_value_key_value...`
+
+---
+
+### TokenInterface
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Token/TokenInterface.php` (Lines 1-28)
+
+```php
+interface TokenInterface
+{
+    public function set(string $token): self;
+    
+    public function get(): ?string;
+    
+    public function isExpired(): bool;
+    
+    /**
+     * Get the token remaining time to live in seconds or null if no expiration time.
+     */
+    public function getTtl(): ?int;
+}
+```
+
+---
+
+### JwtToken
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Token/JwtToken.php` (Lines 1-73)
+
+**set() (Lines 24-38):**
+```php
+public function set(string $token): self
+{
+    $this->token = $token;
+
+    try {
+        // Line 30: Decode JWT to get expiration claim
+        /** @var array{exp: int} $decodedToken */
+        $decodedToken = JWTHelper::decodeToken($this->token);
+    } catch (\JsonException $e) {
+        throw new ApiTokenException(sprintf('Invalid decoded json value for token[%s]', $this->token));
+    }
+
+    // Line 35: Store expiration timestamp
+    $this->expirationTime = $decodedToken['exp'] ?? 0;
+
+    return $this;
+}
+```
+
+**getTtl() (Lines 65-72):**
+```php
+public function getTtl(): ?int
+{
+    if ($this->expirationTime) {
+        // Line 68: TTL = exp - current_time
+        return $this->expirationTime - time();
+    }
+
+    return null;
+}
+```
+
+**isExpired() (Lines 53-60):**
+```php
+public function isExpired(int $ttlSafetyMargin = 10): bool
+{
+    if ($this->expirationTime) {
+        // Line 56: Expired if remaining TTL <= safety margin (10 seconds by default)
+        return $ttlSafetyMargin >= $this->getTtl();
+    }
+
+    return false;
+}
+```
+
+---
+
+### TokenErrorInterface & Implementations
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Error/Token/TokenErrorInterface.php` (Lines 1-15)
+
+```php
+interface TokenErrorInterface
+{
+    /**
+     * Is the response error related to an invalid or expired token?
+     */
+    public function isInvalidToken(ApiResponseErrorInterface $apiResponseError): bool;
+}
+```
+
+**StatusCodeTokenError (Lines 1-23):**
+```php
+final class StatusCodeTokenError implements TokenErrorInterface
+{
+    public function isInvalidToken(ApiResponseErrorInterface $apiResponseError): bool
+    {
+        // Line 21: Check HTTP 401
+        return 401 === $apiResponseError->getCode();
+    }
+}
+```
+
+**ApiPlatformTokenError (Lines 1-23):**
+```php
+final class ApiPlatformTokenError implements TokenErrorInterface
+{
+    public function isInvalidToken(ApiResponseErrorInterface $apiResponseError): bool
+    {
+        // Line 21: 401 + specific message
+        return 401 === $apiResponseError->getCode()
+            && $apiResponseError->isValueMatch('message', ['Invalid JWT Token', 'Expired JWT Token']);
+    }
+}
+```
+
+**ApiIngenieTokenError (Lines 1-23):**
+```php
+final class ApiIngenieTokenError implements TokenErrorInterface
+{
+    public function isInvalidToken(ApiResponseErrorInterface $apiResponseError): bool
+    {
+        // Line 21: 401 + error field matching
+        return 401 === $apiResponseError->getCode()
+            && $apiResponseError->isValueMatch('error', ['invalid_token', 'token_expired']);
+    }
+}
+```
+
+---
+
+## 3. CONCRETE CLIENT EXAMPLE
+
+### Trinity API Example
+**Files:**
+- `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Trinity/Resources/BaseTrinityApiClient.php`
+- `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Trinity/Resources/ContactTrinityApiClient.php`
+
+**BaseTrinityApiClient (Lines 10-29):**
+```php
+class BaseTrinityApiClient
+{
+    protected static array $requestOptions = [];
+
+    private ApiClientInterface $trinityApiClient;
+
+    public function __construct(ApiClientInterface $trinityApiClient)
+    {
+        $this->trinityApiClient = $trinityApiClient;
+    }
+
+    protected function trinityApiCall(string $method, string $url, array $options = []): array
+    {
+        return $this->trinityApiClient->call(
+            $method,
+            $url,
+            array_merge(static::$requestOptions, $options)
+        )->getData();
+    }
+}
+```
+
+**ContactTrinityApiClient (Lines 1-27):**
+```php
+class ContactTrinityApiClient extends BaseTrinityApiClient
+{
+    protected static array $requestOptions = [
+        'timeout' => 10, // seconds max
+    ];
+
+    public function getContactByExternalId(string $externalId, int $saleschannelId, bool $force = false): array
+    {
+        $url = sprintf('contacts/getByExternalId/%s/%s', $saleschannelId, $externalId);
+        if (true === $force) {
+            $url .= '/force';
+        }
+
+        return $this->trinityApiCall('GET', $url);
+    }
+}
+```
+
+**Calling Pattern:**
+1. Inject `ApiClientInterface` ($trinityApiClient)
+2. Call `$this->trinityApiClient->call(METHOD, URI, OPTIONS)` → returns `ApiResponseInterface`
+3. Call `->getData()` to get the response body
+
+---
+
+### Ingenie API Repository Example
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Ingenie/Repository/IngenieApiRepository.php` (Lines 1-99)
+
+**Constructor (Lines 28-34):**
+```php
+public function __construct(
+    ApiClientInterface $ingenieApiClient,
+    IngenieConfig $config
+)
+{
+    $this->client = $ingenieApiClient;
+    $this->config = $config;
+}
+```
+
+**Example Methods (Lines 41-73):**
+```php
+public function getCustomers(string $updateFrom = '12h'): array
+{
+    return $this->callCustomer('GET', '', ['query' => ['update_from' => $updateFrom]]);
+}
+
+public function addCustomer(IngenieCustomer $ingenieCustomer): array
+{
+    return $this->callCustomer('POST', '/', ['json' => $ingenieCustomer->toArray()]);
+}
+
+public function updateCustomer(IngenieCustomer $ingenieCustomer, int $id): array
+{
+    return $this->callCustomer('PUT', '/'.$id, ['json' => $ingenieCustomer->toArray()]);
+}
+
+private function callCustomer(string $method, string $uri = '', $options = []): array
+{
+    if (!$this->config->isApiEnabled()) {
+        throw new UnrecoverableMessageHandlingException(...);
+    }
+
+    return $this->client->call(
+        $method,
+        $this->config->getCustomerEndpointUrl().$uri,
+        $options
+    )->getData();
+}
+```
+
+---
+
+### BenefitApiClient Example
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/IoMedia/BenefitApiClient.php` (Lines 1-66)
+
+**Constructor (Lines 17-20):**
+```php
+public function __construct(ApiClientInterface $benefitApiClient)
+{
+    $this->client = $benefitApiClient;
+}
+```
+
+**Method with Error Handling (Lines 26-48):**
+```php
+public function getBenefitsForPermission(string $permissionId, string $locale = 'fr'): array
+{
+    $apiResponse = $this->client->call(
+        'GET',
+        sprintf('/api/app/%s/vouchers?locale=%s', $permissionId, $locale),
+        [
+            'headers' => [
+                'accept' => 'application/json',
+            ],
+        ]
+    );
+
+    if (200 === $apiResponse->getCode()) {
+        return $this->formatBenefits($apiResponse);
+    }
+
+    $errorMessage = $apiResponse->getErrorMesssage();
+    if ($apiResponse->getCode() < 500) {
+        throw new ApiClientException($errorMessage, $apiResponse->getCode());
+    }
+
+    throw new ApiRetryableException($errorMessage, $apiResponse->getCode());
+}
+```
+
+---
+
+## 4. SERVICE WIRING
+
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/Resources/config/services.yml`
+
+### Default Service Aliases (Lines 241-246)
+```yaml
+services:
+    # Default implementations
+    Symfony\Contracts\HttpClient\HttpClientInterface: '@Symfony\Component\HttpClient\CurlHttpClient'
+    Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Client\BaseApiClient'
+    Eliberty\RedpillBundle\ApiClient\Infra\Token\ApiTokenInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Token\RedisApiToken'
+    Eliberty\RedpillBundle\ApiClient\Infra\Token\TokenInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Token\JwtToken'
+    Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\TokenErrorInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\StatusCodeTokenError'
+    Eliberty\RedpillBundle\ApiClient\Infra\Param\ApiParametersInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Param\ApiParameters'
+```
+
+### HttpClient (Line 340)
+```yaml
+Symfony\Component\HttpClient\CurlHttpClient: ~
+```
+
+### ParameterizedClientFactory (Lines 341-345)
+```yaml
+Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory:
+    arguments:
+        $cfgmanager: '@Eliberty\ConfigManagerBundle\Model\ConfigManager'
+        $identityService: '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+        $logger: '@logger'
+```
+
+### Example: Ingenie JWT Client (Lines 493-502)
+```yaml
+ingenie.api.client.jwt.authenticated:
+    class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+    factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+    arguments:
+        $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiIngenieTokenError'
+        $apiParams:
+            login_uri: 'https://api.ingenie.fr/login'
+        $apiConfigParams:
+            main_uri: [ingenie.api_connect, client_url]
+            credentials: [ingenie.api_connect, login_options]
+```
+
+### Example: Trinity JWT Client (Lines 681-691)
+```yaml
+trinity.api.client.jwt.authenticated:
+    class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+    factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+    arguments:
+        $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+        $apiParams:
+            base_uri: '%env(TRINITY_API_BASE_URL)%'
+            login_uri: login_check
+            credentials:
+                username: '%env(TRINITY_API_USERNAME)%'
+                password: '%env(TRINITY_API_PASSWORD)%'
+```
+
+### Example: Base API Client (No Auth) (Lines 674-677)
+```yaml
+teamaxess-permission.api.client:
+    class: Eliberty\RedpillBundle\ApiClient\Infra\Client\BaseApiClient
+    factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createBaseApiClient']
+    arguments:
+        $apiConfigParams:
+            uri: [keycards.teamaxess.permission_baseuri]
+```
+
+### Repository Injection (Lines 261-263)
+```yaml
+Eliberty\RedpillBundle\ApiClient\Ingenie\Repository\IngenieApiRepository:
+    arguments:
+        $ingenieApiClient: '@ingenie.api.client.jwt.authenticated'
+```
+
+### Concrete Client Injection (Lines 277-279)
+```yaml
+Eliberty\RedpillBundle\ApiClient\Trinity\Resources\ContactTrinityApiClient:
+    arguments:
+        $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+```
+
+---
+
+## 5. CONFIGURATION INJECTION
+
+### ParameterizedClientFactory
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Client/ParameterizedClientFactory.php` (Lines 21-112)
+
+**Methods:**
+- `createBaseHttpClient(HttpClientInterface $client, array $apiParams, array $apiConfigParams): BaseHttpClient`
+- `createBaseApiClient(HttpClientInterface $client, array $apiParams, array $apiConfigParams): BaseApiClient`
+- `createAuthJwtApiClient(HttpClientInterface $client, ApiTokenInterface $apiToken, TokenErrorInterface $tokenError, array $apiParams, array $apiConfigParams): AuthJwtApiClient`
+
+**Parameters Format:**
+
+```php
+$apiParams = [
+    'base_uri' => 'https://api.example.com',
+    'login_uri' => '/auth/login',
+    'main_uri' => '/api/v1',
+    'credentials' => ['username' => 'user', 'password' => 'pass'],
+    'client_auth_key' => 'auth_bearer',  // default
+    'response_token_key' => 'token',      // default
+    'login_data_key' => 'json',           // default
+    'login_multi_tenant_header_key' => 'X-Tenant-Key',
+    'options' => ['timeout' => 30],
+]
+
+$apiConfigParams = [
+    'main_uri' => ['config.key', 'sub_key'],           // [ConfigManager key, optional JSON sub-key]
+    'credentials' => ['api.credentials'],               // [ConfigManager key, optional JSON sub-key]
+    'login_uri' => ['api.endpoints', 'login_uri'],      // [ConfigManager key, JSON sub-key]
+]
+```
+
+### ApiConfigParameters
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/ApiClient/Infra/Param/ApiConfigParameters.php` (Lines 1-118)
+
+- Wraps ConfigManager to dynamically retrieve API parameters from database/config
+- Format: `['configManagerKey', 'optionalJsonSubKey']`
+- Example: `[ingenie.api_connect, login_options]` → gets `ConfigManager.getJsonOption('ingenie.api_connect')['login_options']`
+
+---
+
+## 6. TESTS
+
+**File:** `/home/xav/Workspace/Rpstack/redpill/tests/Unit/Eliberty/RedpillBundle/ApiClient/IoMedia/BenefitApiClientTest.php` (Lines 1-93)
+
+```php
+class BenefitApiClientTest extends TestCase
+{
+    /**
+     * @var ApiClientInterface|MockObject
+     */
+    private $apiClient;
+
+    /**
+     * @var BenefitApiClient
+     */
+    private $benefitApiClient;
+
+    protected function setUp(): void
+    {
+        // Mock the AuthJwtApiClient
+        $this->apiClient = $this->createMock(AuthJwtApiClient::class);
+        $this->benefitApiClient = new BenefitApiClient($this->apiClient);
+    }
+
+    public function testGetBenefitsForPermissionSuccess(): void
+    {
+        $permissionId = '12345';
+        $locale = 'fr';
+
+        // Mock response
+        $apiResponse = $this->createMock(ApiResponseInterface::class);
+        $apiResponse->method('getCode')->willReturn(200);
+        $apiResponse->method('getData')->willReturn([
+            ['id' => 1, 'image' => '/img/voucher1.jpg'],
+            ['id' => 2, 'image' => '/img/voucher2.jpg'],
+        ]);
+
+        // Mock client
+        $this->apiClient
+            ->method('call')
+            ->willReturn($apiResponse);
+        $this->apiClient->expects($this->once())
+            ->method('call')
+            ->with(
+                'GET',
+                '/api/app/12345/vouchers?locale=fr',
+                ['headers' => ['accept' => 'application/json']]
+            );
+
+        $results = $this->benefitApiClient->getBenefitsForPermission($permissionId, $locale);
+
+        $expected = [
+            ['id' => 1, 'image' => '/img/voucher1.jpg'],
+            ['id' => 2, 'image' => '/img/voucher2.jpg'],
+        ];
+
+        $this->assertEquals($expected, $results);
+    }
+
+    public function testGetBenefitsForPermissionThrowsClientException(): void
+    {
+        $apiResponse = $this->createMock(ApiResponseError::class);
+        $apiResponse->method('getCode')->willReturn(404);
+        $apiResponse->method('getErrorMesssage')->willReturn('Resource not found');
+
+        $this->expectException(ApiClientException::class);
+        $this->expectExceptionCode(404);
+
+        $this->apiClient->method('call')->willReturn($apiResponse);
+
+        $this->benefitApiClient->getBenefitsForPermission('999');
+    }
+
+    public function testGetBenefitsForPermissionThrowsRetryableException(): void
+    {
+        $apiResponse = $this->createMock(ApiResponseError::class);
+        $apiResponse->method('getCode')->willReturn(503);
+        $apiResponse->method('getErrorMesssage')->willReturn('Service Unavailable');
+
+        $this->expectException(ApiRetryableException::class);
+        $this->expectExceptionCode(503);
+
+        $this->apiClient->method('call')->willReturn($apiResponse);
+
+        $this->benefitApiClient->getBenefitsForPermission('123');
+    }
+}
+```
+
+**Functional Test Helper:**
+- `/home/xav/Workspace/Rpstack/redpill/tests/Functional/Eliberty/RedpillBundle/TrinityMockApiClient.php`
+- Creates mock ApiResponse from fixture files
+
+---
+
+## 7. COMPLETE AUTH FLOW LIFECYCLE
+
+### Scenario: First Request with JWT Auth
+
+```
+[Initial State]
+├─ Token not cached (first time or expired)
+└─ No HTTP Client yet
+
+[Call Sequence]
+1. User calls: $authJwtApiClient->call('GET', '/contacts', [])
+   └─ AuthJwtApiClient::call() (Line 90)
+
+2. Set hash key from parameters
+   └─ $this->apiToken->setHashKey($this->getParameters())  (Line 92)
+   └─ TokenCacheKey::getDiscriminant()
+      ├─ Extract credentials (except password)
+      ├─ Extract discriminant_uri/base_uri/main_uri
+      └─ Return array: ['username' => 'user', 'uri' => 'https://api.example.com']
+   └─ CacheUtils::computeKey() → MD5 hash
+
+3. Check if valid token exists
+   └─ $this->apiToken->hasValidToken()  (Line 93)
+   └─ RedisApiToken::hasValidToken()
+      └─ RedisApiToken::getToken()
+         ├─ cache.get(hashKey) → null (first time)
+         └─ return null
+
+4. NOT valid → LOGIN REQUIRED
+   └─ $this->login()  (Line 94)
+   └─ AuthJwtApiClient::login() (Line 130)
+      ├─ Get parameters:
+      │  ├─ login_uri: 'https://api.ingenie.fr/login'
+      │  ├─ credentials: {'email': 'user@example.com', 'password': 'secret'}
+      │  ├─ response_token_key: 'token'
+      │  └─ login_data_key: 'json'
+      │
+      ├─ Build options: {'json': credentials, 'headers': {...}}
+      │
+      ├─ Call login endpoint
+      │  └─ $this->apiClient->call('POST', login_uri, options)
+      │  └─ BaseApiClient::call() (Line 57 of BaseApiClient)
+      │     ├─ $client->request('POST', url, options)
+      │     ├─ If 2xx/3xx: return ApiResponse(code, data, url)
+      │     └─ If 4xx/5xx: return ApiResponseError(code, data, url)
+      │
+      ├─ Extract token from response
+      │  ├─ newToken = response.getValue('token')  (Line 154)
+      │  └─ If not string: throw ApiTokenException
+      │
+      └─ Store token in Redis
+         └─ $this->apiToken->setToken(newToken)  (Line 161)
+         └─ RedisApiToken::setToken()
+            ├─ Verify hashKey is set (line 40)
+            ├─ Decode JWT:
+            │  ├─ JwtToken::set(token)
+            │  ├─ JWTHelper::decodeToken(token) → ['exp' => 1234567890]
+            │  └─ Store expirationTime = 1234567890
+            │
+            ├─ Compute TTL:
+            │  └─ getTtl() = exp - time()  (Line 68 of JwtToken)
+            │     Example: 1234567890 - 1234567000 = 890 seconds
+            │
+            └─ Cache in Redis:
+               └─ cache.set(hashKey, token, 890)  (Line 47)
+               └─ After 890 seconds, Redis auto-expires key
+               └─ Log: "Token store into redis cache"
+
+5. Make authenticated call
+   └─ $this->authenticatedCall('GET', '/contacts', [])  (Line 97)
+   └─ AuthJwtApiClient::authenticatedCall() (Line 175)
+      ├─ callUri = main_uri + uri = 'https://api.example.com' + '/contacts'
+      ├─ Get token from Redis
+      │  └─ token = $this->apiToken->getToken()
+      │     ├─ RedisApiToken::getToken()
+      │     ├─ cachedToken = cache.get(hashKey)  (Line 69)
+      │     ├─ Check isExpired() (Line 74)
+      │     └─ return token or null
+      │
+      ├─ Add auth header
+      │  └─ options['auth_bearer'] = token  (Line 185)
+      │  └─ (or custom key from 'client_auth_key' parameter)
+      │
+      └─ Make HTTP call
+         └─ $this->apiClient->call('GET', url, options)
+         └─ BaseApiClient::call()
+            └─ $client->request('GET', url, options)
+            └─ Response: ApiResponse(200, data, url) ✓ SUCCESS
+
+6. Return response to user
+   └─ return $apiResponse  (Line 101)
+```
+
+### Scenario: Token Expired / 401 Response
+
+```
+[Cached token, but server returns 401]
+
+1. User calls: $authJwtApiClient->call('GET', '/contacts', [])
+
+2. Check token
+   └─ hasValidToken() → true (TTL still > 10 seconds)
+   └─ Token exists in Redis
+
+3. Make authenticated call
+   └─ authenticatedCall() → ApiResponseError(401, error_data, url)
+
+4. Check error response
+   └─ if (!$apiResponse instanceof ApiResponseErrorInterface) { return; }  (Line 100)
+   └─ IS error → continue
+
+5. Check if token error
+   └─ $this->tokenError->isInvalidToken($apiResponse)  (Line 105)
+   └─ TokenErrorInterface implementations:
+      ├─ StatusCodeTokenError: 401 === code
+      ├─ ApiPlatformTokenError: 401 === code && message in ['Invalid JWT Token', 'Expired JWT Token']
+      └─ ApiIngenieTokenError: 401 === code && error in ['invalid_token', 'token_expired']
+
+6. IS token error → RE-LOGIN AND RETRY
+   └─ $this->logger->debug('New token required !...')  (Line 113)
+   └─ $this->login()  (Line 114)
+      └─ Repeat login flow (steps 4 of first scenario)
+      └─ New token stored in Redis, overwriting old one
+   
+   └─ return $this->authenticatedCall($method, $uri, $options)  (Line 116)
+      └─ New HTTP call with fresh token
+      └─ Should succeed now
+```
+
+### Scenario: Non-Token Error (4xx / 5xx)
+
+```
+[Other errors like 404, 500, etc.]
+
+1. User calls: $authJwtApiClient->call('GET', '/nonexistent', [])
+
+2. Token valid, make call
+   └─ Response: ApiResponseError(404, error_data, url)
+
+3. IS error response
+
+4. Check if token error
+   └─ isInvalidToken() → FALSE (code is 404, not 401)
+
+5. NOT token error → THROW EXCEPTION
+   └─ if (500 > $apiResponse->getCode())  (Line 106)
+      └─ 404 < 500 → throw ApiClientException('...', 404)  (Line 107)
+   
+   └─ else
+      └─ 500+ → throw ApiRetryableException('...', 500)  (Line 110)
+```
+
+---
+
+## 8. CACHE KEY COMPUTATION
+
+**File:** `/home/xav/Workspace/Rpstack/redpill/src/RedpillBundle/Util/CacheUtils.php` (Lines 14-28)
+
+```php
+public static function computeKey($input)
+{
+    // Example input: ['email' => 'user@example.com', 'uri' => 'https://api.example.com']
+    
+    // Step 1: Map to key_value pairs
+    $datas = array_map(function ($v, $k) {
+        return $k.'_'.$v;
+    }, $input, array_keys($input));
+    // Result: ['email_user@example.com', 'uri_https://api.example.com']
+
+    // Step 2: Join with underscore
+    $joined = implode('_', $datas);
+    // Result: 'email_user@example.com_uri_https://api.example.com'
+
+    // Step 3: MD5 hash
+    return md5($joined);
+    // Result: '7f8d9c2a1b4e6f3a9c8d7b6e5f4a3c2d'
+}
+```
+
+**Used in:**
+- Line 35 of TokenCacheKey: `CacheUtils::computeKey($this->discriminantValues)`
+
+---
+
+## 9. KEY ENTRY POINTS FOR NEW INTEGRATION
+
+To build a new API client (e.g., ElibertyBookingV2), follow these steps:
+
+### Step 1: Create Token Error Strategy
+```php
+// src/RedpillBundle/ApiClient/Infra/Error/Token/ElibertyBookingV2TokenError.php
+final class ElibertyBookingV2TokenError implements TokenErrorInterface
+{
+    public function isInvalidToken(ApiResponseErrorInterface $apiResponseError): bool
+    {
+        // Return true if response indicates auth failure
+        return 401 === $apiResponseError->getCode()
+            && $apiResponseError->isValueMatch('status', ['UNAUTHORIZED', 'TOKEN_EXPIRED']);
+    }
+}
+```
+
+### Step 2: Wire in services.yml
+```yaml
+eliberty_booking_v2.api.client.jwt.authenticated:
+    class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+    factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+    arguments:
+        $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ElibertyBookingV2TokenError'
+        $apiParams:
+            base_uri: '%env(ELIBERTY_BOOKING_V2_API_BASE_URL)%'
+            login_uri: /auth/login
+            credentials:
+                api_key: '%env(ELIBERTY_BOOKING_V2_API_KEY)%'
+                api_secret: '%env(ELIBERTY_BOOKING_V2_API_SECRET)%'
+```
+
+### Step 3: Create Repository/Client Wrapper
+```php
+// src/RedpillBundle/ApiClient/ElibertyBookingV2/Repository/BookingApiRepository.php
+class BookingApiRepository
+{
+    public function __construct(
+        ApiClientInterface $bookingApiClient,
+    ) {
+        $this->client = $bookingApiClient;
+    }
+
+    public function getBookings(array $filters = []): array
+    {
+        return $this->client->call(
+            'GET',
+            '/bookings',
+            ['query' => $filters]
+        )->getData();
+    }
+}
+```
+
+### Step 4: Inject in Services
+```yaml
+Eliberty\RedpillBundle\ApiClient\ElibertyBookingV2\Repository\BookingApiRepository:
+    arguments:
+        $bookingApiClient: '@eliberty_booking_v2.api.client.jwt.authenticated'
+```
+

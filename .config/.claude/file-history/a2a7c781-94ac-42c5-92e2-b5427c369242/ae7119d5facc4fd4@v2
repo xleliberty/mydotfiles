@@ -1,0 +1,22 @@
+{
+    frankenphp {
+        worker "/app/public/index.php" 2
+    }
+    auto_https off
+    admin off
+}
+
+:80 {
+    root * /app/public
+    encode zstd br gzip
+
+    php_server {
+        index index.php
+        try_files {path} index.php
+    }
+
+    log {
+        output stderr
+        format json
+    }
+}

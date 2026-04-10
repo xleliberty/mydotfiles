@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Controller;
+
+use App\Controller\OAuthCallbackController;
+use App\Stripe\StripeOAuthClient;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
+
+#[CoversClass(OAuthCallbackController::class)]
+final class OAuthCallbackControllerTest extends WebTestCase
+{
+    #[Test]
+    public function itRendersErrorOnUserAbort(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/oauth/callback', [
+            'error' => 'access_denied',
+            'error_description' => 'user aborted',
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'connexion n\'a pas abouti');
+    }
+
+    #[Test]
+    public function itRejectsStateMismatch(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/oauth/callback', ['code' => 'abc', 'state' => 'wrong']);
+
+        self::assertResponseStatusCodeSame(400);
+    }
+
+    #[Test]
+    public function itCompletesHappyPath(): void
+    {
+        $client = self::createClient();
+        $client->disableReboot();
+
+        $mockHttp = new MockHttpClient([
+            new MockResponse(json_encode([
+                'access_token' => 'sk_test_access',
+                'refresh_token' => 'rt_test',
+                'stripe_user_id' => 'acct_123',
+                'token_type' => 'bearer',
+                'scope' => 'read_write',
+                'livemode' => false,
+            ], \JSON_THROW_ON_ERROR)),
+        ]);
+
+        $container = self::getContainer();
+        $container->set(StripeOAuthClient::class, new StripeOAuthClient(
+            $mockHttp,
+            $container->get('monolog.logger.stripe'),
+            'ca_test',
+            'sk_secret',
+            'https://connect.stripe.test',
+        ));
+
+        // Prime the session state via /connect
+        $client->request('GET', '/connect');
+        $location = $client->getResponse()->headers->get('Location') ?? '';
+        parse_str(parse_url($location, \PHP_URL_QUERY) ?: '', $params);
+        $state = (string) ($params['state'] ?? '');
+        self::assertNotSame('', $state);
+
+        $client->request('GET', '/oauth/callback', ['code' => 'good_code', 'state' => $state]);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'compte Stripe est connecté');
+    }
+}

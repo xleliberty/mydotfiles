@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PGHOST=localhost
+PGPORT=5432
+PGUSER=xav
+
+BASE_DIR="/home/xav/dbdumps/rpstack"
+ARCHIVES_DIR="${BASE_DIR}/archives"
+UNCOMPRESSED_DIR="${BASE_DIR}/uncompressed"
+POST_RESTORE_DIR="${BASE_DIR}/post_restore"
+S3_BUCKET="s3://eliberty-db-backups"
+S3_PREFIX="db_full"
+
+NB_CORES=$(( $(nproc) - 1 ))
+[[ "${NB_CORES}" -lt 1 ]] && NB_CORES=1
+
+# ─── helpers ────────────────────────────────────────────────────────────────
+
+die() { echo "ERROR: $*" >&2; exit 1; }
+
+restore_database() {
+    local db="$1"
+    local target_db="${db}_dev"
+
+    # Locate actual pg_dump directory (the one containing toc.dat)
+    local restore_path
+    restore_path=$(find "${UNCOMPRESSED_DIR}/${db}" -name "toc.dat" -maxdepth 3 2>/dev/null \
+        | head -1 | xargs -r dirname)
+    [[ -z "${restore_path}" ]] \
+        && die "Could not find toc.dat under ${UNCOMPRESSED_DIR}/${db}"
+
+    echo "Restoring '${db}' into '${target_db}' using ${NB_CORES} core(s)..."
+    local start_time
+    start_time=$(date +%s)
+
+    pg_restore \
+        -h "${PGHOST}" \
+        -p "${PGPORT}" \
+        -U "${PGUSER}" \
+        -d "${target_db}" \
+        -j "${NB_CORES}" \
+        --clean --if-exists \
+        "${restore_path}" 
+
+    local elapsed=$(( ( $(date +%s) - start_time ) / 60 ))
+    notify-send --urgency=normal "DB restore" "Database ${db} restored in ${elapsed} minute(s)"
+    echo "Done. Restore completed in ${elapsed} minute(s)."
+
+    # Post-restore script (optional)
+    local post_sql="${POST_RESTORE_DIR}/${db}.post_restore.sql"
+    if [[ -f "${post_sql}" ]]; then
+        echo "Running post-restore script: ${post_sql}"
+        psql \
+            -h "${PGHOST}" \
+            -p "${PGPORT}" \
+            -U "${PGUSER}" \
+            -d "${target_db}" \
+            -f "${post_sql}" \
+            || echo "WARNING: post-restore script reported some errors"
+    fi
+}
+
+# ─── main ────────────────────────────────────────────────────────────────────
+
+read -rp "Database name (redpill, trinity, cfgmanager, phpcr, ...): " DATABASE
+[[ -z "${DATABASE}" ]] && die "No database name provided"
+
+# If uncompressed data already exists, offer to skip straight to restore
+if [[ -d "${UNCOMPRESSED_DIR}/${DATABASE}" ]]; then
+    read -rp "Uncompressed data already exists for '${DATABASE}'. Skip fresh db Download ? [y/N] " answer
+    if [[ "${answer,,}" == "y" ]]; then
+        restore_database "${DATABASE}"
+        exit 0
+    fi
+fi
+
+# Ensure archive directory exists
+mkdir -p "${ARCHIVES_DIR}/${DATABASE}"
+
+# Download from S3
+TAR_FILE="${ARCHIVES_DIR}/${DATABASE}/${DATABASE}_prod.tar"
+S3_PATH="${S3_BUCKET}/${S3_PREFIX}/${DATABASE}_prod_full.tar"
+
+echo "Downloading ${S3_PATH} ..."
+aws s3 cp "${S3_PATH}" "${TAR_FILE}" || die "S3 download failed"
+
+# Extract archive
+mkdir -p "${UNCOMPRESSED_DIR}/${DATABASE}"
+echo "Extracting archive ..."
+tar -xf "${TAR_FILE}" -C "${UNCOMPRESSED_DIR}/${DATABASE}" || die "Extraction failed"
+
+# Restore
+restore_database "${DATABASE}"

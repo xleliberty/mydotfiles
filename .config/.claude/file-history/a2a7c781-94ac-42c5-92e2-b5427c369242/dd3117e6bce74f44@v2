@@ -1,0 +1,35 @@
+parameters:
+    stripe.client_id: '%env(STRIPE_CLIENT_ID)%'
+    stripe.client_secret: '%env(STRIPE_CLIENT_SECRET)%'
+    stripe.redirect_uri: '%env(STRIPE_REDIRECT_URI)%'
+    stripe.oauth_base_url: '%env(STRIPE_OAUTH_BASE_URL)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Kernel.php'
+
+    App\Stripe\StripeOAuthClient:
+        arguments:
+            $httpClient: '@http_client'
+            $logger: '@monolog.logger.stripe'
+            $clientId: '%stripe.client_id%'
+            $clientSecret: '%stripe.client_secret%'
+            $oauthBaseUrl: '%stripe.oauth_base_url%'
+
+    App\Controller\ConnectController:
+        arguments:
+            $clientId: '%stripe.client_id%'
+            $redirectUri: '%stripe.redirect_uri%'
+            $oauthBaseUrl: '%stripe.oauth_base_url%'
+            $logger: '@monolog.logger.stripe'
+
+    App\Controller\OAuthCallbackController:
+        arguments:
+            $logger: '@monolog.logger.stripe'

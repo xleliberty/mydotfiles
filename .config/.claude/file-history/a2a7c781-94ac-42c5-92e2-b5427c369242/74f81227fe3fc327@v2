@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Ensure a host-header rule exists on the shared ALB listener forwarding
+# traffic for $HOST to our target group. Idempotent.
+set -euo pipefail
+cd "$(dirname "$0")"
+# shellcheck source=lib.sh
+source "./lib.sh"
+load_env "${1:-}"
+
+tg_arn="$(cat /tmp/stripeconnect-website-tg-arn 2>/dev/null || true)"
+[[ -n "$tg_arn" ]] || die "target group arn unknown — run ensure-target-group.sh first"
+
+existing_rule_arn="$(aws elbv2 describe-rules \
+    --listener-arn "$LISTENER_ARN" \
+    --region "$AWS_REGION" \
+    --query "Rules[?Conditions[?Field=='host-header' && contains(Values, '$HOST')]].RuleArn | [0]" \
+    --output text 2>/dev/null || true)"
+
+if [[ -n "$existing_rule_arn" && "$existing_rule_arn" != "None" ]]; then
+    log "listener rule for $HOST already exists: $existing_rule_arn"
+    # Make sure it points at the right TG (idempotent re-point)
+    aws elbv2 modify-rule \
+        --rule-arn "$existing_rule_arn" \
+        --actions "Type=forward,TargetGroupArn=$tg_arn" \
+        --region "$AWS_REGION" >/dev/null
+    exit 0
+fi
+
+# Pick the next free priority (1-based, 1..50000)
+next_prio="$(aws elbv2 describe-rules \
+    --listener-arn "$LISTENER_ARN" \
+    --region "$AWS_REGION" \
+    --query 'max_by(Rules[?Priority!=`default`], &to_number(Priority)).Priority' \
+    --output text 2>/dev/null || echo 0)"
+[[ "$next_prio" == "None" || -z "$next_prio" ]] && next_prio=0
+next_prio=$((next_prio + 10))
+
+log "creating listener rule (priority $next_prio) for $HOST → $tg_arn"
+aws elbv2 create-rule \
+    --listener-arn "$LISTENER_ARN" \
+    --priority "$next_prio" \
+    --conditions "Field=host-header,Values=$HOST" \
+    --actions "Type=forward,TargetGroupArn=$tg_arn" \
+    --region "$AWS_REGION" >/dev/null

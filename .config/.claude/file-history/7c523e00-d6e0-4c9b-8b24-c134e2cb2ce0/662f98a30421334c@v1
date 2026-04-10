@@ -1,0 +1,1143 @@
+imports:
+    - { resource: suspected_unused.yml }
+    - { resource: legacy_aliases.yaml }
+    - { resource: overloaded_services.yml }
+    - { resource: old_naming.yml }
+    - { resource: listeners.yml }
+    - { resource: repositories.yaml }
+    - { resource: forms.yml }
+    - { resource: validators.yml }
+    - { resource: handlers.yml }
+    - { resource: api/api_v2.yml }
+    - { resource: godfather.yml }
+    - { resource: knp_menus.yml }
+    - { resource: guzzle_clients.yml }
+    - { resource: payments.yml }
+    - { resource: admin_sonata.yml }
+    - { resource: admin_filters.yml }
+    - { resource: order_items_processor.yml }
+    - { resource: commandbus.yml }
+    - { resource: checkout.yml }
+    - { resource: trinity_cutters.yml }
+    - { resource: keycard_validator.yml }
+    - { resource: console_commands.yml }
+    - { resource: bp_services.yml }
+    - { resource: authenticates.yml }
+    - { resource: sylius_shipping_replace.yaml }
+
+services:
+    #########
+    ## SF4 ##
+    #########
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $accessControlBaseUri: '%env(ACCESS_CONTROL_API_URI)%'
+            $accessControlJwt: '%env(ACCESS_CONTROL_JWT)%'
+            $accessControlLogger: '@monolog.logger.accesscontrol'
+            $aclHierarchyRoles: '%security.role_hierarchy.roles%'
+            $apiChainer: '@api.group.context.chainer'
+            $apiContextBuilder: '@api.json_ld.context_builder'
+            $apiMetadataFactory: '@api.mapping.class_metadata_factory'
+            $apiResourceCollection: '@api.resource_collection'
+            $apiRouter: '@api.router'
+            $apiTransformerResolver: '@api.ressource.transformer_resolver'
+            $authorizedLocales: '%generic.languages%'
+            $commandBusConsole: '@tactician.commandbus.console'
+            $commandBusConsoleRefund: '@tactician.commandbus.console_refund'
+            $commandBusProfil: '@tactician.commandbus.profil'
+            $connectionRedpill: '@doctrine.dbal.default_connection'
+            $connectionTrinity: '@doctrine.dbal.trinity_connection'
+            $axBookingClient: '@rp.trinity_rest.axbookingclient'
+            $contingentClient: '@rp.trinity_rest.contingentclient'
+            $controllerResolver: '@controller_resolver'
+            $defaultLocale: '%env(GENERIC_LOCALE)%'
+            $documentV3ApiBaseUrl: '%env(document_v3_api_base_url)%'
+            $documentV3ApiToken: '%env(document_v3_api_token)%'
+            $dynamicpriceCache: '@dynamicprice_cache'
+            $dynamicpriceClient: '%env(dynamicprice_client)%'
+            $dynamicpriceSecret: '%env(dynamicprice_secret)%'
+            $environment: '%kernel.environment%'
+            $esHosts: '%env(es_hosts)%'
+            $eventBus: '@event.bus'
+            $formFactoryChangePassword: '@fos_user.change_password.form.factory'
+            $gedmoTranslatableListener: '@gedmo.listener.translatable'
+            $groupInstance: '%env(RP_GROUPINSTANCE)%'
+            $httpClientPricing: '@Symfony\Component\HttpClient\CurlHttpClient'
+            $httpPort: '%request_listener.http_port%'
+            $httpsPort: '%request_listener.https_port%'
+            $importBucketName: '%amazons3.import.bucketname%'
+            $instanceName: '%env(RP_WEBINSTANCE)%'
+            $instanceType: '%env(RP_WEBINSTANCE_TYPE)%'
+            $kernelCacheDir: '%kernel.cache_dir%'
+            $localeInformation: '@lunetics_locale.information'
+            $loggerBooking: '@monolog.logger.booking'
+            $loggerCartitemresolver: '@monolog.logger.cartitemresolver'
+            $loggerCatalogImport: '@monolog.logger.catalogimportlog'
+            $loggerDynamicprice: '@monolog.logger.dynamicprice'
+            $loggerENJPass: '@monolog.logger.enjpass'
+            $loggerFeratel: '@monolog.logger.feratel'
+            $loggerImport: '@monolog.logger.imports'
+            $loggerImportContact: '@monolog.logger.importcontact'
+            $loggerImportinventory: '@monolog.logger.importinventory'
+            $loggerMail: '@monolog.logger.mail'
+            $loggerOpensystem: '@monolog.logger.opensystem'
+            $loggerOrderConsumption: '@monolog.logger.orderconsumption'
+            $loggerOrderprocessing: '@monolog.logger.orderprocessing'
+            $loggerPayment: '@monolog.logger.payment'
+            $loggerPdsFidelity: '@monolog.logger.pdsfidelity'
+            $loggerPdsMultipass: '@monolog.logger.pdsmultipass'
+            $loggerPrices: '@monolog.logger.prices'
+            $loggerProposal: '@monolog.logger.proposals'
+            $loggerRequest: '@monolog.logger.request'
+            $loggerSecurity: '@monolog.logger.security'
+            $loggerSimulation: '@monolog.logger.simulation'
+            $loggerSkicase: '@monolog.logger.skicase'
+            $loggerSkidayprocessing: '@monolog.logger.skidayprocessing'
+            $loggerSms: '@monolog.logger.sms'
+            $loggerTemplating: '@monolog.logger.templating'
+            $loggerTrinity: '@monolog.logger.trinity'
+            $loggerWallet: '@monolog.logger.wallet'
+            $mercureHost: '%env(mercure_host)%'
+            $mercureToken: '%env(mercure_token)%'
+            $pictFileSystem: '@gaufrette.pict_filesystem'
+            $projectDir: '%kernel.project_dir%'
+            $redisCache: '@generic_cache'
+            $redpillSourceId: '%env(REDPILL_SOURCE_ID)%'
+            $rootDir: '%kernel.root_dir%'
+            $s3Client: '@rp.s3_client'
+            $s3Key: '%amazons3.key%'
+            $s3Region: '%amazons3.region%'
+            $s3Secret: '%amazons3.secret%'
+            $s3Version: '%amazons3.version%'
+            $seoDescription: '%rp.seo.description%'
+            $seoKeywords: '%rp.seo.keywords%'
+            $seoOg: '%rp.seo.og%'
+            $seoTitle: '%rp.seo.title%'
+            $sepaenrolmentLogger: '@monolog.logger.sepaenrolment'
+            $serializationContextFrontCart: '@rp.frontcart_serializationcontext'
+            $simulationHandlerRp: '@rp.simulation_handler'
+            $socialLoginApplePrivateKey: 'SOCIAL_LOGIN_APPLE_FILE_%env(RP_WEBINSTANCE)%'
+            $sonataMomentFormatConverter: '@sonata.core.date.moment_format_converter'
+            #$subContingentRepository: '@Eliberty\RedpillBundle\Entity\Repository\SubContingentRepository'
+            $swarrotPublisher: '@swarrot.publisher'
+            $syliusValidationGroupPromotionAction: ['sylius']
+            $syliusValidationGroupPromotionRule: ['sylius']
+            $tagRepository: '@rp.repository.tag'
+            $translatableListener: '@stof_doctrine_extensions.listener.translatable'
+            $translatorDefault: '@translator.default'
+            $trinityClientConfiguration: '%trinity.client%'
+            $trinityClientGuzzle: '@rp.trinity_rest.catalogclient'
+            $trinityRestOrderClient: '@rp.trinity_rest.orderclient'
+            $voucherApiBaseUrl: '%env(external_voucher_api_base_url)%'
+            $ppuLogger: '@monolog.logger.ppu'
+            $autofinalizationLogger: '@monolog.logger.autofinalization'
+
+    _instanceof:
+        ## Auto-tagging
+        Eliberty\Sylius\Component\Promotion\Checker\RuleCheckerInterface:
+            tags: [sylius.promotion_rule_checker]
+        Eliberty\Sylius\Component\Promotion\Action\PromotionActionInterface:
+            tags: [sylius.promotion_action]
+        Symfony\Component\Form\FormTypeInterface:
+            tags: [{ name: form.type }]
+        Eliberty\RedpillBundle\Proposal\Checker\ProposalRuleCheckerInterface:
+            tags: [rp.proposal_rule]
+        Eliberty\RedpillBundle\Proposal\Action\ProposalActionInterface:
+            tags: [rp.proposal_action]
+        Eliberty\RedpillBundle\DetectionStrategy\Saleschannel\Checker\CheckerInterface:
+            tags: [rp.saleschannel_detection_strategy_rule]
+        Eliberty\RedpillBundle\DetectionStrategy\TransferState\Checker\CheckerInterface:
+            tags: [rp.transferstate_detection_strategy_rule]
+        Eliberty\RedpillBundle\DetectionStrategy\OrderState\Checker\CheckerInterface:
+            tags: [rp.orderstate_detection_strategy_rule]
+        Eliberty\RedpillBundle\DetectionStrategy\PaymentMode\Checker\CheckerInterface:
+            tags: [rp.payment_mode_detection_strategy_rule]
+        Eliberty\RedpillBundle\DetectionStrategy\ProcessingState\Checker\CheckerInterface:
+            tags: [rp.processing_state_detection_strategy_rule]
+        Eliberty\RedpillBundle\DetectionStrategy\CardUsage\Checker\CheckerInterface:
+            tags: [rp.cardusage_detection_strategy_rule]
+        Eliberty\RedpillBundle\DynamicPrice\DynamicPriceHandlerInterface:
+            tags: [dynamic_price.handler]
+        Eliberty\RedpillBundle\Proxy\ProxyManagerInterface:
+            tags: [proxymanager.processor]
+        Eliberty\RedpillBundle\Import\S3\Processors\ImportProcessorInterface:
+            tags: [import.s3.processor]
+        Eliberty\RedpillBundle\OrderProcessing\AdjustmentConvertionProcessing\AdjustmentProcessorInterface:
+            tags: [adjustment.processor]
+        Eliberty\RedpillBundle\Mail\Mails\MailInterface:
+            tags: [mail.processor]
+        Eliberty\RedpillBundle\Listener\Tracking\TrackingListenerInterface:
+            tags: [tracking.listener]
+        Eliberty\RedpillBundle\Resolver\V2\OrderitemResolver:
+            tags: [orderitem.resolver]
+        Eliberty\RedpillBundle\Resolver\CartItemResolver:
+            tags: [cartitem.resolver]
+        Eliberty\RedpillBundle\Dashboard\DashboardInterface:
+            tags: [dashboard.processor]
+        Eliberty\RedpillBundle\Admin\ListField\ListFieldInterface:
+            tags: [admin.list_field]
+        Eliberty\RedpillBundle\Admin\DatagridFilter\DatagridFilterInterface:
+            tags: [admin.datagrid_filter]
+        Eliberty\RedpillBundle\Admin\ListAction\ListActionInterface:
+            tags: [admin.list_action]
+        Eliberty\RedpillBundle\ExternalActivity\ExternalActivityHandlerInterface:
+            tags: [external_activity.handler]
+        Eliberty\RedpillBundle\Validities\Guessers\GuesserInterface:
+            tags: [validities_guesser]
+        Eliberty\RedpillBundle\Sms\Generator\SmsGeneratorInterface:
+            tags: [sms.generator]
+        Symfony\Component\DependencyInjection\EnvVarProcessorInterface:
+            tags: [container.env_var_processor]
+        Twig\Extension\AbstractExtension:
+            tags: [twig.extension]
+        Eliberty\RedpillBundle\Pricing\Provider\PriceProviderInterface:
+            tags: [price.provider]
+        Eliberty\RedpillBundle\Pricing\Resolver\PriceResolverInterface:
+            tags: [price.resolver]
+        Eliberty\RedpillBundle\Wallet\Pass\Specification\PassSpecificationInterface:
+            tags: [wallet.pass.specification]
+        Eliberty\RedpillBundle\Wallet\Pass\Payload\Factory\PayloadFactoryInterface:
+            tags: [wallet.payload.factory]
+        Eliberty\RedpillBundle\Keycard\NumberConversion\Converter\ConverterInterface:
+            tags: [keycard.number_converter]
+        Eliberty\RedpillBundle\BarCode\VoucherBarcodeGenerator\VoucherBarcodeGeneratorInterface:
+            tags: [barcode.voucher_code_generator]
+        Eliberty\RedpillBundle\BarCode\PermissionBarcodeGenerator\PermissionBarcodeGeneratorInterface:
+            tags: [barcode.permission_code_generator]
+
+    ## Auto-tagging
+    ## Auto-tagging
+
+    Eliberty\RedpillBundle\Controller\:
+        resource: '../../Controller'
+        exclude: '../../Controller/{ControllerResolver.php,JsRouting/Controller.php,Console/SonataHelperController.php}'
+        tags: [controller.service_arguments]
+        calls:
+            - [setContainer, ['@service_container']] # Needed because extends controller which use "container"
+
+    Eliberty\RedpillBundle\:
+        public: false
+        resource: '../../{AccessControl,Admin/DatagridFilter,Admin/ListAction,Admin/ListField,Api/Formatter,ApiClient,Asset,Authenticate,BarCode,Booking,CatalogImport,Config,ControllerWizard,Dashboard,Debugger,Delivery,DependencyInjection,DetectionStrategy,Doctrine,DocumentProcessing,DynamicPrice,ENJPass,Export,ExternalActivity,ExternalService,Form/Promotion,Form/Proposal,Form/Type/HomeDeliveryType.php,Form/Type/PickupDeliveryType.php,Format,Generator,Helper,Import,Keycard,Listener/Tracking,Mail,Manager,Mercure,MessageHandler,MessageMiddleware,MessageTracking,OpenSystem,Order,OrderProcessing,PDSFidelity,PDSMultipass,Permission,Printing,Processor/Order,Promotion,Proposal,Proxy,Puppeteer,Resolver,Role,Security/Voter,Sms,Specification,Statistics,Storage,SwissPass,Taxes,Template,Trinity,Twig,Validities,Voucher,Wallet}'
+        exclude: '../../Trinity/Rest'
+
+    Eliberty\RedpillBundle\MessageHandler\Telepass\Event\:
+        resource: '../../MessageHandler/Telepass/Event'
+        autoconfigure: false
+        tags: [{ name: messenger.message_handler, bus: event.bus }]
+
+    Eliberty\RedpillBundle\Pricing\:
+        public: false
+        resource: '../../Pricing'
+        exclude: '../../Pricing/Provider'
+
+    controller_resolver:
+        class: Eliberty\RedpillBundle\Controller\ControllerResolver
+        bind:
+            $parser: '@controller_name_converter'
+
+    # Set default autowiring class for an interface
+    Symfony\Contracts\HttpClient\HttpClientInterface: '@Symfony\Component\HttpClient\CurlHttpClient'
+    Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Client\BaseApiClient'
+    Eliberty\RedpillBundle\ApiClient\Infra\Token\ApiTokenInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Token\RedisApiToken'
+    Eliberty\RedpillBundle\ApiClient\Infra\Token\TokenInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Token\JwtToken'
+    Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\TokenErrorInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\StatusCodeTokenError'
+    Eliberty\RedpillBundle\ApiClient\Infra\Param\ApiParametersInterface: '@Eliberty\RedpillBundle\ApiClient\Infra\Param\ApiParameters'
+
+    # in SF4.2+ remove these binding (replace by named autowiring aliases)
+    Eliberty\RedpillBundle\Wallet\Manager\WalletApiManager:
+        arguments:
+            $walletApiClient: '@wallet.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\Pricehub\Manager\PricehubApiManager:
+        arguments:
+            $pricehubApiClient: '@pricehub.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\Voucher\VoucherApiClient:
+        arguments:
+            $voucherApiClient: '@external_voucher.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Ingenie\Repository\IngenieApiRepository:
+        arguments:
+            $ingenieApiClient: '@ingenie.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Trinity\Resources\OrderTrinityApiClient:
+        arguments:
+            $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Trinity\Resources\KeycardTrinityApiClient:
+        arguments:
+            $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Trinity\Resources\ContractTrinityApiClient:
+        arguments:
+            $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Trinity\Resources\ContactTrinityApiClient:
+        arguments:
+            $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\Trinity\Resources\AxBookingTrinityApiClient:
+        arguments:
+            $trinityApiPlatformClient: '@trinity.api.platform.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\Validities\Guessers\Teamaxess\PermissionNumber:
+        arguments:
+            $permissionApiClient: '@teamaxess-permission.api.client'
+
+    Eliberty\RedpillBundle\ApiClient\DciPump\DciPumpApiClient:
+        arguments:
+            $dciPumpApiClient: '@dcipump.api.client.jwt.authenticated'
+
+    Eliberty\RedpillBundle\ApiClient\IoMedia\BenefitApiClient:
+        arguments:
+            $benefitApiClient: '@benefit.api.client.jwt.authenticated'
+
+    # in SF4.2+ uncomment these named autowiring aliases:
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $pricehubApiClient: '@pricehub.api.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $ingenieApiClient: '@ingenie.api.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $walletApiClient: '@wallet.api.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $voucherApiClient: '@external_voucher.api.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $trinityApiClient: '@trinity.api.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $trinityApiPlatformClient: '@trinity.api.platform.client.jwt.authenticated'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $permissionApiClient: '@teamaxess-permission.api.client'
+    # Eliberty\RedpillBundle\ApiClient\Infra\Client\ApiClientInterface $dciPumpApiClient: '@dcipump.api.client.jwt.authenticated'
+
+    ############################
+    ## AUTOWIRING BY DEFAULT  ##
+    ############################
+
+    Eliberty\RedpillBundle\Duplicate\ContactManager: ~
+    Eliberty\RedpillBundle\Duplicate\DuplicationService: ~
+    Eliberty\RedpillBundle\FosUser\UserConnect: ~
+    Eliberty\RedpillBundle\Guesser\PricecategoryGuesser: ~
+    Eliberty\RedpillBundle\Guesser\PriceGuesser: ~
+    Eliberty\RedpillBundle\Guesser\OrderitemGuesser: ~
+    Eliberty\RedpillBundle\Guesser\ProductTypeGuesser: ~
+    Eliberty\RedpillBundle\Import\Contact\ContactImporter: ~
+    Eliberty\RedpillBundle\Importer\Keycard\KeycardImporter: ~
+    Eliberty\RedpillBundle\Importer\Keycard\KeycardReaderToArrayWriter: ~
+    Eliberty\RedpillBundle\Importer\PromotionCoupons\PromotionCouponsImporter: ~
+    Eliberty\RedpillBundle\Manager\NotificationManager: ~
+    Eliberty\RedpillBundle\Manager\OrderManager: ~
+    Eliberty\RedpillBundle\Multicashdesk\CatalogProcessor: ~
+    Eliberty\RedpillBundle\OAuth2\SignIn\SocialProviderFactory: ~
+    Eliberty\RedpillBundle\Processor\AutoRenewProcessor: ~
+    Eliberty\RedpillBundle\Processor\Minimax\MinimaxOrderProcessor: ~
+    Eliberty\RedpillBundle\Processor\Trinity\ClearCatalogCacheProcessor: ~
+    Eliberty\RedpillBundle\Remarketing\Manager: ~
+    Eliberty\RedpillBundle\Resolver\PriceIdsResolver: ~
+    Eliberty\RedpillBundle\Sponsorship\Checker\SponsorshipEligibilityChecker: ~
+    Eliberty\RedpillBundle\Synchronisation\Order\UndatedTransferredTransmissionsSynchronizer: ~
+    Eliberty\RedpillBundle\Synchronisation\Order\UntransferredTransmissionsSynchronizer: ~
+    Eliberty\RedpillBundle\Translation\Manager: ~
+    Eliberty\RedpillBundle\Trinity\Handler\ReservedOrderitemHandler: ~
+    Eliberty\RedpillBundle\Trinity\Keycard\KeycardCreationService: ~
+    Eliberty\RedpillBundle\Trinity\Keycard\Manager: ~
+    Eliberty\RedpillBundle\Trinity\Contract\Manager: ~
+    Eliberty\RedpillBundle\UserRegistration\UserRegistrationProcessor: ~
+    Symfony\Component\HttpClient\CurlHttpClient: ~
+    Twig\Extension\StringLoaderExtension: ~
+    Webthink\MonologSlack\Formatter\SlackShortAttachmentFormatter: ~
+
+    ############################
+    ## DECLARE ALIASES        ##
+    ############################
+
+    #Service used to take over on CMF dbal client for master / slave connections
+    cmf_jackalope_doctrinedbal_factory:
+        class: Eliberty\RedpillBundle\Jackalope\Factory
+
+    date_time_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\DateTimeNormalizer
+        public: false
+        tags: [serializer.normalizer]
+
+    Eliberty\ApiBundle\Api\ResourceCollection:
+        alias: api.resource_collection
+
+    Eliberty\RedpillBundle\Admin\Block\WebsiteB2CBlockAdmin:
+        alias: rp.block.website_admin
+
+    eliberty.pricing.priceprovider.cashdesk:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CashdeskPriceProvider
+        lazy: true
+        autowire: true
+        tags: ['price.provider']
+
+    eliberty.pricing.priceprovider.cashdesk.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPriceProvider
+        decorates: eliberty.pricing.priceprovider.cashdesk
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.cashdesk.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.eliberty:
+        class: Eliberty\RedpillBundle\Pricing\Provider\ElibertyPriceProvider
+        lazy: true
+        factory: ['@Eliberty\RedpillBundle\Pricing\Provider\ElibertyPriceProviderFactory', 'create']
+
+    eliberty.pricing.priceprovider.eliberty.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPricesProvider
+        decorates: eliberty.pricing.priceprovider.eliberty
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.eliberty.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.local:
+        class: Eliberty\RedpillBundle\Pricing\Provider\LocalPriceProvider
+        lazy: true
+        autowire: true
+
+    eliberty.pricing.priceprovider.local.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPriceProvider
+        decorates: eliberty.pricing.priceprovider.local
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.local.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.partner:
+        class: Eliberty\RedpillBundle\Pricing\Provider\PartnerPriceProvider
+        lazy: true
+        autowire: true
+
+    eliberty.pricing.priceprovider.partner.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPriceProvider
+        decorates: eliberty.pricing.priceprovider.partner
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.partner.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.smartpricer:
+        class: Eliberty\RedpillBundle\Pricing\Provider\SmartpricerPriceProvider
+        lazy: true
+        autowire: true
+        arguments:
+            $localPriceProvider: '@eliberty.pricing.priceprovider.local'
+
+    eliberty.pricing.priceprovider.smartpricer.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPricesProvider
+        decorates: eliberty.pricing.priceprovider.smartpricer
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.smartpricer.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.pricehub:
+        class: Eliberty\RedpillBundle\Pricing\Provider\PricehubPriceProvider
+        lazy: true
+        autowire: true
+        arguments:
+            $elibertyPriceProvider: '@eliberty.pricing.priceprovider.eliberty'
+
+    eliberty.pricing.priceprovider.pricehub.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPricesProvider
+        decorates: eliberty.pricing.priceprovider.pricehub
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.pricehub.cached.inner'
+            - '@cache.app'
+
+    eliberty.pricing.priceprovider.pricenow:
+        class: Eliberty\RedpillBundle\Pricing\Provider\PricenowPriceProvider
+        lazy: true
+        autowire: true
+
+    eliberty.pricing.priceprovider.pricenow.cached:
+        class: Eliberty\RedpillBundle\Pricing\Provider\CachedPricesProvider
+        decorates: eliberty.pricing.priceprovider.pricenow
+        public: false
+        tags: ['price.provider']
+        arguments:
+            - '@eliberty.pricing.priceprovider.pricenow.cached.inner'
+            - '@cache.app'
+
+    eliberty.user_manager:
+        class: Eliberty\RedpillBundle\FosUser\UserManager
+        public: true
+        arguments:
+            - '@fos_user.util.password_updater'
+            - '@fos_user.util.canonical_fields_updater'
+            - '@doctrine.orm.entity_manager'
+            - '%fos_user.model.user.class%'
+            - '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+            - '@security.token_storage'
+            - '@session'
+
+    external_voucher.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(external_voucher_api_base_url)%'
+                login_uri: /auth
+            $apiConfigParams:
+                credentials: [payment.external_voucher.incert_api_credentials]
+
+    fpn_tag.tag_manager:
+        alias: Eliberty\RedpillBundle\Entity\Manager\TagManager
+        public: true
+
+    ingenie.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiIngenieTokenError'
+            $apiParams:
+                login_uri: 'https://api.ingenie.fr/login'
+            $apiConfigParams:
+                main_uri: [ingenie.api_connect, client_url]
+                credentials: [ingenie.api_connect, login_options]
+
+    login.success.handler:
+        class: Eliberty\RedpillBundle\Security\Http\Authentication\LoginSuccessHandler
+        arguments: ['@security.http_utils', {}, '@router']
+
+    object_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+        public: false
+
+        tags: [serializer.normalizer]
+
+    pix_sortable_behavior.position.orm:
+        class: Eliberty\RedpillBundle\Handler\PositionORMHandler
+        public: false
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        calls:
+            - ['setPositionField', ['%pix.sortable.behavior.position.field%']]
+            - ['setSortableGroups', ['%pix.sortable.behavior.sortable_groups%']]
+
+    redpill.access.token.manager:
+        class: Eliberty\RedpillBundle\OAuth2\Entity\AccessTokenManager
+        arguments: ['@doctrine.orm.entity_manager', '%fos_oauth_server.model.access_token.class%']
+
+    redpill.oauth_server.storage.default:
+        class: Eliberty\RedpillBundle\OAuth2\Storage\OAuthStorage
+        arguments:
+            - '@fos_oauth_server.client_manager'
+            - '@fos_oauth_server.access_token_manager'
+            - '@redpill.refresh_token_manager.default'
+            - '@fos_oauth_server.auth_code_manager'
+            - '@redpill.oauth_server.user_provider'
+            - '@security.encoder_factory'
+            - '@monolog.logger.oauth2'
+            - '@translator'
+            - '%env(RP_WEBINSTANCE_TYPE)%'
+
+    redpill.oauth_server.user_provider:
+        class: Eliberty\RedpillBundle\Security\Core\User\UserProvider
+        arguments: ['@fos_user.user_manager']
+
+    redpill.refresh_token_manager.default:
+        class: Eliberty\RedpillBundle\OAuth2\Entity\RefreshTokenManager
+        arguments: ['@fos_oauth_server.entity_manager', '%fos_oauth_server.model.refresh_token.class%']
+
+    rp.carnumber_convert.processor:
+        class: Eliberty\RedpillBundle\Util\Keycard\Processor\ConvertUidProcessor
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@swarrot.publisher'
+            - '@Eliberty\RedpillBundle\Trinity\Keycard\Manager'
+            - '@logger'
+
+    rp.doctrine.paramconverter:
+        class: Eliberty\RedpillBundle\Request\ParamConverter\DoctrineParamConverter
+        arguments: ['@Eliberty\RedpillBundle\Webinstance\IdentityService', '@doctrine']
+        tags:
+            - { name: request.param_converter, priority: 10000, converter: rp.doctrine.paramconverter }
+
+    rp.entity.uploadable:
+        class: Eliberty\RedpillBundle\Doctrine\ORM\Entity\Behaviour\UploadableBehaviour
+        arguments: ['@knp_gaufrette.filesystem_map', '@logger', '%kernel.project_dir%']
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+
+    Eliberty\RedpillBundle\Doctrine\ORM\Entity\DocumentListener:
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+
+    rp.logger.factory:
+        class: Eliberty\RedpillBundle\Monolog\LoggerFactory
+        arguments:
+            - '@logger'
+
+    rp.mail.cms.generator:
+        class: Eliberty\RedpillBundle\Mail\Generator\CmsGenerator
+        tags:
+            - { name: mail.generator }
+
+    rp.mail.twig.generator:
+        class: Eliberty\RedpillBundle\Mail\Generator\TwigGenerator
+        arguments:
+            - '@twig'
+            - '@translator'
+            - '@templating.engine.twig'
+        tags:
+            - { name: mail.generator }
+
+    rp.monolog.json_logger:
+        class: Monolog\Formatter\JsonFormatter
+        calls:
+            - [includeStacktraces]
+
+    rp.orderitem.customfields.statemachine.validator:
+        class: Eliberty\RedpillBundle\StateMachine\Validator\OrderitemCustomFieldsStateMachineValidator
+        calls:
+            - [setValidator, ['@validator']]
+            - [setCheckoutHelper, ['@Eliberty\RedpillBundle\Helper\CheckoutHelper']]
+        tags:
+            - { name: statemachine.validator }
+
+    rp.orderitem.statemachine.validator:
+        class: Eliberty\RedpillBundle\StateMachine\Validator\OrderitemStateMachineValidator
+        calls:
+            - [setValidator, ['@validator']]
+            - [setCfgManager, ['@Eliberty\ConfigManagerBundle\Model\ConfigManager']]
+        tags:
+            - { name: statemachine.validator }
+
+    rp.order.customfields.statemachine.validator:
+        class: Eliberty\RedpillBundle\StateMachine\Validator\OrderCustomFieldsStateMachineValidator
+        calls:
+            - [setValidator, ['@validator']]
+            - [setCheckoutHelper, ['@Eliberty\RedpillBundle\Helper\CheckoutHelper']]
+        tags:
+            - { name: statemachine.validator }
+
+    rp.order.statemachine.validator:
+        class: Eliberty\RedpillBundle\StateMachine\Validator\OrderStateMachineValidator
+        calls:
+            - [setValidator, ['@validator']]
+        tags:
+            - { name: statemachine.validator }
+
+    rp.paymenterrormessage.processor:
+        class: Eliberty\RedpillBundle\Payment\PaymentErrorMessageProcessor
+        arguments:
+            - '@monolog.logger.paymenterror'
+
+    rp.productpresetprocessor:
+        class: Eliberty\RedpillBundle\ProductPreset\ProductPresetProcessor
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    rp.statemachine.applicator:
+        class: Eliberty\RedpillBundle\StateMachine\StateMachineApplicator
+        arguments:
+            - '@SM\Factory\Factory'
+            - '@Eliberty\RedpillBundle\Helper\OrderHelper'
+            - '@event_dispatcher'
+
+    rp.statemachine.validator.chainer:
+        class: Eliberty\RedpillBundle\StateMachine\StateMachineValidatorChainer
+
+    rp.v2_router:
+        class: Eliberty\RedpillBundle\Router\RedpillV2Router
+        arguments: ['@router.default', '@session', '@Eliberty\ConfigManagerBundle\Model\ConfigManager']
+
+    rp.v2_toggleizer:
+        class: Eliberty\RedpillBundle\Block\DashboardToggleV2Service
+        arguments:
+            - '@twig'
+        tags:
+            - { name: sonata.block }
+
+    rp.v2_widget_pricecategory_datas_service:
+        class: Eliberty\RedpillBundle\Widget\PricecategoryDatas
+        arguments: ['@doctrine.orm.entity_manager', '@generic_cache']
+
+    rp.vouchernumber_generator:
+        class: Eliberty\RedpillBundle\Generator\VoucherNumber\VoucherNumberGenerator
+        arguments: [8, 1000]
+
+    security.acl.collection_cache:
+        class: Symfony\Component\Security\Acl\Domain\AclCollectionCache
+        arguments:
+            - '@security.acl.provider'
+            - '@security.acl.object_identity_retrieval_strategy'
+            - '@security.acl.security_identity_retrieval_strategy'
+
+    teamaxess-permission.api.client:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\BaseApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createBaseApiClient']
+        arguments:
+            $apiConfigParams:
+                uri: [keycards.teamaxess.permission_baseuri]
+
+    trinity.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(TRINITY_API_BASE_URL)%'
+                login_uri: login_check
+                credentials:
+                    username: '%env(TRINITY_API_USERNAME)%'
+                    password: '%env(TRINITY_API_PASSWORD)%'
+
+    trinity.api.platform.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(TRINITY_API_PLATFORM_BASE_URL)%'
+                # v1/ in login_uri to remove later...
+                login_uri: v1/login_check
+                credentials:
+                    username: '%env(TRINITY_API_USERNAME)%'
+                    password: '%env(TRINITY_API_PASSWORD)%'
+
+    wallet.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(wallet_api_base_url)%'
+                login_uri: /api/login
+            $apiConfigParams:
+                credentials: [wallet.api_credentials]
+
+    pricehub.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(PRICEHUB_API_BASE_URL)%'
+                login_uri: /api/login
+                login_multi_tenant_header_key: X-Tenant-Key
+                credentials:
+                    email: '%env(PRICEHUB_API_USERNAME)%'
+                    password: '%env(PRICEHUB_API_PASSWORD)%'
+
+    Eliberty\RedpillBundle\Command\Testing\ApiClientCallCommand:
+        arguments:
+            $apiClient: '@pricehub.api.client.jwt.authenticated'
+
+    dcipump.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiParams:
+                base_uri: '%env(DCIPUMP_API_BASE_URL)%'
+                login_uri: /api/login_check
+                credentials:
+                    username: '%env(DCIPUMP_API_USERNAME)%'
+                    password: '%env(DCIPUMP_API_PASSWORD)%'
+    #            $apiConfigParams:
+    #                options:
+    #                    headers:
+    #                        dci-tenant: [dcipump.tenant_id]
+
+    benefit.api.client.jwt.authenticated:
+        class: Eliberty\RedpillBundle\ApiClient\Infra\Client\AuthJwtApiClient
+        factory: ['@Eliberty\RedpillBundle\ApiClient\Infra\Client\ParameterizedClientFactory', 'createAuthJwtApiClient']
+        arguments:
+            $tokenError: '@Eliberty\RedpillBundle\ApiClient\Infra\Error\Token\ApiPlatformTokenError'
+            $apiConfigParams:
+                main_uri: [benefit.api_connect, client_url]
+                login_uri: [benefit.api_connect, login_url]
+                credentials: [benefit.api_connect, credentials]
+
+    ############################
+    # Custom FilesystemLoader
+    ############################
+    Eliberty\RedpillBundle\Twig\Loader\FilesystemLoader:
+        bind:
+            $locator: '@Eliberty\RedpillBundle\Locator\FileLocator'
+            $parser: '@templating.name_parser'
+            $rootPath: '%kernel.root_dir%'
+        tags:
+            - { name: twig.loader, priority: 999 }
+
+    ############################
+    ## DECLARE SERVICES       ##
+    ############################
+    Aws\Sqs\SqsClient:
+        factory: [Aws\Sqs\SqsClient, factory]
+        arguments:
+            - region: '%env(amazonsqs_region)%'
+              version: 'latest'
+              credentials:
+                  key: '%env(amazonsqs_key)%'
+                  secret: '%env(amazonsqs_secret)%'
+
+    ##check role
+    Eliberty\RedpillBundle\Acl\Authorization\AclProvider:
+        arguments:
+            - '@security.acl.dbal.connection'
+            - '@security.acl.permission_granting_strategy'
+            - class_table_name: '%security.acl.dbal.class_table_name%'
+              entry_table_name: '%security.acl.dbal.entry_table_name%'
+              oid_table_name: '%security.acl.dbal.oid_table_name%'
+              oid_ancestors_table_name: '%security.acl.dbal.oid_ancestors_table_name%'
+              sid_table_name: '%security.acl.dbal.sid_table_name%'
+            - '@security.acl.cache.doctrine'
+
+    Eliberty\RedpillBundle\Acl\Security\AclManager:
+        arguments:
+            - '@security.acl.provider'
+            - '@security.token_storage'
+            - '@security.authorization_checker'
+            - '@security.acl.object_identity_retrieval_strategy'
+            - '@security.acl.collection_cache'
+            - 'all'
+
+    Eliberty\RedpillBundle\Aws\S3\AwsS3BoxManager:
+        arguments:
+            [
+                '@knp_gaufrette.filesystem_map',
+                '%amazons3.bucketname%',
+                '%amazons3.secret%',
+                '%amazons3.key%',
+                '%amazons3.region%',
+                '%amazons3.version%',
+            ]
+
+    Eliberty\RedpillBundle\Aws\S3\PresignedUrlGenerator:
+        arguments: ['@logger', '@rp.aws_s3.client']
+        autowire: true
+
+    Eliberty\RedpillBundle\Aws\SQS\Publisher:
+        arguments:
+            - '@rp.sqs_client'
+
+    Eliberty\RedpillBundle\CacheWarmer\TemplatePathsCacheWarmer:
+        arguments:
+            - '@templating.finder'
+            - '@Eliberty\RedpillBundle\Locator\TemplateLocator'
+            - '%env(RP_WEBINSTANCE)%'
+        tags:
+            - { name: kernel.cache_warmer, priority: 0 }
+
+    Eliberty\RedpillBundle\CacheWarmer\RouteDefaultsCacheWarmer:
+        autowire: true
+        tags:
+            - { name: kernel.cache_warmer, priority: -250 }
+
+    Eliberty\RedpillBundle\ConfigCache\ConfigCacheFactory:
+        arguments:
+            - '@translation_cache'
+
+    Eliberty\RedpillBundle\Controller\ExceptionController:
+        arguments:
+            - '@fos_rest.view_handler'
+            - '@fos_rest.exception.codes_map'
+            - '%kernel.debug%'
+
+    Eliberty\RedpillBundle\Controller\ResettingController:
+        bind:
+            $formFactory: '@fos_user.resetting.form.factory'
+            $mailer: '@fos_user.mailer'
+            $retryTtl: '%fos_user.resetting.retry_ttl%'
+
+    Eliberty\RedpillBundle\Entity\Manager\ProductExclusionManager:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    Eliberty\RedpillBundle\Export\Factory:
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+            - '@Eliberty\RedpillBundle\Helper\ExportHelper'
+            - '@Eliberty\RedpillBundle\Helper\RoleHelper'
+
+    Eliberty\RedpillBundle\Generator\Cart\CartGenerator:
+        arguments:
+            - '@Eliberty\RedpillBundle\Handler\CartMergeHandler'
+            - '@Eliberty\RedpillBundle\Provider\CartProvider'
+
+    Eliberty\RedpillBundle\Guesser\HlLocaleGuesser:
+        arguments: ['@lunetics_locale.validator.meta']
+        tags:
+            - { name: lunetics_locale.guesser, alias: hlguesser }
+
+    Eliberty\RedpillBundle\Handler\Uploaded\Uploadable:
+        arguments:
+            [
+                '@knp_gaufrette.filesystem_map',
+                '%env(RP_WEBINSTANCE)%',
+                '%amazons3.bucketname%',
+                '%amazons3.secret%',
+                '%amazons3.key%',
+                '%amazons3.region%',
+                '%amazons3.version%',
+            ]
+
+    Eliberty\RedpillBundle\Locator\FileLocator:
+        arguments:
+            - '@kernel'
+            - '%env(RP_WEBINSTANCE)%'
+            - '%kernel.root_dir%/Resources'
+
+    Eliberty\RedpillBundle\Locator\TemplateLocator:
+        arguments:
+            - '@Eliberty\RedpillBundle\Locator\FileLocator'
+            - '%kernel.cache_dir%'
+            - '%env(RP_WEBINSTANCE)%'
+
+    Eliberty\RedpillBundle\Manager\OrderitemCancellationManager:
+        arguments:
+            - '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+            - '@doctrine.orm.entity_manager'
+            - '@monolog.logger.order'
+            - '@event_dispatcher'
+            - '@Eliberty\RedpillBundle\Helper\OrderTransmissionHelper'
+            - '@Eliberty\RedpillBundle\Trinity\Order\Manager'
+            - '@Eliberty\RedpillBundle\Helper\OrderItemHelper'
+            - '@translator'
+
+    Eliberty\RedpillBundle\Manager\PageManager:
+        calls:
+            - [setCmfHelper, ['@rp.cms.twighelper']]
+
+    Eliberty\RedpillBundle\Manager\ProductCategoryPageManager:
+        calls:
+            - [setCmfHelper, ['@rp.cms.twighelper']]
+
+    Eliberty\RedpillBundle\Manager\ProductPageManager:
+        calls:
+            - [setCmfHelper, ['@rp.cms.twighelper']]
+
+    Eliberty\RedpillBundle\Mail\Manager\MailManager:
+        calls:
+            - [setLocaleInformation, ['@lunetics_locale.information']]
+            - [setEnvironment, ['%kernel.environment%']]
+        tags:
+            - { name: monolog.logger, channel: mail }
+
+    Eliberty\RedpillBundle\Mail\UserMailer:
+        arguments: ['@rp.mailer_service', '@logger']
+        tags:
+            - { name: monolog.logger, channel: mail }
+
+    Eliberty\RedpillBundle\Multicashdesk\MulticashdeskAssignationHandlerFactory:
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.order'
+
+    Eliberty\RedpillBundle\Multicashdesk\MulticashdeskOrderitemCreator:
+        arguments:
+            - '@Eliberty\RedpillBundle\Multicashdesk\MulticashdeskAssignationHandlerFactory'
+            - '@doctrine.orm.default_entity_manager'
+            - '@event_dispatcher'
+
+    Eliberty\RedpillBundle\Resolver\PriceResolver:
+        arguments:
+            - '@rp.trinity_rest.catalogclient'
+            - '@Eliberty\RedpillBundle\Entity\Repository\PriceRepository'
+            - '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+            - '@price_cache'
+            - '@monolog.logger.prices'
+        calls:
+            - [setProratedPriceResolver, ['@Eliberty\RedpillBundle\Resolver\ProratedPriceResolver']]
+            - [setDynamicPriceHandlerFactory, ['@Eliberty\RedpillBundle\DynamicPrice\DynamicPriceHandlerFactory']]
+
+    Eliberty\RedpillBundle\Pricing\Provider\ElibertyPriceProviderFactory:
+        lazy: true
+        autowire: true
+
+    Eliberty\RedpillBundle\Provider\CartProvider:
+        public: true
+        autowire: true
+
+    Eliberty\RedpillBundle\Provider\XMLProviderService:
+        arguments:
+            - '@generic_cache'
+            - '@logger'
+        tags:
+            - { name: 'xml.provider' }
+
+    Eliberty\RedpillBundle\Search\SearchService:
+        autowire: true
+        calls:
+            - ['setContactQueryBuilder', ['@Eliberty\RedpillBundle\Search\QueryBuilder\ContactQueryBuilder']]
+            - ['setOrderQueryBuilder', ['@Eliberty\RedpillBundle\Search\QueryBuilder\OrderQueryBuilder']]
+
+    Eliberty\RedpillBundle\Search\QueryBuilder\ContactQueryBuilder:
+        autowire: true
+        calls:
+            - ['setTokenStorage', ['@security.token_storage']]
+
+    Eliberty\RedpillBundle\Search\QueryBuilder\OrderQueryBuilder:
+        autowire: true
+        calls:
+            - ['setTokenStorage', ['@security.token_storage']]
+
+    Eliberty\RedpillBundle\Shipping\Calculator\KeycardNumberRangeRateCalculator:
+        tags:
+            - {
+                  name: 'sylius.shipping_calculator',
+                  calculator: 'keycard_number_range_rate',
+                  label: 'Keycard number range rate',
+              }
+
+    Eliberty\RedpillBundle\Shipping\Calculator\RangeRateCalculator:
+        tags:
+            - { name: 'sylius.shipping_calculator', calculator: 'range_rate', label: 'Range rate' }
+
+    Eliberty\RedpillBundle\Shipping\Rule\RangeRateConfigurationType:
+        tags:
+            - { name: form.type, alias: eliberty_shipping_calculator_range_rate_configuration }
+
+    Eliberty\RedpillBundle\StateMachine\Callback\CashingCallback:
+        autowire: true
+
+    Eliberty\RedpillBundle\StateMachine\Callback\OrderStatesCallback:
+        arguments:
+            - '@SM\Factory\Factory'
+            - '@event_dispatcher'
+            - '@doctrine.orm.entity_manager'
+            - '@translator'
+
+    Eliberty\RedpillBundle\StateMachine\Callback\TransmissionCallback:
+        arguments:
+            - '@SM\Factory\Factory'
+            - '@event_dispatcher'
+            - '@Eliberty\ConfigManagerBundle\Model\ConfigManager'
+            - '@Eliberty\RedpillBundle\Helper\OrderItemHelper'
+
+    Eliberty\RedpillBundle\Task\TaskLoader:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@Eliberty\RedpillBundle\Helper\TaskHelper'
+        tags:
+            - { name: monolog.logger, channel: taskloader }
+        calls:
+            - [setMailerService, ['@Eliberty\RedpillBundle\Mail\MailerService']]
+            - [setConfigManager, ['@Eliberty\ConfigManagerBundle\Model\ConfigManager']]
+            - [setExportFactory, ['@Eliberty\RedpillBundle\Export\Factory']]
+            - [setDispatcher, ['@event_dispatcher']]
+
+    Eliberty\RedpillBundle\Template\Generator:
+        arguments:
+            - '@templating'
+
+    Eliberty\RedpillBundle\Translation\Dumper\DbDumper:
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '%env(RP_WEBINSTANCE)%'
+        tags:
+            - { name: 'translation.dumper', alias: 'db' }
+            - { name: 'translation.loader', alias: 'db' }
+        calls:
+            - [registerResources, ['@translator']]
+
+    Eliberty\RedpillBundle\Translation\RedpillTranslator:
+        arguments:
+            - '@service_container'
+            - '@translator.formatter.default'
+            - '%kernel.default_locale%'
+            - []
+            - debug: '%kernel.debug%'
+            - '@Eliberty\RedpillBundle\ConfigCache\ConfigCacheFactory'
+        calls:
+            - [setConfigCacheFactory, ['@Eliberty\RedpillBundle\ConfigCache\ConfigCacheFactory']]
+
+    Eliberty\RedpillBundle\Trinity\Order\Manager:
+        autowire: true
+        calls:
+            - [setContactManager, ['@Eliberty\RedpillBundle\Trinity\Contact\Manager']]
+            - [setOrderUpdater, ['@Eliberty\RedpillBundle\Trinity\Order\Updater']]
+            - [setSerializer, ['@jms_serializer']]
+
+    Eliberty\RedpillBundle\Trinity\Catalog\PriceCreator:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@doctrine_phpcr.odm.default_document_manager'
+            - '@logger'
+        tags:
+            - { name: monolog.logger, channel: catalogimport }
+
+    Eliberty\RedpillBundle\Trinity\Order\Updater:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Eliberty\RedpillBundle\Trinity\Saleschannel\B2bSaleschannelConfigurator:
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@Eliberty\RedpillBundle\Trinity\Repository\SaleschannelRepository'
+            - '@Eliberty\RedpillBundle\Webinstance\IdentityService'
+
+    Eliberty\RedpillBundle\Trinity\Saleschannel\ConnexionChecker:
+        arguments:
+            - '@GuzzleHttp\Client'
+
+    Eliberty\RedpillBundle\Wallet\Pass\Payload\Factory\PayloadFactoryResolver:
+        arguments:
+            $payloadFactories: !tagged wallet.payload.factory
+
+    Eliberty\RedpillBundle\Wallet\Pass\Specification\PassSpecificationResolver:
+        arguments:
+            $passSpecifications: !tagged wallet.pass.specification
+
+    Eliberty\RedpillBundle\Webinstance\IdentityService:
+        public: true
+        autowire: true
+        arguments: ['@service_container']
+
+    Eliberty\RedpillBundle\Widget\ContractorDatas:
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@generic_cache'
+            - '@logger'
+
+    Eliberty\RedpillBundle\Storage\CookieDomainSessionStorage:
+        arguments:
+            - '%session.storage.options%'
+            - '@session.handler'
+            - '@session.storage.metadata_bag'
+
+    Webthink\MonologSlack\Handler\SlackWebhookHandler:
+        arguments:
+            - '%env(slack_wkt_errors)%'
+            - ''
+            - null
+            - 500
+        calls:
+            - [setFormatter, ['@redpill.slackformatter']]
+
+    Eliberty\RedpillBundle\Keycard\NumberConversion\ConverterFactory:
+        arguments:
+            - !tagged keycard.number_converter
+
+    Eliberty\RedpillBundle\Api\Authenticator\ApikeyAuthenticator: ~
+
+    Eliberty\RedpillBundle\BarCode\BarcodeResolver:
+        arguments:
+            - !tagged barcode.voucher_code_generator
+            - !tagged barcode.permission_code_generator
+            -
+    rp.rekognition_client:
+        class: Aws\Rekognition\RekognitionClient
+        factory: [Aws\Rekognition\RekognitionClient, factory]
+        arguments:
+            - region: '%env(amazonrekognition_region)%'
+              version: 'latest'
+              credentials:
+                  key: '%env(amazonrekognition_key)%'
+                  secret: '%env(amazonrekognition_secret)%'
+
+    Eliberty\RedpillBundle\Telepass\Order\OrderCreator:
+        bind:
+            $simulationHandler: '@rp.simulation_handler'

@@ -1,0 +1,69 @@
+.DEFAULT_GOAL := help
+
+DOCKER_COMPOSE ?= docker compose
+APP_EXEC       ?= $(DOCKER_COMPOSE) exec app
+COMPOSER       ?= composer
+PHP            ?= php
+MAGO           ?= mago
+PHPUNIT        ?= vendor/bin/phpunit
+ENV            ?= preprod
+IMAGE_TAG      ?= local
+
+## ---- Dev ----
+
+.PHONY: up down sh install
+
+up: ## Start the dev stack
+	$(DOCKER_COMPOSE) up -d --build
+
+down: ## Stop the dev stack
+	$(DOCKER_COMPOSE) down
+
+sh: ## Shell into the app container
+	$(APP_EXEC) sh
+
+install: ## Install composer dependencies
+	$(COMPOSER) install
+
+## ---- Quality gate ----
+
+.PHONY: test format lint analyze ci
+
+test: ## Run phpunit
+	$(PHPUNIT)
+
+format: ## Run mago format (writes)
+	$(MAGO) format
+
+lint: ## Run mago lint
+	$(MAGO) lint
+
+analyze: ## Run mago analyze
+	$(MAGO) analyze
+
+ci: ## Full CI gate: format --check + lint + analyze + test
+	$(MAGO) format --check
+	$(MAGO) lint
+	$(MAGO) analyze
+	$(PHPUNIT)
+
+## ---- Docker image ----
+
+.PHONY: build
+
+build: ## Build the production Docker image
+	docker build -f docker/Dockerfile -t stripeconnect-website:$(IMAGE_TAG) .
+
+## ---- Deploy ----
+
+.PHONY: deploy
+
+deploy: ## Deploy to ECS. Usage: make deploy ENV=preprod IMAGE_TAG=<sha>
+	./deploy/deploy.sh $(ENV)
+
+## ---- Help ----
+
+.PHONY: help
+
+help:
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)

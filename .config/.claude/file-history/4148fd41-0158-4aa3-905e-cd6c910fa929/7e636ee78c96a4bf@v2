@@ -1,0 +1,110 @@
+# Xsalto PDS Fidelity Importer
+
+A PHP CLI tool that fetches contacts from the [Xsalto PDS API](https://pds.xsalto.com) and stores them in a PostgreSQL database. Supports resumable imports by tracking already-downloaded pages.
+
+## Features
+
+- Authenticates against the Xsalto PDS API (JWT Bearer token)
+- Paginates through `/api/contacts` (JSON:API standard)
+- Maps contact data — including nested skiers and resorts — into PostgreSQL
+- Tracks downloaded pages for safe resume on failure
+- Zero-dependency `.env` loader (no external dotenv library required)
+
+## Requirements
+
+- PHP 8.1+
+- PostgreSQL 13+
+- Composer
+
+## Installation
+
+```bash
+git clone <repo-url> xsalto-pds-fid
+cd xsalto-pds-fid
+composer install
+```
+
+## Configuration
+
+Copy the example env file and fill in your credentials:
+
+```bash
+cp .env.example .env
+```
+
+| Variable        | Default                    | Description                        |
+|-----------------|----------------------------|------------------------------------|
+| `API_BASE_URL`  | `https://pds.xsalto.com`   | Base URL of the Xsalto PDS API     |
+| `API_LOGIN`     | —                          | API login (required)               |
+| `API_PASSWORD`  | —                          | API password (required)            |
+| `DB_HOST`       | `localhost`                | PostgreSQL host                    |
+| `DB_PORT`       | `5432`                     | PostgreSQL port                    |
+| `DB_NAME`       | `xsalto_fidelity`          | Database name                      |
+| `DB_USER`       | `postgres`                 | Database user                      |
+| `DB_PASSWORD`   | —                          | Database password                  |
+| `PAGE_SIZE`     | `100`                      | Number of contacts fetched per page |
+
+## Database Setup
+
+Run the SQL schema to create the database and tables:
+
+```bash
+psql -U postgres -f database/tables.sql
+```
+
+This creates (idempotently):
+- `contacts` — one row per contact, with `skiers` and `resorts` stored as JSONB
+- `pages` — tracks which API pages have been successfully imported
+
+## Usage
+
+```bash
+php bin/import.php
+```
+
+The importer will:
+1. Authenticate and obtain a JWT token
+2. Skip pages already recorded in the `pages` table
+3. Fetch each page and upsert contacts into the database
+4. Record each successfully imported page
+
+To re-import from scratch, truncate the `pages` table:
+
+```sql
+TRUNCATE pages;
+```
+
+## Project Structure
+
+```
+bin/
+  import.php              # CLI entry point
+src/
+  ApiClient/
+    XsaltoApiClient.php   # HTTP client (login + paginated contacts fetch)
+  Config/
+    DatabaseConfig.php    # Doctrine DBAL connection factory
+  Database/
+    ContactRepository.php # Upsert contacts
+    PageTracker.php       # Track imported pages
+  Importer/
+    ContactImporter.php   # Orchestrates pagination and import loop
+  Mapper/
+    ContactMapper.php     # Maps API response to DB row
+database/
+  tables.sql              # Idempotent schema (CREATE TABLE IF NOT EXISTS)
+```
+
+## Dependencies
+
+| Package                   | Purpose                        |
+|---------------------------|--------------------------------|
+| `doctrine/dbal ^4.4`      | PostgreSQL connection & queries |
+| `symfony/http-client ^8.0`| HTTP requests to Xsalto API    |
+| `phpunit/phpunit ^11`     | Unit testing (dev)             |
+
+## Running Tests
+
+```bash
+vendor/bin/phpunit
+```

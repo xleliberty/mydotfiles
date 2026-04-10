@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         cacheDirectory="var/cache/.phpunit.cache"
+         executionOrder="random"
+         resolveDependencies="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnIncompleteTests="true"
+         displayDetailsOnSkippedTests="true">
+    <php>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="test" force="true"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="APP_SECRET" value="test-secret"/>
+        <env name="STRIPE_CLIENT_ID" value="ca_test_client_id"/>
+        <env name="STRIPE_CLIENT_SECRET" value="sk_test_client_secret"/>
+        <env name="STRIPE_REDIRECT_URI" value="http://localhost/oauth/callback"/>
+        <env name="STRIPE_OAUTH_BASE_URL" value="https://connect.stripe.test"/>
+        <env name="APP_SHARE_DIR" value="var/share"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+</phpunit>

@@ -1,0 +1,53 @@
+---
+services:
+  mitmproxy:
+    image: mitmproxy/mitmproxy
+    tty: true
+    restart: on-failure
+    volumes:
+      - ./config/mitmproxy/:/home/mitmproxy/.mitmproxy/
+    networks:
+      - proxy_network
+    command: "mitmweb --web-host 0.0.0.0 --set ssl_insecure=true"
+    labels:
+      # (MITM WEB INTERFACE)
+      - "traefik.enable=true"
+      - "traefik.http.routers.mitmweb.rule=Host(`mitmweb.${DOMAIN_USERNAME}.localhost`) || Host(`mitmweb.eliberty.loc`)"
+      - "traefik.http.routers.mitmweb.tls=true"
+      - "traefik.http.routers.mitmweb.entrypoints=websecure"
+      - "traefik.http.routers.mitmweb.service=mitmweb"
+      - "traefik.http.routers.mitmweb.middlewares=host"
+      - "traefik.http.services.mitmweb.loadbalancer.server.port=8081"
+      # (MITM WEB INTERFACE) accepts only same host requests for websocket redirection, used for realtime refreshing
+      - "traefik.http.middlewares.host.headers.customrequestheaders.Host=localhost:8081"
+      - "traefik.http.middlewares.host.headers.customrequestheaders.Origin=http://localhost:8081"
+
+      # (MITM) for transparent use (force redirect your external endpoint to localhost with /etc/hosts and add a matching rule for traefik)
+      - "traefik.http.routers.mitmproxyhttps.rule=Host(`docservicev3.rpstack.com`) || Host(`trinity.rpstage.com`) || Host(`trinity.rpstack.com`) || Host(`49.api.dp.rpstack.com`) || Host(`trinity.${DOMAIN_USERNAME}.loc`) || Host(`trinity.${DOMAIN_USERNAME}.localhost`)"
+      - "traefik.http.routers.mitmproxyhttps.tls=true"
+      - "traefik.http.routers.mitmproxyhttps.entrypoints=websecure"
+      - "traefik.http.routers.mitmproxyhttps.service=mitmproxyhttps"
+      - "traefik.http.services.mitmproxyhttps.loadbalancer.server.scheme=https"
+      - "traefik.http.services.mitmproxyhttps.loadbalancer.server.port=8080"
+
+      # (MITM) for transparent use - Redirect http to https
+      - "traefik.http.routers.mitmproxyhttpredirect.rule=Host(`docservicev3.rpstack.com`)"
+      - "traefik.http.routers.mitmproxyhttpredirect.entrypoints=web"
+      - "traefik.http.routers.mitmproxyhttpredirect.middlewares=redirect-to-https@file"
+      - "traefik.http.routers.mitmproxyhttpredirect.service=httpsredirector@file"
+
+      # (MITM) to use like a real https proxy, curl -X https://localhost:1080 --proxy-cacert ./config/mitmproxy/mitmproxy-ca-cert.cer ...
+      - "traefik.tcp.routers.mitmproxyhttps.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mitmproxyhttps.tls=true"
+      - "traefik.tcp.routers.mitmproxyhttps.entrypoints=proxytcp"
+      - "traefik.tcp.routers.mitmproxyhttps.tls.passthrough=true"
+      - "traefik.tcp.routers.mitmproxyhttps.service=mitmproxyhttps"
+      - "traefik.tcp.services.mitmproxyhttps.loadbalancer.server.port=8080"
+
+      # (MITM) to use like a real http proxy, curl -X http://localhost ...
+      - "traefik.tcp.routers.mitmproxy.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mitmproxy.entrypoints=proxytcp"
+      - "traefik.tcp.routers.mitmproxy.service=mitmproxy"
+      - "traefik.tcp.services.mitmproxy.loadbalancer.server.port=8080"
+
+      - "Project=eliberty.mitm"

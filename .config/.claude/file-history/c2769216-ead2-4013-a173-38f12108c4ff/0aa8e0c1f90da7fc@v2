@@ -1,0 +1,15 @@
+---
+http:
+  routers:
+    redpill:
+      rule: "Host(`redpill.eliberty.loc`)"
+      entryPoints:
+        - websecure
+      tls: {}
+      service: redpill
+
+  services:
+    redpill:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8000"

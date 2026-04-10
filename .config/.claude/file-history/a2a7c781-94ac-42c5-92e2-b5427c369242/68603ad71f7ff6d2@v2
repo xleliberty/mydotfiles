@@ -1,0 +1,229 @@
+# stripeconnect-website
+
+Public landing site that onboards E-Liberty customers onto our Stripe Connect
+platform via the **OAuth standard accounts** flow
+([Stripe docs](https://docs.stripe.com/connect/oauth-standard-accounts)).
+
+The site does exactly three things:
+
+1. Show a branded landing page with a single CTA — *"Connecter mon compte
+   avec E-Liberty"*.
+2. Redirect to Stripe's OAuth authorize URL with a CSRF `state`.
+3. Receive the callback, exchange the `code` for an access token, and render
+   a success **or** error result page.
+
+There is **no database**. Every meaningful event is logged via Monolog on the
+dedicated `stripe` channel — that log stream is the audit trail.
+
+> Domain: `stripeconnect.eliberty.fr`
+> Spec: [`docs/stripeconnector-website.md`](docs/stripeconnector-website.md)
+> Conventions for AI tools: [`CLAUDE.md`](CLAUDE.md)
+
+---
+
+## Tech stack
+
+| Concern        | Choice                                                  |
+|----------------|---------------------------------------------------------|
+| Language       | PHP 8.4                                                 |
+| Framework      | Symfony 8.x (full stack: Twig, Monolog, HttpClient)     |
+| Runtime        | FrankenPHP (worker mode) in Docker                      |
+| Tests          | PHPUnit 11 — attribute syntax only                      |
+| Quality        | Mago (format + lint + analyze) — single source of truth |
+| Secrets        | AWS SSM Parameter Store (SecureString)                  |
+| Hosting        | AWS ECS Fargate behind a shared ALB                     |
+| CI/CD          | GitHub Actions with OIDC                                |
+
+## Repository layout
+
+```
+src/
+  Controller/   Home, Connect, OAuthCallback, Health
+  Stripe/       StripeOAuthClient + DTO + exception
+  Security/     OAuthStateManager (CSRF state, single-use, 10-min TTL)
+templates/      base.html.twig, home.html.twig, result.html.twig
+config/         Symfony bundles + packages + services wiring
+docker/         Dockerfile (multi-stage), Caddyfile, php.ini
+deploy/         Idempotent ECS deploy scripts (ensure-*.sh + deploy.sh)
+.github/        ci.yml + deploy-preprod.yml
+tests/          PHPUnit (Controller + Stripe + Security)
+```
+
+---
+
+## Local development
+
+### Prerequisites
+
+- Docker + Docker Compose
+- (Optional, for fast feedback) PHP 8.4+ and Composer 2 on the host
+
+### First run
+
+```sh
+cp .env.local.dist .env.local        # then fill in STRIPE_CLIENT_ID / SECRET
+make up                              # docker compose up -d --build
+```
+
+The site is then served on <http://localhost:8080>.
+
+Useful targets:
+
+```sh
+make sh         # shell into the app container
+make install    # composer install
+make test       # phpunit
+make ci         # full quality gate (mago + phpunit)
+make build      # build the production Docker image
+make down
+```
+
+### Manually testing the flow
+
+1. Browse to <http://localhost:8080> and click the CTA. You should be
+   redirected to Stripe's OAuth authorize page.
+2. Complete the Stripe sandbox flow with a test account.
+3. Stripe redirects back to `/oauth/callback`. The success page renders and a
+   `stripe.connect.success` line appears in the container logs (JSON
+   formatted, with a masked access token).
+
+Edge cases worth checking by hand:
+
+```
+http://localhost:8080/oauth/callback?error=access_denied&error_description=foo
+http://localhost:8080/oauth/callback?code=x&state=wrong
+```
+
+Both should render the error page and emit the matching log event.
+
+---
+
+## Configuration
+
+| Var                     | Description                                       |
+|-------------------------|---------------------------------------------------|
+| `APP_ENV`               | `dev` / `prod`                                    |
+| `APP_SECRET`            | Symfony app secret (SSM in deployed envs)         |
+| `STRIPE_CLIENT_ID`      | Stripe Connect OAuth client id (`ca_…`)           |
+| `STRIPE_CLIENT_SECRET`  | Stripe secret key for the platform                |
+| `STRIPE_REDIRECT_URI`   | Must match the URI registered on Stripe          |
+| `STRIPE_OAUTH_BASE_URL` | Defaults to `https://connect.stripe.com`          |
+
+**SSM path convention** (preprod / prod):
+`/stripeconnect-website/{env}/{KEY}`. Never inline secrets in task definitions
+or `.env`.
+
+---
+
+## Quality gate
+
+`make ci` runs, in order:
+
+1. `mago format --check`
+2. `mago lint`
+3. `mago analyze`
+4. `phpunit`
+
+Mago is the single source of truth for format/lint/analyze — do **not** run
+`php-cs-fixer`, `phpstan` or `psalm`.
+
+PHPUnit uses the **attribute** syntax (`#[Test]`, `#[CoversClass]`,
+`#[DataProvider]`). 15 tests cover the controllers, the Stripe HTTP client
+(via `MockHttpClient`) and the OAuth state manager.
+
+---
+
+## Logging
+
+All OAuth events go through the `stripe` Monolog channel and use a stable
+event-name vocabulary so they can be grepped in CloudWatch:
+
+| Event                                | Level    | When                                  |
+|--------------------------------------|----------|---------------------------------------|
+| `stripe.connect.initiated`           | info     | `/connect` builds the authorize URL   |
+| `stripe.connect.user_aborted`        | warning  | Stripe redirects back with `error=…`  |
+| `stripe.connect.state_mismatch`      | error    | CSRF state invalid / missing code     |
+| `stripe.connect.token_exchange_failed` | error  | Stripe API call failed                |
+| `stripe.connect.success`             | info     | Token exchange succeeded              |
+
+In `prod` Monolog writes JSON to `stderr`, captured by the ECS `awslogs`
+driver.
+
+---
+
+## Deployment (preprod)
+
+Deployment is **always** driven by `deploy/deploy.sh ENV=preprod` (and
+`prod` later) — never run `aws ecs …` ad-hoc against these clusters.
+
+### Naming convention
+
+| Resource        | Name                                   |
+|-----------------|----------------------------------------|
+| Cluster         | `stripeconnect-website-${ENV}-cluster` |
+| Service         | `stripeconnect-website-${ENV}-svc`     |
+| Target group    | `stripeconnect-website-${ENV}-tg`      |
+| Task family     | `stripeconnect-website-${ENV}`         |
+| Log group       | `/ecs/stripeconnect-website-${ENV}`    |
+
+### What `deploy.sh` does
+
+Each step is idempotent (describe-then-create-or-update):
+
+1. `ensure-cluster.sh` — create the ECS cluster + log group if missing.
+2. `ensure-target-group.sh` — create the ALB target group with the
+   `/healthz` health check.
+3. `ensure-listener-rule.sh` — add a host-header rule on the **shared**
+   preprod ALB listener for `stripeconnect.eliberty.fr`.
+4. `ensure-task-definition.sh` — register a new task-definition revision
+   pointing at the new image and pulling secrets from SSM.
+5. `ensure-service.sh` — create the service the first time, otherwise
+   `update-service --force-new-deployment`, then wait for stability.
+
+### Manual deploy
+
+```sh
+# from a developer machine with AWS credentials
+IMAGE_TAG=$(git rev-parse --short HEAD) ./deploy/deploy.sh preprod
+```
+
+### CI/CD
+
+- **CI** (`.github/workflows/ci.yml`) runs `make ci` on every push and PR.
+- **CD** (`.github/workflows/deploy-preprod.yml`) runs on GitHub releases
+  whose tag ends with `-preprod`. It uses GitHub OIDC (no long-lived AWS
+  keys), builds + pushes the image to ECR, then runs
+  `deploy/deploy.sh preprod`.
+
+To ship a preprod release:
+
+```sh
+git tag v0.1.0-preprod && git push origin v0.1.0-preprod
+gh release create v0.1.0-preprod --title v0.1.0-preprod --generate-notes
+```
+
+The production workflow is intentionally not implemented yet
+("we will elaborate later for production").
+
+### Out-of-band prerequisites
+
+These resources must exist before the first preprod deploy and are not
+managed by the scripts:
+
+- ECR repository `stripeconnect-website`
+- SSM SecureString parameters under `/stripeconnect-website/preprod/`:
+  - `APP_SECRET`
+  - `STRIPE_CLIENT_ID`
+  - `STRIPE_CLIENT_SECRET`
+- IAM roles:
+  - `ecsTaskExecutionRole` (with `AmazonECSTaskExecutionRolePolicy` +
+    `ssm:GetParameters` on the path above)
+  - `stripeconnect-website-preprod-task` (task role)
+  - `github-oidc-stripeconnect-website-preprod` (OIDC trust for
+    `repo:ElibertyRepos/stripeconnector-website:*`)
+
+---
+
+## License
+
+Proprietary © E-Liberty.

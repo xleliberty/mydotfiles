@@ -1,0 +1,22 @@
+<?php
+
+namespace Eliberty\RedpillBundle\Enum;
+
+class ExternalBookingProvider extends EnumType
+{
+    protected static $name = 'enumexternalbookingprovider';
+
+    protected static $allowEmpty = true;
+
+    public const AX_BOOKING            = 'ax_booking';
+    public const ELIBERTY_BOOKING      = 'eliberty_booking';
+    public const KORALP                = 'koralp';
+    public const TEAMAXESS_RESERVATION = 'teamaxess_reservation';
+
+    protected static $values = [
+        self::AX_BOOKING,
+        self::ELIBERTY_BOOKING,
+        self::KORALP,
+        self::TEAMAXESS_RESERVATION,
+    ];
+}

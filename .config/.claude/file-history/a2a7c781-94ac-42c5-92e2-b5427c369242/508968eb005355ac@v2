@@ -1,0 +1,52 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    quality:
+        name: Mago + PHPUnit
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup PHP 8.4
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  extensions: intl, ctype, iconv, opcache
+                  coverage: none
+                  tools: composer:v2
+
+            - name: Cache composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache
+                  key: composer-${{ hashFiles('composer.lock', 'composer.json') }}
+                  restore-keys: composer-
+
+            - name: Install dependencies
+              run: composer install --no-interaction --prefer-dist
+
+            - name: Install Mago
+              run: |
+                  curl -fsSL https://mago.carthage.software/install.sh | bash
+                  echo "$HOME/.mago/bin" >> "$GITHUB_PATH"
+
+            - name: mago format --check
+              run: mago format --check
+
+            - name: mago lint
+              run: mago lint
+
+            - name: mago analyze
+              run: mago analyze
+
+            - name: phpunit
+              run: vendor/bin/phpunit --testdox

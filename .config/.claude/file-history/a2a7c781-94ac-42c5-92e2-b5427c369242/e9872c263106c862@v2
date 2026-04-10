@@ -1,0 +1,152 @@
+# CLAUDE.md
+
+Guidance for Claude Code when working in this repository.
+
+## Project
+
+`stripeconnect.eliberty.fr` — a small Symfony 8.x / PHP 8.4 website whose
+sole purpose is to onboard E-Liberty customers onto our Stripe Connect
+platform via the **OAuth standard accounts** flow.
+
+Reference: https://docs.stripe.com/connect/oauth-standard-accounts
+
+The site has exactly three user-facing views:
+
+1. `GET /` — branded landing page with a single CTA
+   "Connect my account with E-Liberty".
+2. `GET /connect` — generates a CSRF `state`, 302-redirects to Stripe's
+   OAuth authorize URL.
+3. `GET /oauth/callback` — exchanges `code` for a token against
+   `https://connect.stripe.com/oauth/token` and renders a single
+   `result.html.twig` template in either `success` or `error` state.
+
+A `GET /healthz` route exists for the ALB target group.
+
+Full spec: `docs/stripeconnector-website.md`.
+Initial implementation plan: `~/.claude/plans/federated-pondering-dahl.md`.
+
+## Deliberate design choices (do NOT "fix" these)
+
+- **No database, no persistence.** The website never stores the connected
+  `stripe_user_id` anywhere. Every significant event is logged via Monolog,
+  and that log stream is the audit trail. If a future task seems to require
+  persistence, stop and ask the user first.
+- **No `stripe/stripe-php` SDK.** We only call one endpoint (the OAuth token
+  exchange). Use `symfony/http-client` directly. Do not add the Stripe PHP
+  SDK just for convenience.
+- **Single result template, two states.** `result.html.twig` handles both
+  success and error/unfinished. Do not split it.
+
+## Tech stack
+
+| Concern        | Choice                                                       |
+|----------------|--------------------------------------------------------------|
+| Language       | PHP 8.4 (use the latest syntax — property hooks, asymmetric  |
+|                | visibility, `#[\Override]`, etc. where idiomatic)            |
+| Framework      | Symfony 8.x                                                  |
+| Runtime        | FrankenPHP (worker mode) in Docker                           |
+| Templating     | Twig                                                         |
+| Logging        | Monolog — JSON to stderr in prod, pretty in dev              |
+| HTTP           | `symfony/http-client`                                        |
+| Tests          | PHPUnit (latest) — **attribute syntax only**, no annotations |
+| Quality        | Mago (format + lint + analyze) — single source of truth      |
+| Secrets        | AWS SSM Parameter Store (SecureString), injected by ECS      |
+| IaC            | Idempotent shell scripts using the AWS CLI                   |
+| CI/CD          | GitHub Actions, OIDC for deployments                         |
+
+## Quality gate
+
+**Every change must pass `make ci` before commit.**
+
+`make ci` runs, in order:
+1. `mago format --check`
+2. `mago lint`
+3. `mago analyze`
+4. `phpunit`
+
+Rules:
+- Never run `php-cs-fixer`, `phpstan`, or `psalm` directly — Mago is the
+  single source of truth. Do not add those tools.
+- Never bypass the quality gate (`--no-verify`, skipping mago, etc.).
+- When adding a class, also add its PHPUnit test in the mirrored
+  `tests/` path using **attribute** syntax (`#[Test]`, `#[DataProvider]`,
+  `#[CoversClass]`).
+
+## Logging conventions
+
+All OAuth-flow events use dotted event names under the `stripe.connect.*`
+namespace so they are easy to grep in CloudWatch:
+
+- `stripe.connect.initiated` — info, on `/connect`
+- `stripe.connect.user_aborted` — warning, Stripe returned `error=*`
+- `stripe.connect.state_mismatch` — error, CSRF state invalid
+- `stripe.connect.token_exchange_failed` — error, with response body
+- `stripe.connect.success` — info, with `stripe_user_id`, `livemode`, and a
+  **masked** access token (never log the raw token)
+
+When adding new events, follow the same `stripe.connect.<snake_case>` shape.
+
+## Configuration (env vars)
+
+| Var                     | Notes                                       |
+|-------------------------|---------------------------------------------|
+| `APP_ENV`               | `dev` / `prod`                              |
+| `APP_SECRET`            | SSM SecureString in deployed envs           |
+| `STRIPE_CLIENT_ID`      | SSM SecureString                            |
+| `STRIPE_CLIENT_SECRET`  | SSM SecureString                            |
+| `STRIPE_REDIRECT_URI`   | Plain env var                               |
+| `STRIPE_OAUTH_BASE_URL` | Defaults to `https://connect.stripe.com`    |
+
+**SSM path convention:** `/stripeconnect-website/{env}/{KEY}`.
+Never inline secrets in task definitions, `.env`, or source code.
+
+## Infrastructure & deployment
+
+ECS naming convention (strict):
+
+- Cluster: `stripeconnect-website-${ENV}-cluster`
+- Service: `stripeconnect-website-${ENV}-svc`
+- Target group: `stripeconnect-website-${ENV}-tg`
+- Task family: `stripeconnect-website-${ENV}`
+
+Deployment entry point is **always** `deploy/deploy.sh ENV=preprod|prod` —
+never run `aws ecs ...` ad-hoc against these clusters. All `deploy/ensure-*.sh`
+scripts must be idempotent (describe-then-create-or-update).
+
+Per-env config lives in `deploy/env/${ENV}.env`. Production values are
+placeholders until further notice — do not fabricate prod ARNs/subnets.
+
+The preprod ALB and listener are **shared** with other services; we only
+attach a host-header rule for `stripeconnect.eliberty.fr`. Never modify
+existing rules on that listener.
+
+## CI/CD
+
+- `.github/workflows/ci.yml` runs `make ci` on every push & PR.
+- `.github/workflows/deploy-preprod.yml` triggers on GitHub releases whose
+  tag ends with `-preprod`. It uses OIDC (no long-lived AWS keys), builds
+  and pushes the image to ECR, then runs `deploy/deploy.sh preprod`.
+- Production workflow is intentionally not implemented yet ("we will
+  elaborate later for production").
+
+## Common commands
+
+```sh
+make up              # docker compose up -d
+make sh              # shell into the app container
+make test            # phpunit
+make format          # mago format
+make lint            # mago lint
+make analyze         # mago analyze
+make ci              # full gate: format --check + lint + analyze + test
+make build           # docker build local image
+make deploy ENV=preprod
+```
+
+## When in doubt
+
+- Re-read `docs/stripeconnector-website.md` — it is the authoritative spec.
+- If a request seems to contradict the "no persistence / log-only" rule or
+  the "no Stripe SDK" rule, **ask the user before implementing**.
+- Prefer the smallest change that satisfies the requirement. This codebase
+  is deliberately minimal.

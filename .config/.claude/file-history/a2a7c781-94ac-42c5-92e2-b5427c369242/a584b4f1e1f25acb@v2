@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Register a new ECS task definition revision for the requested IMAGE_TAG.
+# Prints the new task definition ARN on stdout (and also writes it to /tmp).
+set -euo pipefail
+cd "$(dirname "$0")"
+# shellcheck source=lib.sh
+source "./lib.sh"
+load_env "${1:-}"
+
+: "${IMAGE_TAG:?IMAGE_TAG env var required (e.g. git sha)}"
+
+IMAGE="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+SSM_BASE="/stripeconnect-website/${ENV}"
+
+container_def=$(cat <<JSON
+[
+  {
+    "name": "app",
+    "image": "${IMAGE}",
+    "essential": true,
+    "portMappings": [{ "containerPort": 80, "protocol": "tcp" }],
+    "environment": [
+      { "name": "APP_ENV", "value": "prod" },
+      { "name": "APP_DEBUG", "value": "0" },
+      { "name": "STRIPE_REDIRECT_URI", "value": "https://${HOST}/oauth/callback" },
+      { "name": "STRIPE_OAUTH_BASE_URL", "value": "https://connect.stripe.com" }
+    ],
+    "secrets": [
+      { "name": "APP_SECRET",           "valueFrom": "${SSM_BASE}/APP_SECRET" },
+      { "name": "STRIPE_CLIENT_ID",     "valueFrom": "${SSM_BASE}/STRIPE_CLIENT_ID" },
+      { "name": "STRIPE_CLIENT_SECRET", "valueFrom": "${SSM_BASE}/STRIPE_CLIENT_SECRET" }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${LOG_GROUP}",
+        "awslogs-region": "${AWS_REGION}",
+        "awslogs-stream-prefix": "app",
+        "awslogs-create-group": "true"
+      }
+    },
+    "healthCheck": {
+      "command": ["CMD-SHELL", "curl -fsS http://127.0.0.1/healthz || exit 1"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 20
+    }
+  }
+]
+JSON
+)
+
+log "registering task definition $TASK_FAMILY (image $IMAGE)"
+new_td_arn="$(aws ecs register-task-definition \
+    --family "$TASK_FAMILY" \
+    --network-mode awsvpc \
+    --requires-compatibilities FARGATE \
+    --cpu "$CPU" \
+    --memory "$MEMORY" \
+    --execution-role-arn "$TASK_EXECUTION_ROLE_ARN" \
+    --task-role-arn "$TASK_ROLE_ARN" \
+    --container-definitions "$container_def" \
+    --region "$AWS_REGION" \
+    --query 'taskDefinition.taskDefinitionArn' \
+    --output text)"
+
+log "registered $new_td_arn"
+echo "$new_td_arn" > /tmp/stripeconnect-website-td-arn
+echo "$new_td_arn"

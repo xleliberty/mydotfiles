@@ -1,0 +1,21 @@
+---
+services:
+    mailcatcher:
+        image: stpaquet/alpinemailcatcher
+        ports:
+            - 1025:1025
+        restart: on-failure
+        networks:
+            - shared
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.mailcatcher.rule=Host(`mail.${DOMAIN_USERNAME}.loc`, `mail.${DOMAIN_USERNAME}.localhost`, `mail.eliberty.loc`)"
+            - "traefik.http.routers.mailcatcher.tls=true"
+            - "traefik.http.routers.mailcatcher.entrypoints=websecure"
+            - "traefik.http.services.mailcatcher.loadbalancer.server.port=1080"
+            - "Project=eliberty.shared"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: '100k'
+                max-file: '20'

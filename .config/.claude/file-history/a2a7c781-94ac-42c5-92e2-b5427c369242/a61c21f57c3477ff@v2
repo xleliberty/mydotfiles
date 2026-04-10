@@ -1,0 +1,19 @@
+# Mago configuration — single source of truth for format, lint and static analysis.
+# https://mago.carthage.software/
+
+php_version = "8.4"
+
+[source]
+paths = ["src", "tests", "public"]
+excludes = ["var", "vendor"]
+
+[format]
+print_width = 120
+tab_width = 4
+use_tabs = false
+
+[linter]
+default_plugins = true
+
+[analyzer]
+# Strictest level by default — we want all type issues surfaced.

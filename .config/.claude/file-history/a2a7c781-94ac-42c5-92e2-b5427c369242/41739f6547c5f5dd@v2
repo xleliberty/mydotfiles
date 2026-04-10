@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Create the ALB target group if it does not exist. Idempotent.
+set -euo pipefail
+cd "$(dirname "$0")"
+# shellcheck source=lib.sh
+source "./lib.sh"
+load_env "${1:-}"
+
+tg_arn="$(aws elbv2 describe-target-groups \
+    --names "$TG_NAME" \
+    --region "$AWS_REGION" \
+    --query 'TargetGroups[0].TargetGroupArn' \
+    --output text 2>/dev/null || true)"
+
+if [[ -n "$tg_arn" && "$tg_arn" != "None" ]]; then
+    log "target group $TG_NAME already exists: $tg_arn"
+else
+    log "creating target group $TG_NAME"
+    tg_arn="$(aws elbv2 create-target-group \
+        --name "$TG_NAME" \
+        --protocol HTTP \
+        --port 80 \
+        --vpc-id "$VPC_ID" \
+        --target-type ip \
+        --health-check-protocol HTTP \
+        --health-check-path /healthz \
+        --health-check-interval-seconds 15 \
+        --health-check-timeout-seconds 5 \
+        --healthy-threshold-count 2 \
+        --unhealthy-threshold-count 3 \
+        --matcher 'HttpCode=200' \
+        --region "$AWS_REGION" \
+        --query 'TargetGroups[0].TargetGroupArn' \
+        --output text)"
+    log "created $tg_arn"
+fi
+
+echo "$tg_arn" > /tmp/stripeconnect-website-tg-arn

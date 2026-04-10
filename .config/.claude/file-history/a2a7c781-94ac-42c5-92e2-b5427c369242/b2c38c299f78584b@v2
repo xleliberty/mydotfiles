@@ -1,0 +1,25 @@
+ENV=preprod
+AWS_REGION=eu-west-1
+ACCOUNT_ID=004794120172
+
+CLUSTER_NAME=stripeconnect-website-preprod-cluster
+SERVICE_NAME=stripeconnect-website-preprod-svc
+TG_NAME=stripeconnect-website-preprod-tg
+TASK_FAMILY=stripeconnect-website-preprod
+LOG_GROUP=/ecs/stripeconnect-website-preprod
+
+ALB_ARN=arn:aws:elasticloadbalancing:eu-west-1:004794120172:loadbalancer/app/preprod-shared-alb/668daaa81d5faa93
+LISTENER_ARN=arn:aws:elasticloadbalancing:eu-west-1:004794120172:listener/app/preprod-shared-alb/668daaa81d5faa93/ea03274d8f2e4f4f
+VPC_ID=vpc-0b9ef02f7aaf3b3d5
+SUBNETS="subnet-0abc5e311761adb09 subnet-093122bf91d93015d"
+SECURITY_GROUP=sg-0bac5a56a67d31cfa
+
+HOST=stripeconnect.eliberty.fr
+ECR_REPO=stripeconnect-website
+
+DESIRED_COUNT=2
+CPU=512
+MEMORY=1024
+
+TASK_EXECUTION_ROLE_ARN=arn:aws:iam::004794120172:role/ecsTaskExecutionRole
+TASK_ROLE_ARN=arn:aws:iam::004794120172:role/stripeconnect-website-preprod-task

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connecter mon compte Stripe à E-Liberty{% endblock %}
+
+{% block body %}
+    <h1>Connectez votre compte Stripe à E-Liberty</h1>
+
+    <p>
+        Pour que nous puissions collecter vos paiements en votre nom et vous reverser
+        les fonds correspondants, E-Liberty a besoin d'une autorisation d'accès à
+        votre compte Stripe.
+    </p>
+
+    <p>
+        En cliquant sur le bouton ci-dessous, vous serez redirigé·e vers Stripe
+        pour confirmer cette connexion. L'opération ne prend que quelques secondes
+        et peut être révoquée à tout moment depuis votre tableau de bord Stripe.
+    </p>
+
+    <p>
+        <a class="cta" href="{{ path('connect') }}">
+            Connecter mon compte avec E-Liberty
+        </a>
+    </p>
+{% endblock %}

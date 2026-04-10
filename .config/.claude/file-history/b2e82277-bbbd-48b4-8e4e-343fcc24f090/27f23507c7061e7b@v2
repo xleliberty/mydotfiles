@@ -1,0 +1,3 @@
+doctrine_phpcr:
+    odm:
+        metadata_cache_driver: array

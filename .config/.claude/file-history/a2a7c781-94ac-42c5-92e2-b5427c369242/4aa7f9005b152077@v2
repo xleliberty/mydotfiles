@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {%- if status == 'success' -%}
+        Connexion réussie · E-Liberty
+    {%- else -%}
+        Connexion incomplète · E-Liberty
+    {%- endif -%}
+{% endblock %}
+
+{% block body %}
+    {% if status == 'success' %}
+        <h1><span class="badge-success">✓</span> Votre compte Stripe est connecté</h1>
+
+        <p>
+            Merci&nbsp;! Votre compte Stripe est désormais relié à la plateforme
+            E-Liberty. Vous n'avez rien d'autre à faire&nbsp;: nos équipes prendront
+            le relais et vous pourrez suivre vos transactions depuis votre espace
+            habituel.
+        </p>
+
+        <p>
+            Vous pouvez fermer cette page en toute sécurité.
+        </p>
+    {% else %}
+        <h1><span class="badge-error">!</span> La connexion n'a pas abouti</h1>
+
+        <p>
+            Il semble que le processus d'autorisation Stripe n'ait pas pu être
+            finalisé. Aucune action n'a été enregistrée de notre côté.
+        </p>
+
+        <p>
+            Vous pouvez réessayer depuis la page d'accueil. Si le problème persiste,
+            contactez votre interlocuteur E-Liberty habituel.
+        </p>
+
+        <p>
+            <a class="cta" href="{{ path('home') }}">Réessayer</a>
+        </p>
+    {% endif %}
+{% endblock %}

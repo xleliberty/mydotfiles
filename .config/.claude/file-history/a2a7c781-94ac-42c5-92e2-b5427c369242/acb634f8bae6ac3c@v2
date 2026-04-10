@@ -1,0 +1,21 @@
+# This file defines *public* defaults. Real secrets must go in .env.local
+# (dev) or in AWS SSM Parameter Store (preprod/prod).
+
+###> symfony/framework-bundle ###
+APP_ENV=prod
+APP_DEBUG=0
+APP_SECRET=change-me
+APP_SHARE_DIR=var/share
+###< symfony/framework-bundle ###
+
+###> symfony/routing ###
+# Configure how to generate URLs in non-HTTP contexts, such as CLI commands.
+DEFAULT_URI=https://stripeconnect.eliberty.fr
+###< symfony/routing ###
+
+###> stripe-connect ###
+STRIPE_CLIENT_ID=ca_change_me
+STRIPE_CLIENT_SECRET=sk_change_me
+STRIPE_REDIRECT_URI=https://stripeconnect.eliberty.fr/oauth/callback
+STRIPE_OAUTH_BASE_URL=https://connect.stripe.com
+###< stripe-connect ###

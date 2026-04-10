@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Security\OAuthStateManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
+final readonly class ConnectController
+{
+    public function __construct(
+        private OAuthStateManager $stateManager,
+        private LoggerInterface $logger,
+        #[\SensitiveParameter] private string $clientId,
+        private string $redirectUri,
+        private string $oauthBaseUrl,
+    ) {
+    }
+
+    #[Route('/connect', name: 'connect', methods: ['GET'])]
+    public function __invoke(): RedirectResponse
+    {
+        $state = $this->stateManager->generate();
+
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $this->clientId,
+            'scope' => 'read_write',
+            'redirect_uri' => $this->redirectUri,
+            'state' => $state,
+        ]);
+
+        $url = rtrim($this->oauthBaseUrl, '/').'/oauth/authorize?'.$query;
+
+        $this->logger->info('stripe.connect.initiated', [
+            'redirect_uri' => $this->redirectUri,
+        ]);
+
+        return new RedirectResponse($url);
+    }
+}

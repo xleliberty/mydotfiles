@@ -1,0 +1,55 @@
+name: Deploy preprod
+
+on:
+    release:
+        types: [published]
+
+permissions:
+    contents: read
+    id-token: write  # required for OIDC
+
+jobs:
+    deploy:
+        name: Build & deploy to preprod ECS
+        if: endsWith(github.event.release.tag_name, '-preprod')
+        runs-on: ubuntu-latest
+        environment: preprod
+
+        env:
+            AWS_REGION: eu-west-1
+            ACCOUNT_ID: "004794120172"
+            ECR_REPO: stripeconnect-website
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Configure AWS credentials (OIDC)
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: arn:aws:iam::004794120172:role/github-oidc-stripeconnect-website-preprod
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Login to Amazon ECR
+              id: ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Compute image tag
+              id: tag
+              run: echo "tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+            - name: Build and push image
+              env:
+                  IMAGE_TAG: ${{ steps.tag.outputs.tag }}
+                  REGISTRY: ${{ steps.ecr.outputs.registry }}
+              run: |
+                  docker build -f docker/Dockerfile \
+                      -t "$REGISTRY/$ECR_REPO:$IMAGE_TAG" \
+                      -t "$REGISTRY/$ECR_REPO:preprod" \
+                      .
+                  docker push "$REGISTRY/$ECR_REPO:$IMAGE_TAG"
+                  docker push "$REGISTRY/$ECR_REPO:preprod"
+
+            - name: Deploy to ECS
+              env:
+                  IMAGE_TAG: ${{ steps.tag.outputs.tag }}
+              run: ./deploy/deploy.sh preprod

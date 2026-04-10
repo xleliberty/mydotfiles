@@ -1,0 +1,79 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Security\OAuthStateManager;
+use App\Stripe\StripeOAuthClient;
+use App\Stripe\StripeOAuthException;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class OAuthCallbackController extends AbstractController
+{
+    public function __construct(
+        private readonly OAuthStateManager $stateManager,
+        private readonly StripeOAuthClient $stripeClient,
+        private readonly LoggerInterface $logger,
+    ) {
+    }
+
+    #[Route('/oauth/callback', name: 'oauth_callback', methods: ['GET'])]
+    public function __invoke(Request $request): Response
+    {
+        $error = $request->query->get('error');
+        if (null !== $error) {
+            $this->logger->warning('stripe.connect.user_aborted', [
+                'error' => $error,
+                'error_description' => $request->query->get('error_description'),
+            ]);
+
+            return $this->renderResult('error', 'user_aborted', Response::HTTP_OK);
+        }
+
+        $state = $request->query->get('state');
+        if (!$this->stateManager->consume(\is_string($state) ? $state : null)) {
+            $this->logger->error('stripe.connect.state_mismatch', [
+                'state_present' => null !== $state,
+            ]);
+
+            return $this->renderResult('error', 'state_mismatch', Response::HTTP_BAD_REQUEST);
+        }
+
+        $code = $request->query->get('code');
+        if (!\is_string($code) || '' === $code) {
+            $this->logger->error('stripe.connect.state_mismatch', [
+                'reason' => 'missing_code',
+            ]);
+
+            return $this->renderResult('error', 'missing_code', Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $token = $this->stripeClient->exchangeCode($code);
+        } catch (StripeOAuthException) {
+            return $this->renderResult('error', 'token_exchange_failed', Response::HTTP_BAD_GATEWAY);
+        }
+
+        $this->logger->info('stripe.connect.success', [
+            'stripe_user_id' => $token->stripeUserId,
+            'livemode' => $token->livemode,
+            'scope' => $token->scope,
+            'access_token_masked' => $token->maskedAccessToken(),
+        ]);
+
+        return $this->renderResult('success', null);
+    }
+
+    private function renderResult(string $status, ?string $reason, int $httpStatus = Response::HTTP_OK): Response
+    {
+        return $this->render('result.html.twig', [
+            'status' => $status,
+            'reason' => $reason,
+        ], new Response(status: $httpStatus));
+    }
+}
