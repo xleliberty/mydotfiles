@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Object id="edc2AtoaQMKqDCILNGNPW" type="connection">
+  <Properties>
+    <Property key="Alias">PostgreSQL</Property>
+    <Property key="AutoDetectType">true</Property>
+    <Property key="DatabaseType">postgresql</Property>
+    <Property key="Notes"></Property>
+    <Property key="SettingsFormat">SERVER_INFO</Property>
+    <Property key="SshEnabled">false</Property>
+    <Property key="Url"></Property>
+    <Property key="UrlFormat">0</Property>
+  </Properties>
+  <Objects>
+    <Object type="urlVariables">
+      <Properties>
+        <Property key="Database">postgres</Property>
+        <Property key="Port">5432</Property>
+        <Property key="Server">rds-prod.awstack</Property>
+      </Properties>
+    </Object>
+  </Objects>
+  <References>
+    <Reference type="driver">
+      <Properties>
+        <Property key="label">PostgreSQL</Property>
+        <Property key="template">postgresql</Property>
+      </Properties>
+    </Reference>
+  </References>
+</Object>

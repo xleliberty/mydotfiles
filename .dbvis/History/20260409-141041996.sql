@@ -1,0 +1,1 @@
+SELECT id FROM contractors WHERE provider_type ='sd'

@@ -1,0 +1,138 @@
+2026-04-09 11:31:23.643 INFO     4 [AWT-EventQueue-0 - g.initialize] DbVisualizer: STARTING
+2026-04-09 11:31:23.648 CONFIG   4 [AWT-EventQueue-0 - g.g] Product: DbVisualizer 26.1.1 (build: 4689)
+2026-04-09 11:31:23.648 CONFIG   4 [AWT-EventQueue-0 - g.g] OS: Linux
+2026-04-09 11:31:23.648 CONFIG   4 [AWT-EventQueue-0 - g.g] OS Version: 6.14.0-33-generic
+2026-04-09 11:31:23.649 CONFIG   4 [AWT-EventQueue-0 - g.g] OS Arch: amd64
+2026-04-09 11:31:23.649 CONFIG   4 [AWT-EventQueue-0 - g.g] Java Version: 25.0.2
+2026-04-09 11:31:23.650 CONFIG   4 [AWT-EventQueue-0 - g.g] Java VM: OpenJDK 64-Bit Server VM
+2026-04-09 11:31:23.650 CONFIG   4 [AWT-EventQueue-0 - g.g] Java Vendor: Eclipse Adoptium
+2026-04-09 11:31:23.650 CONFIG   4 [AWT-EventQueue-0 - g.g] Java Home: /opt/DbVisualizer/jre
+2026-04-09 11:31:23.650 CONFIG   4 [AWT-EventQueue-0 - g.g] DbVis Home: /opt/DbVisualizer
+2026-04-09 11:31:23.650 CONFIG   4 [AWT-EventQueue-0 - g.g] User Home: /home/xav
+2026-04-09 11:31:23.651 CONFIG   4 [AWT-EventQueue-0 - g.g] PrefsDir: /home/xav/.dbvis
+2026-04-09 11:31:23.651 CONFIG   4 [AWT-EventQueue-0 - g.g] DefaultLocale: fr-FR
+2026-04-09 11:31:23.651 CONFIG   4 [AWT-EventQueue-0 - g.g] SessionId: 4
+2026-04-09 11:31:23.652 CONFIG   4 [AWT-EventQueue-0 - g.g] Java Arguments: <none>
+2026-04-09 11:31:23.653 CONFIG   4 [AWT-EventQueue-0 - g.g] Java Properties: 
+--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED
+--add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing.table=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing=ALL-UNNAMED
+--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED
+--add-exports=java.xml/com.sun.org.apache.xerces.internal.parsers=ALL-UNNAMED
+--add-modules=com.install4j.runtime
+--add-modules=javafx.controls,javafx.web,javafx.swing
+--add-opens=java.base/java.nio=ALL-UNNAMED
+--add-opens=java.base/java.util=ALL-UNNAMED
+--add-opens=java.desktop/java.awt.event=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.text.html=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.image=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt=ALL-UNNAMED
+--add-opens=java.xml/com.sun.org.apache.xerces.internal.util=ALL-UNNAMED
+--enable-native-access=ALL-UNNAMED
+--enable-native-access=javafx.graphics
+--enable-native-access=javafx.web
+--module-path=/opt/DbVisualizer/.install4j/i4jruntime.jar:/opt/DbVisualizer/lib/javafx
+-Ddbvis.home=/opt/DbVisualizer/
+-Dsun.java2d.xrender=false
+-XX:StringTableSize=1000003
+-Xmx4096M
+2026-04-09 11:31:23.653 CONFIG   4 [AWT-EventQueue-0 - g.g] Default Charset: UTF-8
+2026-04-09 11:31:23.687 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/Bookmarks
+2026-04-09 11:31:23.687 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/cache
+2026-04-09 11:31:23.687 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/cache/driver
+2026-04-09 11:31:23.688 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/cache/metadata
+2026-04-09 11:31:23.688 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/cache/update
+2026-04-09 11:31:23.688 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253
+2026-04-09 11:31:23.688 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/ai
+2026-04-09 11:31:23.689 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/ai/chats
+2026-04-09 11:31:23.689 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/borders
+2026-04-09 11:31:23.689 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/keymaps
+2026-04-09 11:31:23.689 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/layouts
+2026-04-09 11:31:23.689 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/sqlformats
+2026-04-09 11:31:23.690 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/cache/pathmeta
+2026-04-09 11:31:23.690 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/cache/recentitems
+2026-04-09 11:31:23.690 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/databaseinfo
+2026-04-09 11:31:23.690 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/databaseinfo/user
+2026-04-09 11:31:23.691 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/databaseinfo/user/databaseTypes
+2026-04-09 11:31:23.691 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/databaseinfo/user/driverTypes
+2026-04-09 11:31:23.691 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/connections
+2026-04-09 11:31:23.691 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/config253/connections_private
+2026-04-09 11:31:23.691 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext
+2026-04-09 11:31:23.692 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/images
+2026-04-09 11:31:23.692 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/images/16x16
+2026-04-09 11:31:23.692 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/images/24x24
+2026-04-09 11:31:23.692 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/profiles
+2026-04-09 11:31:23.692 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/ui
+2026-04-09 11:31:23.693 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/ext/keywords
+2026-04-09 11:31:23.693 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/History
+2026-04-09 11:31:23.693 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/import
+2026-04-09 11:31:23.693 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/jdbc
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/Monitors
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/sqllogs
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/Workspace
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/Workspace/default
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/wsLocks
+2026-04-09 11:31:23.694 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/drivers
+2026-04-09 11:31:23.695 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/drivers/maven
+2026-04-09 11:31:23.695 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/drivers/remote
+2026-04-09 11:31:23.695 INFO     4 [AWT-EventQueue-0 - c.b] Directory created: /home/xav/.dbvis/drivers/local
+2026-04-09 11:31:24.232 INFO     4 [AWT-EventQueue-0 - v.ed] Loaded connections. Successful: 0 Errors: 0.  Total time :37
+2026-04-09 11:31:24.245 INFO     4 [AWT-EventQueue-0 - c.b] Result of loading object hierarchies
++----------+-------------------------------------------------------------------------------------+
+| Severity | Details                                                                             |
++----------+-------------------------------------------------------------------------------------+
+| INFO     | Index file does not exist: /home/xav/.dbvis/config253/connections/connections_index |
++----------+-------------------------------------------------------------------------------------+
+2026-04-09 11:31:24.294 INFO     4 [AWT-EventQueue-0 - bb.s] Cleaning any old driver files
+2026-04-09 11:31:24.294 INFO     4 [AWT-EventQueue-0 - bb.s] Finished cleaning old driver dirs. Time: 0ms
+2026-04-09 11:31:24.298 INFO     4 [AWT-EventQueue-0 - OraTNSUtil.getTNSDirectory] The TNS_ADMIN environment variable is not set. Trying ORACLE_HOME
+2026-04-09 11:31:24.298 INFO     4 [AWT-EventQueue-0 - OraTNSUtil.getTNSDirectory] The ORACLE_HOME environment variable is not set. TNS names cannot be used for Oracle connections
+2026-04-09 11:31:24.421 INFO     4 [AWT-EventQueue-0 - pb.h] Existing beans: 'G1 Old Gen' max: 4294967296
+2026-04-09 11:31:24.423 INFO     4 [AWT-EventQueue-0 - pb.h] Memory monitor initialized for MxBean: 'G1 Old Gen' Notification threshold: 41943040 Low memory threshold: 25165824 release buffer: 1048576 Usage threshold: 4253024256
+2026-04-09 11:31:24.445 INFO     4 [AWT-EventQueue-0 - k.d] User icons file: /home/xav/.dbvis/ext/profiles/icons-db.prefs doesn't exist. Ignoring
+2026-04-09 11:31:24.452 INFO     4 [AWT-EventQueue-0 - y.flush] SLF4J(W): No SLF4J providers were found.
+
+2026-04-09 11:31:24.452 INFO     4 [AWT-EventQueue-0 - y.flush] SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+
+2026-04-09 11:31:24.452 INFO     4 [AWT-EventQueue-0 - y.flush] SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+
+2026-04-09 11:33:11.272 INFO     4 [ExecutorRunner-pool-5-thread-1 - d.g] /home/xav/.dbvis/config253 was created during session. Checking if migration is needed
+2026-04-09 11:33:11.273 INFO     4 [ExecutorRunner-pool-5-thread-1 - d.g] Migration not needed since there is no previous configuration in: [/home/xav/.dbvis/config252, /home/xav/.dbvis/config251, /home/xav/.dbvis/config243, /home/xav/.dbvis/config233, /home/xav/.dbvis/config232, /home/xav/.dbvis/config231, /home/xav/.dbvis/config140, /home/xav/.dbvis/config130, /home/xav/.dbvis/config70, /home/xav/.dbvis/config]
+2026-04-09 11:33:11.496 INFO     4 [ExecutorRunner-pool-5-thread-1 - d.y] Internal cache driver loaded: /opt/DbVisualizer/lib/confined/h2-2.4.240.jar. Driver version: 2.4
+2026-04-09 11:33:11.692 INFO     4 [ExecutorRunner-pool-5-thread-1 - d.i] Internal cache connected: jdbc:h2:async:/home/xav/.dbvis/cache/metadata/MetaDataCache-v9;AUTO_SERVER=false
+2026-04-09 11:33:11.726 INFO     4 [AWT-EventQueue-0 - h.d] Starting check for stale metadata (threshold=60)
+2026-04-09 11:33:11.729 INFO     4 [AWT-EventQueue-0 - r.d] Generating descriptor for legacy workspace.
+2026-04-09 11:33:11.787 INFO     4 [AWT-EventQueue-0 - c.c] Load workspace time: 0.029
+2026-04-09 11:33:11.788 INFO     4 [AWT-EventQueue-0 - qc.f] Workspace auto saver thread started. Interval: 30 sec
+2026-04-09 11:33:11.789 INFO     4 [AWT-EventQueue-0 - vb.c] Connection keep-alive thread started. Interval: 10 sec
+2026-04-09 11:33:11.791 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] Workspace file modification monitor thread started. Interval: 30 sec
+2026-04-09 11:33:11.796 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] Window(s) visible at: 2.823. Workspace load time: 0.045. Total startup time: 4.902
+2026-04-09 11:33:21.276 INFO     4 [ExecutorRunner-pool-5-thread-1 - b.h] Wrote user properties files. Time: 0.114. Success files: 15. Failed: 0
+2026-04-09 11:33:22.285 INFO     4 [AWT-EventQueue-0 - q.b] Automatically resolved index with 1 entries
+2026-04-09 11:33:22.342 INFO     4 [AWT-EventQueue-0 - b.h] Wrote user properties files. Time: 0.165. Success files: 16. Failed: 0
+2026-04-09 11:34:01.721 INFO     4 [AWT-EventQueue-0 - q.b] Automatically resolved index with 1 entries
+2026-04-09 11:34:01.783 INFO     4 [AWT-EventQueue-0 - b.h] Wrote user properties files. Time: 0.093. Success files: 16. Failed: 0
+2026-04-09 11:34:03.846 INFO     4 [AWT-EventQueue-0 - d.b] Changed: edc2AtoaQMKqDCILNGNPW [PostgreSQL] (db=2108880113, cache=-1765111682)
+OLD: 
+NEW: 
+ApplicationName=dbvis^PGDBNAME=postgres^PGHOST=rds-prod.awstack^PGPORT=5432^adaptiveFetch=false^adaptiveFetchMaximum=-1^adaptiveFetchMinimum=0^allowEncodingChanges=false^autosave=never^binaryTransfer=true^binaryTransferDisable=^binaryTransferEnable=^cancelSignalTimeout=10^channelBinding=prefer^cleanupSavepoints=false^connectTimeout=10^convertBooleanToNumeric=false^databaseMetadataCacheFields=65536^databaseMetadataCacheFieldsMiB=5^defaultRowFetchSize=0^disableColumnSanitiser=false^escapeSyntaxCallMode=select^groupStartupParameters=false^gssEncMode=allow^gssResponseTimeout=5000^gssUseDefaultCreds=false^gsslib=auto^hideUnprivilegedObjects=false^hostRecheckSeconds=10^jaasApplicationName=pgjdbc^jaasLogin=true^loadBalanceHosts=false^logServerErrorDetail=true^logUnclosedConnections=false^loggerLevel=OFF^loginTimeout=0^maxSendBufferSize=8192^pemKeyAlgorithm=81440^preferQueryMode=extended^prepareThreshold=5^preparedStatementCacheQueries=256^preparedStatementCacheSizeMiB=5^protocolVersion=3^queryTimeout=0^quoteReturningIdentifiers=true^reWriteBatchedInserts=false^readOnly=false^readOnlyMode=transaction^receiveBufferSize=-1^sendBufferSize=-1^socketTimeout=0^sslNegotiation=postgres^sslResponseTimeout=5000^sslfactory=org.postgresql.ssl.LibPQFactory^sspiServiceClass=POSTGRES^targetServerType=any^tcpKeepAlive=false^tcpNoDelay=true^unknownLength=2147483647^useSpnego=false^xmlFactoryFactor
+2026-04-09 11:34:14.845 INFO     4 [AWT-EventQueue-0 - q.b] Automatically resolved index with 1 entries
+2026-04-09 11:34:14.901 INFO     4 [AWT-EventQueue-0 - b.h] Wrote user properties files. Time: 0.088. Success files: 16. Failed: 0
+2026-04-09 11:36:11.794 INFO     4 [DbVisScheduledVersionCheck-10 - g.tle] Starting checking artifact versions for 1 drivers
+2026-04-09 11:36:11.804 INFO     4 [DbVisScheduledVersionCheck-10 - g.b] Version updates detected
+2026-04-09 11:36:11.806 INFO     4 [DbVisScheduledVersionCheck-10 - g.tle] Check version of all artifacts. Successful: 1 of 1. Duration: 11ms
+2026-04-09 12:04:54.426 INFO     4 [ExecutorRunner-pool-5-thread-7 - y.flush] 2026-04-09T10:04:54.425373051Z ExecutorRunner-pool-5-thread-7 ERROR Log4j API could not find a logging provider.
+
+2026-04-10 20:14:17.091 INFO     4 [AWT-EventQueue-0 - q.b] Automatically resolved index with 1 entries
+2026-04-10 20:14:17.148 INFO     4 [AWT-EventQueue-0 - b.h] Wrote user properties files. Time: 0.121. Success files: 16. Failed: 0
+2026-04-10 20:14:17.150 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] Shutdown time: 1.756
+2026-04-10 20:14:17.150 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] DbVisualizer: STOPPED. ExitType: NORMAL
+

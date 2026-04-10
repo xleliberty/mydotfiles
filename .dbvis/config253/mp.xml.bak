@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DbVisualizer>
+  <MasterPassword algo="3">$argon2id$v=19$m=20000,t=2,p=1$lJwqaOtenFAU0po33aJOzw$oWJt4+pgYzfNovmI5sjYKAG5eDv7h60lsABUWj0hayA</MasterPassword>
+</DbVisualizer>

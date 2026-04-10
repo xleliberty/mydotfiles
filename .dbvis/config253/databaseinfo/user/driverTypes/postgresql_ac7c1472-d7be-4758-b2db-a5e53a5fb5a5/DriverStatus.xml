@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DriverStatus>
+  <resultCode>OK</resultCode>
+  <errorMessage/>
+  <scanResultCode>OK</scanResultCode>
+  <scanErrorMessage/>
+  <verifyResultCode>OK</verifyResultCode>
+  <verifyErrorMessage/>
+  <Files>
+    <File type="JAR" orig="org.postgresql:postgresql:42.7.10" artifactType="maven">
+      <Path>maven/org/postgresql/postgresql/42.7.10/postgresql-42.7.10.jar</Path>
+      <Classes>
+        <Class type="jdbc">org.postgresql.Driver</Class>
+      </Classes>
+    </File>
+  </Files>
+  <lastDriverName>PostgreSQL JDBC Driver</lastDriverName>
+  <lastDriverVersion>42.7.10</lastDriverVersion>
+  <jdbcDriverMajorMinorVersion>42.7</jdbcDriverMajorMinorVersion>
+  <currentDownloadName/>
+</DriverStatus>

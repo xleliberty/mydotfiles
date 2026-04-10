@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DbVisualizer>
+  <General>
+    <ActionWindowGeometry />
+    <AggregationNumberMaxScale>2</AggregationNumberMaxScale>
+    <AggregationShowStatusBarMetrics>true</AggregationShowStatusBarMetrics>
+    <AggregationStatusBarMetrics>NUMBERS.SUM</AggregationStatusBarMetrics>
+    <AggregationWindowGeometry />
+    <AiEnabled>false</AiEnabled>
+    <AiFontScale>110</AiFontScale>
+    <AiIncludeContext>true</AiIncludeContext>
+    <AppFont>Inter-plain-15</AppFont>
+    <AppFontOverride>false</AppFontOverride>
+    <ArrayRepresentation />
+    <AskQuit>true</AskQuit>
+    <AutoCompletionAutoPopup>false</AutoCompletionAutoPopup>
+    <AutoCompletionAutoPopupDelay>300</AutoCompletionAutoPopupDelay>
+    <AutoCompletionInstant>false</AutoCompletionInstant>
+    <AutoCompletionKeywordCase>Default</AutoCompletionKeywordCase>
+    <AutoCompletionMaxSuggestions>100</AutoCompletionMaxSuggestions>
+    <AutoCompletionNameCase>Default</AutoCompletionNameCase>
+    <AutoCompletionSortColumns>true</AutoCompletionSortColumns>
+    <BlobPreviewSize>32</BlobPreviewSize>
+    <BookmarkFrameGeometry />
+    <BooleanFalseFormat>false</BooleanFalseFormat>
+    <BooleanTrueFormat>true</BooleanTrueFormat>
+    <CellViewerAutoDetect>true</CellViewerAutoDetect>
+    <CellViewerImageZoom>both</CellViewerImageZoom>
+    <CellViewerPdfFitPage>width</CellViewerPdfFitPage>
+    <CellWindowGeometry />
+    <ChartConfigurationWindowGeometry />
+    <CheckForUpdateAutoDownload>true</CheckForUpdateAutoDownload>
+    <CheckForUpdateIncludeBeta>false</CheckForUpdateIncludeBeta>
+    <CheckForUpdateInterval>weekly</CheckForUpdateInterval>
+    <CheckForUpdateLastCheck>1775727191757</CheckForUpdateLastCheck>
+    <ColumnDelimiter>\t</ColumnDelimiter>
+    <CommanderMaxRows>20000</CommanderMaxRows>
+    <CompareSelectWindowGeometry />
+    <ConfirmDisconnectAll>true</ConfirmDisconnectAll>
+    <ConfirmExplainMany>true</ConfirmExplainMany>
+    <ConfirmForPromptMasterPasswordWhenNextNeeded>true</ConfirmForPromptMasterPasswordWhenNextNeeded>
+    <ConnectAndExecuteDefaultKey />
+    <ConnectionPermDefault>Confirm</ConnectionPermDefault>
+    <ConnectionPermProduction>Confirm</ConnectionPermProduction>
+    <ConnectionPermTest>Confirm</ConnectionPermTest>
+    <DataFiltersKeepUnusedMonths>12</DataFiltersKeepUnusedMonths>
+    <DataGenerateFilterWithSorting>true</DataGenerateFilterWithSorting>
+    <DataMaxFilters>15</DataMaxFilters>
+    <DataMaxRows>20000</DataMaxRows>
+    <DataMaxRowsInitial>10</DataMaxRowsInitial>
+    <DataMaxRowsInitialActive>false</DataMaxRowsInitialActive>
+    <DataMaxRowsInitialUseFilter>true</DataMaxRowsInitialUseFilter>
+    <DatabasesAutoScrollFromObjectViewTab>false</DatabasesAutoScrollFromObjectViewTab>
+    <DatabasesAutoScrollToObjectViewTab>false</DatabasesAutoScrollToObjectViewTab>
+    <DatabasesTabDoubleClickAction>OpenInTab</DatabasesTabDoubleClickAction>
+    <DatabasesTabDoubleClickModifierAction>OpenInNewTab</DatabasesTabDoubleClickModifierAction>
+    <DatabasesTabFilterPaneSplitterPos />
+    <DatabasesTabFilterPaneVisible>false</DatabasesTabFilterPaneVisible>
+    <DatabasesTabOpenInTabStrategy>ExistingFreeNew</DatabasesTabOpenInTabStrategy>
+    <DatabasesTabOpenObjectAction>OpenInNewTab</DatabasesTabOpenObjectAction>
+    <DatabasesTabToolbarVisible>true</DatabasesTabToolbarVisible>
+    <DateFormat>yyyy-MM-dd</DateFormat>
+    <DebugWindowGeometry />
+    <DecimalNumberFormat>Unformatted</DecimalNumberFormat>
+    <DiffHighlightExactChange>true</DiffHighlightExactChange>
+    <DiffHighlightWhitespaces>true</DiffHighlightWhitespaces>
+    <DriverFrameGeometry />
+    <DriverFrameSplitterPos />
+    <DriverManagerMavenRepos />
+    <EditNullAs>(null)</EditNullAs>
+    <EditorSearch />
+    <Encoding>UTF-8</Encoding>
+    <ExecutionTimeout>60</ExecutionTimeout>
+    <ExplainDefaultView>graph</ExplainDefaultView>
+    <ExplainGraphNavModeEnabled />
+    <ExplainGraphNodeContent>result-set-explainviewer-show-operation-data-command</ExplainGraphNodeContent>
+    <ExplainPlanDetailsGeometry />
+    <ExplainShowDetails>true</ExplainShowDetails>
+    <ExportTextFunction />
+    <FavoritesBarVisible>true</FavoritesBarVisible>
+    <FavoritesTabDoubleClickAction>OpenInTab</FavoritesTabDoubleClickAction>
+    <FavoritesTabDoubleClickModifierAction>OpenInNewTab</FavoritesTabDoubleClickModifierAction>
+    <FavoritesTabToolbarVisible>true</FavoritesTabToolbarVisible>
+    <FileChooserGeometry>969|539|622|362</FileChooserGeometry>
+    <FileChooserStyle>list</FileChooserStyle>
+    <FileLineBreak>LF</FileLineBreak>
+    <FileQuickLoad>true|true|false|false|true|200</FileQuickLoad>
+    <FileSystemCheckSlowDrives>true</FileSystemCheckSlowDrives>
+    <FileUseNativeFileChooser>true</FileUseNativeFileChooser>
+    <FilesTabExtensionsIncludeMask>cql,ddl,js,lua,pks,pls,psql,sql</FilesTabExtensionsIncludeMask>
+    <FilesTabExtensionsShowAll>true</FilesTabExtensionsShowAll>
+    <FilesTabShowDetails>true</FilesTabShowDetails>
+    <FilesTabShowGitRootsOnly />
+    <FilesTabShowHiddenFiles />
+    <FilesTabToolbarVisible>true</FilesTabToolbarVisible>
+    <FitTables>true</FitTables>
+    <FitTablesConsiderHeader>true</FitTablesConsiderHeader>
+    <FormEditorRightAlignedNumbers>false</FormEditorRightAlignedNumbers>
+    <GenerateSQLMode />
+    <GenerateSqlWithVariables>true</GenerateSqlWithVariables>
+    <GraphAnimate>true</GraphAnimate>
+    <GraphArcsToColumns>true</GraphArcsToColumns>
+    <GraphAutoEdgeRouting>true</GraphAutoEdgeRouting>
+    <GraphBridgeArcs>true</GraphBridgeArcs>
+    <GraphControlsVisible>true</GraphControlsVisible>
+    <GraphHighlightLinks>true</GraphHighlightLinks>
+    <GraphLayoutType>Hierarchical</GraphLayoutType>
+    <GraphNavModeEnabled />
+    <GraphNodeContent>Columns</GraphNodeContent>
+    <GraphNodeShowDataType>true</GraphNodeShowDataType>
+    <GraphPrintBackgroundColor />
+    <GraphPrintLightTheme>true</GraphPrintLightTheme>
+    <GraphReferencedOnly>false</GraphReferencedOnly>
+    <GraphSearchAutoZoom>true</GraphSearchAutoZoom>
+    <GraphShowArcLabel>false</GraphShowArcLabel>
+    <GraphShowOneLink>false</GraphShowOneLink>
+    <GraphShowReferenceDirection>ALL</GraphShowReferenceDirection>
+    <GridAutoShowWarnings>true</GridAutoShowWarnings>
+    <GridColumnLabelIsColumnAlias>true</GridColumnLabelIsColumnAlias>
+    <GridColumnSeparatorWidth>-1</GridColumnSeparatorWidth>
+    <GridCopyBlobType>Value</GridCopyBlobType>
+    <GridCopyClobType>Value</GridCopyClobType>
+    <GridDetailsAppearance>Embedded</GridDetailsAppearance>
+    <GridDetailsSplitterPos>980</GridDetailsSplitterPos>
+    <GridDetailsVisible>true</GridDetailsVisible>
+    <GridFont>Inter-plain-15</GridFont>
+    <GridFontOverride>false</GridFontOverride>
+    <GridMaxChars>1000</GridMaxChars>
+    <GridSearchWildcardEnabled>true</GridSearchWildcardEnabled>
+    <GridShowRowHeader>true</GridShowRowHeader>
+    <HistoryTreeShowDetails>false</HistoryTreeShowDetails>
+    <HistoryWindowGeometry />
+    <IconSize>small</IconSize>
+    <IconSizeMenus>small</IconSizeMenus>
+    <IconSizeSubToolBars>small</IconSizeSubToolBars>
+    <ImageSize>100</ImageSize>
+    <InlineEditorPermDefault>No Confirm|No Confirm|No Confirm</InlineEditorPermDefault>
+    <InlineEditorPermProduction>Confirm|Confirm|Confirm</InlineEditorPermProduction>
+    <InlineEditorPermTest>No Confirm|Confirm|Confirm</InlineEditorPermTest>
+    <JsonGridAutoExpand>true</JsonGridAutoExpand>
+    <JsonGridAutoFilter>true</JsonGridAutoFilter>
+    <JsonGridDetailScope>ROOT</JsonGridDetailScope>
+    <JsonGridDisplayMode>SIZE</JsonGridDisplayMode>
+    <KeymapName>Linux</KeymapName>
+    <LogAutoClear>true</LogAutoClear>
+    <LogMultilineColumnWidth>400</LogMultilineColumnWidth>
+    <LogResizeGridRowHeightsOnError>true</LogResizeGridRowHeightsOnError>
+    <LogResizeGridRowHeightsOnSuccess>false</LogResizeGridRowHeightsOnSuccess>
+    <LogShowError>true</LogShowError>
+    <LogShowSuccess>true</LogShowSuccess>
+    <LogTimeFormat>HH:mm:ss</LogTimeFormat>
+    <LookAndFeel>com.formdev.flatlaf.themes.FlatMacDarkLaf</LookAndFeel>
+    <LookAndFeelAutomatic>false</LookAndFeelAutomatic>
+    <MERGE_WINDOW_GEOMETRY />
+    <MainWindowFilesSplitterPos>707</MainWindowFilesSplitterPos>
+    <MainWindowProcedureEditorSplitterPos />
+    <MainWindowSQLEditorSplitterPos>555</MainWindowSQLEditorSplitterPos>
+    <MainWindowVersionControlSplitterPos />
+    <MemoryMonitorConfirmContinue>true</MemoryMonitorConfirmContinue>
+    <MergedWindowTitleAndMenus>true</MergedWindowTitleAndMenus>
+    <MetaDataCacheMode>Persistent</MetaDataCacheMode>
+    <MetaDataCacheStaleThreshold>60</MetaDataCacheStaleThreshold>
+    <MonitorAutoAdjust>true</MonitorAutoAdjust>
+    <MonitorAutoStart>false</MonitorAutoStart>
+    <MonitorDefaultView />
+    <MonitorReloadSecs>300</MonitorReloadSecs>
+    <MonitorRunStyle>Sequential</MonitorRunStyle>
+    <MonitorShowAtStartup>false</MonitorShowAtStartup>
+    <NavigatorGraphNavModeEnabled />
+    <NewlineDelimiter>\n</NewlineDelimiter>
+    <NumberFormat>Unformatted</NumberFormat>
+    <ObjectActionsFormatSQL>true</ObjectActionsFormatSQL>
+    <ObjectActionsPreviewEnabled>false</ObjectActionsPreviewEnabled>
+    <ObjectFilterWindowGeometry />
+    <ObjectViewTabsKeepAtDisconnect>false</ObjectViewTabsKeepAtDisconnect>
+    <ObjectViewTabsLabel>${connectionname}: ${objectname}</ObjectViewTabsLabel>
+    <ObjectViewTabsObjectHeaderVisible>true</ObjectViewTabsObjectHeaderVisible>
+    <ObjectsTreeSortColumns />
+    <ObjectsTreeSortGroupingNodes>false</ObjectsTreeSortGroupingNodes>
+    <OnboardingProgress>{"choices":[{"name":"masterPassword","clicked":"save","version":"26.1.1","occasion":"Onboarding"},{"name":"eula","clicked":"accept","version":"26.1.1","occasion":"Onboarding"},{"name":"InstallLicense","clicked":"install","version":"26.1.1","occasion":"Onboarding"},{"name":"MasterPasswordSuccess","clicked":"next","version":"26.1.1","occasion":"Onboarding"},{"name":"ai","clicked":"turn_off","version":"26.1.1","occasion":"Onboarding"},{"name":"theme","clicked":"dark","version":"26.1.1","occasion":"Onboarding"},{"name":"telemetry","clicked":"no","version":"26.1.1","occasion":"Onboarding"},{"name":"LicenseSetSuccess","clicked":"next","version":"26.1.1","occasion":"Onboarding"},{"name":"chooseLicense","clicked":"pro","version":"26.1.1","occasion":"Onboarding"}]}</OnboardingProgress>
+    <PackageNavigatorSplitterEnabled />
+    <PackageNavigatorSplitterPosition />
+    <PendingTransactionsAction>Ask</PendingTransactionsAction>
+    <PlatformCompatibilityKey />
+    <PrettyAlignmentOnAs>true</PrettyAlignmentOnAs>
+    <PrettyAlignmentOnAsPosition>65</PrettyAlignmentOnAsPosition>
+    <PrettyAlignmentOnBlockComment>true</PrettyAlignmentOnBlockComment>
+    <PrettyAlignmentOnComma>false</PrettyAlignmentOnComma>
+    <PrettyAlignmentOnComment>false</PrettyAlignmentOnComment>
+    <PrettyAlignmentOnConcat>false</PrettyAlignmentOnConcat>
+    <PrettyAlignmentOnDeclaration>false</PrettyAlignmentOnDeclaration>
+    <PrettyAlignmentOnEqual>false</PrettyAlignmentOnEqual>
+    <PrettyAlignmentOnKeyword>false</PrettyAlignmentOnKeyword>
+    <PrettyAlignmentOnOperator>false</PrettyAlignmentOnOperator>
+    <PrettyBreakAfterAndOr>false</PrettyBreakAfterAndOr>
+    <PrettyBreakAfterCaseClosingPar>false</PrettyBreakAfterCaseClosingPar>
+    <PrettyBreakAfterCaseOpeningPar>true</PrettyBreakAfterCaseOpeningPar>
+    <PrettyBreakAfterComma>true</PrettyBreakAfterComma>
+    <PrettyBreakAfterConcat>false</PrettyBreakAfterConcat>
+    <PrettyBreakAfterConditionOpeningPar>true</PrettyBreakAfterConditionOpeningPar>
+    <PrettyBreakAfterFrom>true</PrettyBreakAfterFrom>
+    <PrettyBreakAfterJoin>true</PrettyBreakAfterJoin>
+    <PrettyBreakAfterOnInJoin>true</PrettyBreakAfterOnInJoin>
+    <PrettyBreakAfterSelect>true</PrettyBreakAfterSelect>
+    <PrettyBreakAfterSelectFromWhere>true</PrettyBreakAfterSelectFromWhere>
+    <PrettyBreakAfterSubselectClosingPar>false</PrettyBreakAfterSubselectClosingPar>
+    <PrettyBreakAfterSubselectOpeningPar>false</PrettyBreakAfterSubselectOpeningPar>
+    <PrettyBreakAfterWhere>true</PrettyBreakAfterWhere>
+    <PrettyBreakBeforeAndOr>true</PrettyBreakBeforeAndOr>
+    <PrettyBreakBeforeCaseClosingPar>false</PrettyBreakBeforeCaseClosingPar>
+    <PrettyBreakBeforeCaseOpeningPar>false</PrettyBreakBeforeCaseOpeningPar>
+    <PrettyBreakBeforeComma>false</PrettyBreakBeforeComma>
+    <PrettyBreakBeforeConcat>false</PrettyBreakBeforeConcat>
+    <PrettyBreakBeforeConditionOpeningPar>true</PrettyBreakBeforeConditionOpeningPar>
+    <PrettyBreakBeforeOnInJoin>true</PrettyBreakBeforeOnInJoin>
+    <PrettyBreakBeforeSemicolon />
+    <PrettyBreakBeforeSubselectClosingPar>false</PrettyBreakBeforeSubselectClosingPar>
+    <PrettyBreakBeforeSubselectOpeningPar>true</PrettyBreakBeforeSubselectOpeningPar>
+    <PrettyBreakCommasPerLineInIn>1</PrettyBreakCommasPerLineInIn>
+    <PrettyBreakCommasPerLineInInsert>1</PrettyBreakCommasPerLineInInsert>
+    <PrettyBreakCommasPerLineInSelect>1</PrettyBreakCommasPerLineInSelect>
+    <PrettyBreakExtraForSetKeywords>true</PrettyBreakExtraForSetKeywords>
+    <PrettyBreakForBlockComment>true</PrettyBreakForBlockComment>
+    <PrettyBreakForBrackets>true</PrettyBreakForBrackets>
+    <PrettyBreakForCase>true</PrettyBreakForCase>
+    <PrettyBreakForCaseAndOr>true</PrettyBreakForCaseAndOr>
+    <PrettyBreakForCaseElse>true</PrettyBreakForCaseElse>
+    <PrettyBreakForCaseThen>true</PrettyBreakForCaseThen>
+    <PrettyBreakForCaseWhen>true</PrettyBreakForCaseWhen>
+    <PrettyBreakForDelete>true</PrettyBreakForDelete>
+    <PrettyBreakForGroupBy>true</PrettyBreakForGroupBy>
+    <PrettyBreakForGroupByColumns>true</PrettyBreakForGroupByColumns>
+    <PrettyBreakForHaving>true</PrettyBreakForHaving>
+    <PrettyBreakForLineComment>false</PrettyBreakForLineComment>
+    <PrettyBreakForOrderBy>true</PrettyBreakForOrderBy>
+    <PrettyBreakForOrderByColumns>true</PrettyBreakForOrderByColumns>
+    <PrettyBreakForUpdate>true</PrettyBreakForUpdate>
+    <PrettyCodeVariableName>sql</PrettyCodeVariableName>
+    <PrettyConvertLineComments>false</PrettyConvertLineComments>
+    <PrettyCustomKeywords />
+    <PrettyDoubleIndentionForMainKeyword>false</PrettyDoubleIndentionForMainKeyword>
+    <PrettyIndentBlockComment>true</PrettyIndentBlockComment>
+    <PrettyIndentCaseInParentheses>false</PrettyIndentCaseInParentheses>
+    <PrettyIndentCondition>false</PrettyIndentCondition>
+    <PrettyIndentConditionInParentheses>true</PrettyIndentConditionInParentheses>
+    <PrettyIndentElseInCase>false</PrettyIndentElseInCase>
+    <PrettyIndentInsertList>true</PrettyIndentInsertList>
+    <PrettyIndentJoin>false</PrettyIndentJoin>
+    <PrettyIndentOnInJoin>false</PrettyIndentOnInJoin>
+    <PrettyIndentSubselectInParentheses>true</PrettyIndentSubselectInParentheses>
+    <PrettyIndentThenInCase>false</PrettyIndentThenInCase>
+    <PrettyIndention>4 spaces</PrettyIndention>
+    <PrettyInitialIndentation>0 spaces</PrettyInitialIndentation>
+    <PrettyKeepFormattingAsIs>false</PrettyKeepFormattingAsIs>
+    <PrettyKeywordCase>Keywords Uppercase</PrettyKeywordCase>
+    <PrettyLineWidth>100</PrettyLineWidth>
+    <PrettyNoComments>false</PrettyNoComments>
+    <PrettyNoEmptyLines>true</PrettyNoEmptyLines>
+    <PrettyNoExtraParentheses>false</PrettyNoExtraParentheses>
+    <PrettyNoFormattingBegin>FORMAT_OFF</PrettyNoFormattingBegin>
+    <PrettyNoFormattingBetween>true</PrettyNoFormattingBetween>
+    <PrettyNoFormattingEnd>FORMAT_ON</PrettyNoFormattingEnd>
+    <PrettyNoWhitespace>true</PrettyNoWhitespace>
+    <PrettyQuoteChar>'</PrettyQuoteChar>
+    <PrettySourceSqlLanguage>Any SQL</PrettySourceSqlLanguage>
+    <PrettySpaceComma>Keep Unchanged</PrettySpaceComma>
+    <PrettySpaceOperator>Keep Unchanged</PrettySpaceOperator>
+    <PrettySpaceParent>Keep Unchanged</PrettySpaceParent>
+    <PrettySqlBetween>false</PrettySqlBetween>
+    <PrettySqlBetweenChar>"</PrettySqlBetweenChar>
+    <PrettyTargetSQL>SQL</PrettyTargetSQL>
+    <ProcedureEditorPermDefault>No Confirm|No Confirm</ProcedureEditorPermDefault>
+    <ProcedureEditorPermProduction>Confirm|Confirm</ProcedureEditorPermProduction>
+    <ProcedureEditorPermTest>No Confirm|No Confirm</ProcedureEditorPermTest>
+    <ProfileManagerSearchPath>${dbvis.prefsdir}/ext/profiles;${dbvis.home}/resources/profiles</ProfileManagerSearchPath>
+    <PropertiesFrameGeometry />
+    <ProxyHost />
+    <ProxyPassword />
+    <ProxyPort />
+    <ProxyType>http</ProxyType>
+    <ProxyUseSettings>useNoProxy</ProxyUseSettings>
+    <ProxyUseSystemConfirmed />
+    <ProxyUser />
+    <QBDefaultTableDragStyle>Solid</QBDefaultTableDragStyle>
+    <QBDefaultTableSize>200|150</QBDefaultTableSize>
+    <QBTableQuickAdd>200</QBTableQuickAdd>
+    <RecentSQLFilesLimit>20</RecentSQLFilesLimit>
+    <RowFormWindowGeometry />
+    <RunConnectAllAtStartup>false</RunConnectAllAtStartup>
+    <SQLAllowDialects>false</SQLAllowDialects>
+    <SQLAllowGo>true</SQLAllowGo>
+    <SQLBlockCommentBegin>/*</SQLBlockCommentBegin>
+    <SQLBlockCommentEnd>*/</SQLBlockCommentEnd>
+    <SQLCallableBegin>--/</SQLCallableBegin>
+    <SQLCallableEnd>/</SQLCallableEnd>
+    <SQLCommanderAskSave>true</SQLCommanderAskSave>
+    <SQLCommanderAskUnsavedEdits>true</SQLCommanderAskUnsavedEdits>
+    <SQLCommanderControlsVisible>false</SQLCommanderControlsVisible>
+    <SQLCommanderDisplayMode>Grid</SQLCommanderDisplayMode>
+    <SQLCommanderDropObjectAction>LaunchScriptor</SQLCommanderDropObjectAction>
+    <SQLCommanderPermDefault>Allow|Allow|Allow|Allow|Ask|Allow|Allow|Allow|Allow|Allow|Allow</SQLCommanderPermDefault>
+    <SQLCommanderPermProduction>Allow|Ask|Ask|Ask|Deny|Ask|Ask|Ask|Ask|Ask|Ask</SQLCommanderPermProduction>
+    <SQLCommanderPermTest>Allow|Allow|Allow|Allow|Ask|Ask|Allow|Allow|Ask|Allow|Ask</SQLCommanderPermTest>
+    <SQLCommanderResultSetsDefaultTab>ShowFirstResultSet</SQLCommanderResultSetsDefaultTab>
+    <SQLCommanderResultSetsDefaultTabOptions>ShowLogTabIfNoResultSets</SQLCommanderResultSetsDefaultTabOptions>
+    <SQLCommanderResultSetsKeepExisting>false</SQLCommanderResultSetsKeepExisting>
+    <SQLCommanderResultSetsLabel>${index}: ${table} [${rows}]</SQLCommanderResultSetsLabel>
+    <SQLCommanderResultSetsPinNew>false</SQLCommanderResultSetsPinNew>
+    <SQLCommanderResultSetsReadOnly>false</SQLCommanderResultSetsReadOnly>
+    <SQLCommanderResultSetsRemoveEmpty>false</SQLCommanderResultSetsRemoveEmpty>
+    <SQLCommanderResultSetsShowSQL>true</SQLCommanderResultSetsShowSQL>
+    <SQLCommanderResultSetsShowSQLTruncate>false</SQLCommanderResultSetsShowSQLTruncate>
+    <SQLCommanderResultSetsShowSQLTruncateLength>120</SQLCommanderResultSetsShowSQLTruncateLength>
+    <SQLCommanderSetModifiedWhenScripting>true</SQLCommanderSetModifiedWhenScripting>
+    <SQLCommanderShowErrorPositionMarkers>true</SQLCommanderShowErrorPositionMarkers>
+    <SQLCommanderShowErrorStatementMarkers>true</SQLCommanderShowErrorStatementMarkers>
+    <SQLCommanderStickyNew>false</SQLCommanderStickyNew>
+    <SQLCommanderStopOnError>false</SQLCommanderStopOnError>
+    <SQLCommanderStopOnNoRows>false</SQLCommanderStopOnNoRows>
+    <SQLCommanderStopOnSQLWarning>false</SQLCommanderStopOnSQLWarning>
+    <SQLDelimiter1>;</SQLDelimiter1>
+    <SQLEditorAutoHighlight>true</SQLEditorAutoHighlight>
+    <SQLEditorAutoHighlightMax>50000</SQLEditorAutoHighlightMax>
+    <SQLEditorAutoIndent>true</SQLEditorAutoIndent>
+    <SQLEditorCaretBlink>true</SQLEditorCaretBlink>
+    <SQLEditorColumnGuide>false</SQLEditorColumnGuide>
+    <SQLEditorColumnGuideLocation>80</SQLEditorColumnGuideLocation>
+    <SQLEditorExpandTab>true</SQLEditorExpandTab>
+    <SQLEditorFindAndReplaceFindText />
+    <SQLEditorFindAndReplaceReplaceText />
+    <SQLEditorFindAndReplaceSettings />
+    <SQLEditorFindHighlightMax>10000</SQLEditorFindHighlightMax>
+    <SQLEditorFont>JetBrains Mono-plain-13</SQLEditorFont>
+    <SQLEditorFontOverride>false</SQLEditorFontOverride>
+    <SQLEditorHighlightGutterMarksMax>100</SQLEditorHighlightGutterMarksMax>
+    <SQLEditorMouseWheelFontSizeChange>true</SQLEditorMouseWheelFontSizeChange>
+    <SQLEditorMouseWheelFontSizeChangeModifier>512</SQLEditorMouseWheelFontSizeChangeModifier>
+    <SQLEditorRectangleModifier>Alt</SQLEditorRectangleModifier>
+    <SQLEditorShowSpecialChars>false</SQLEditorShowSpecialChars>
+    <SQLEditorShowTabLines>false</SQLEditorShowTabLines>
+    <SQLEditorStatusbarVisible>true</SQLEditorStatusbarVisible>
+    <SQLEditorTabSize>8</SQLEditorTabSize>
+    <SQLEditorTabsLabel>${index}: ${filename|nofile=Untitled}</SQLEditorTabsLabel>
+    <SQLEditorToolbarVisible>true</SQLEditorToolbarVisible>
+    <SQLFormatterProfileGlobalDefault>default</SQLFormatterProfileGlobalDefault>
+    <SQLHistoryIgnoreDuplicateEntries>true</SQLHistoryIgnoreDuplicateEntries>
+    <SQLHistoryIgnoreErrorEntries>false</SQLHistoryIgnoreErrorEntries>
+    <SQLHistoryIgnoreSQLRegex />
+    <SQLHistoryMaxFiles>300</SQLHistoryMaxFiles>
+    <SQLLineComment1>--</SQLLineComment1>
+    <SQLLineComment2>//</SQLLineComment2>
+    <ScriptorDelimitedIdentifiers>false</ScriptorDelimitedIdentifiers>
+    <ScriptorEditorInsertAt>LAST</ScriptorEditorInsertAt>
+    <ScriptorFormatSQL>false</ScriptorFormatSQL>
+    <ScriptorIncludeAutoGeneratedValues>true</ScriptorIncludeAutoGeneratedValues>
+    <ScriptorQualifyNames>false</ScriptorQualifyNames>
+    <ScriptorSQLBlockBegin>--/</ScriptorSQLBlockBegin>
+    <ScriptorSQLBlockEnd>/</ScriptorSQLBlockEnd>
+    <ScriptorStatementDelimiter>;</ScriptorStatementDelimiter>
+    <ShowBlobType>Size</ShowBlobType>
+    <ShowClobType>Size</ShowClobType>
+    <ShowDataFilter>true</ShowDataFilter>
+    <ShowDialogWhenChangePermissionMode>true</ShowDialogWhenChangePermissionMode>
+    <ShowDialogWhenCloseDynamicNodeTab>true</ShowDialogWhenCloseDynamicNodeTab>
+    <ShowDialogWhenDoubleClickInCellWithControlChars2>true</ShowDialogWhenDoubleClickInCellWithControlChars2>
+    <ShowDialogWhenDoubleClickInDatabasesTab>true</ShowDialogWhenDoubleClickInDatabasesTab>
+    <ShowFullPathInTitle>true</ShowFullPathInTitle>
+    <ShowNullAs>(null)</ShowNullAs>
+    <ShowPrimaryKeysForTables>true</ShowPrimaryKeysForTables>
+    <ShowRowsForTables>false</ShowRowsForTables>
+    <SidePaneIconsSize>large</SidePaneIconsSize>
+    <SidePaneShowLabels>true</SidePaneShowLabels>
+    <SidePaneUIEnabled>true</SidePaneUIEnabled>
+    <SinglePhysicalTransactionsWindowDisplayWhenConnect>true</SinglePhysicalTransactionsWindowDisplayWhenConnect>
+    <StaleFrameContentSQLCommanderWarningEnabled>true</StaleFrameContentSQLCommanderWarningEnabled>
+    <TabTitleBoldForSelected>true</TabTitleBoldForSelected>
+    <TelemetryPrefs>{"collectUsage":false,"reportErrors":false,"reporter":"77be46ae-0142-4bbc-83e3-bef2d4095590"}</TelemetryPrefs>
+    <TimeFormat>HH:mm:ss</TimeFormat>
+    <TimeStampFormat>yyyy-MM-dd HH:mm:ss</TimeStampFormat>
+    <UseRelativePaths>false</UseRelativePaths>
+    <UserDetailsEmail />
+    <UserDetailsFirstName />
+    <UserDetailsLastName />
+    <UserDetailsRemember>true</UserDetailsRemember>
+    <ValueViewerUseEditorFont>false</ValueViewerUseEditorFont>
+    <VariableDelimiter>||</VariableDelimiter>
+    <VariableFormWindowGeometry />
+    <VariableIdentifierPrefix>${</VariableIdentifierPrefix>
+    <VariableIdentifierSuffix>}$</VariableIdentifierSuffix>
+    <Version>26.1.1</Version>
+    <VersionControlRollbackDialogHeight />
+    <VersionControlRollbackDialogWidth />
+    <VersionControlTabDoubleClickAction />
+    <VersionControlTabDoubleClickModifierAction />
+    <VersionControlTabGroupByDirectory />
+    <VersionControlTabToolbarVisible>true</VersionControlTabToolbarVisible>
+    <VersionEULA>2026-03-04</VersionEULA>
+    <WorkspaceNewTabPosition>Last</WorkspaceNewTabPosition>
+    <WorkspaceSaveObjectViewTabsAtQuit>false</WorkspaceSaveObjectViewTabsAtQuit>
+    <WorkspaceSaveSQLCommanderTabsAtQuit>true</WorkspaceSaveSQLCommanderTabsAtQuit>
+    <athena.SQLFormatterProfileConnectionDefault>default</athena.SQLFormatterProfileConnectionDefault>
+    <athena.SystemTablePrefix>all</athena.SystemTablePrefix>
+    <azure-sql.SQLFormatterProfileConnectionDefault>default</azure-sql.SQLFormatterProfileConnectionDefault>
+    <azure-sql.SystemTablePrefix>all</azure-sql.SystemTablePrefix>
+    <azure-synapse-dedicated.SQLFormatterProfileConnectionDefault>default</azure-synapse-dedicated.SQLFormatterProfileConnectionDefault>
+    <azure-synapse-dedicated.SystemTablePrefix>all</azure-synapse-dedicated.SystemTablePrefix>
+    <azure-synapse-serverless.SQLFormatterProfileConnectionDefault>default</azure-synapse-serverless.SQLFormatterProfileConnectionDefault>
+    <azure-synapse-serverless.SystemTablePrefix>all</azure-synapse-serverless.SystemTablePrefix>
+    <bigquery.SQLFormatterProfileConnectionDefault>default</bigquery.SQLFormatterProfileConnectionDefault>
+    <bigquery.SystemTablePrefix>all</bigquery.SystemTablePrefix>
+    <cache.SQLFormatterProfileConnectionDefault>default</cache.SQLFormatterProfileConnectionDefault>
+    <cache.SystemTablePrefix>all</cache.SystemTablePrefix>
+    <cassandra.SQLFormatterProfileConnectionDefault>default</cassandra.SQLFormatterProfileConnectionDefault>
+    <cassandra.SystemTablePrefix>all</cassandra.SystemTablePrefix>
+    <clickhouse.SQLFormatterProfileConnectionDefault>default</clickhouse.SQLFormatterProfileConnectionDefault>
+    <clickhouse.SystemTablePrefix>all</clickhouse.SystemTablePrefix>
+    <cockroachdb.SQLFormatterProfileConnectionDefault>default</cockroachdb.SQLFormatterProfileConnectionDefault>
+    <cockroachdb.SystemTablePrefix>all</cockroachdb.SystemTablePrefix>
+    <databricks.SQLFormatterProfileConnectionDefault>default</databricks.SQLFormatterProfileConnectionDefault>
+    <databricks.SystemTablePrefix>all</databricks.SystemTablePrefix>
+    <db2-iseries.SQLFormatterProfileConnectionDefault>default</db2-iseries.SQLFormatterProfileConnectionDefault>
+    <db2-iseries.SystemTablePrefix>all</db2-iseries.SystemTablePrefix>
+    <db2-zos.SQLFormatterProfileConnectionDefault>default</db2-zos.SQLFormatterProfileConnectionDefault>
+    <db2-zos.SystemTablePrefix>all</db2-zos.SystemTablePrefix>
+    <db2.SQLFormatterProfileConnectionDefault>default</db2.SQLFormatterProfileConnectionDefault>
+    <db2.SystemTablePrefix>all</db2.SystemTablePrefix>
+    <denodo.SQLFormatterProfileConnectionDefault>default</denodo.SQLFormatterProfileConnectionDefault>
+    <denodo.SystemTablePrefix>all</denodo.SystemTablePrefix>
+    <derby.SQLFormatterProfileConnectionDefault>default</derby.SQLFormatterProfileConnectionDefault>
+    <derby.SystemTablePrefix>all</derby.SystemTablePrefix>
+    <dremio.SQLFormatterProfileConnectionDefault>default</dremio.SQLFormatterProfileConnectionDefault>
+    <dremio.SystemTablePrefix>all</dremio.SystemTablePrefix>
+    <duckdb.SQLFormatterProfileConnectionDefault>default</duckdb.SQLFormatterProfileConnectionDefault>
+    <duckdb.SystemTablePrefix>all</duckdb.SystemTablePrefix>
+    <dynamodb.SQLFormatterProfileConnectionDefault>default</dynamodb.SQLFormatterProfileConnectionDefault>
+    <dynamodb.SystemTablePrefix>all</dynamodb.SystemTablePrefix>
+    <elasticsearch.SQLFormatterProfileConnectionDefault>default</elasticsearch.SQLFormatterProfileConnectionDefault>
+    <elasticsearch.SystemTablePrefix>all</elasticsearch.SystemTablePrefix>
+    <exasol.SQLFormatterProfileConnectionDefault>default</exasol.SQLFormatterProfileConnectionDefault>
+    <exasol.SystemTablePrefix>all</exasol.SystemTablePrefix>
+    <firebird.SQLFormatterProfileConnectionDefault>default</firebird.SQLFormatterProfileConnectionDefault>
+    <firebird.SystemTablePrefix>all</firebird.SystemTablePrefix>
+    <frontbase.SQLFormatterProfileConnectionDefault>default</frontbase.SQLFormatterProfileConnectionDefault>
+    <frontbase.SystemTablePrefix>all</frontbase.SystemTablePrefix>
+    <generic.SQLFormatterProfileConnectionDefault>default</generic.SQLFormatterProfileConnectionDefault>
+    <generic.SystemTablePrefix>all</generic.SystemTablePrefix>
+    <greenplum.SQLFormatterProfileConnectionDefault>default</greenplum.SQLFormatterProfileConnectionDefault>
+    <greenplum.SystemTablePrefix>all</greenplum.SystemTablePrefix>
+    <h2.SQLFormatterProfileConnectionDefault>default</h2.SQLFormatterProfileConnectionDefault>
+    <h2.SystemTablePrefix>all</h2.SystemTablePrefix>
+    <hive.SQLFormatterProfileConnectionDefault>default</hive.SQLFormatterProfileConnectionDefault>
+    <hive.SystemTablePrefix>all</hive.SystemTablePrefix>
+    <hsql.SQLFormatterProfileConnectionDefault>default</hsql.SQLFormatterProfileConnectionDefault>
+    <hsql.SystemTablePrefix>all</hsql.SystemTablePrefix>
+    <impala.SQLFormatterProfileConnectionDefault>default</impala.SQLFormatterProfileConnectionDefault>
+    <impala.SystemTablePrefix>all</impala.SystemTablePrefix>
+    <informix.SQLFormatterProfileConnectionDefault>default</informix.SQLFormatterProfileConnectionDefault>
+    <informix.SystemTablePrefix>all</informix.SystemTablePrefix>
+    <ingres.SQLFormatterProfileConnectionDefault>default</ingres.SQLFormatterProfileConnectionDefault>
+    <ingres.SystemTablePrefix>all</ingres.SystemTablePrefix>
+    <iris.SQLFormatterProfileConnectionDefault>default</iris.SQLFormatterProfileConnectionDefault>
+    <iris.SystemTablePrefix>all</iris.SystemTablePrefix>
+    <mariadb.SQLFormatterProfileConnectionDefault>default</mariadb.SQLFormatterProfileConnectionDefault>
+    <mariadb.SystemTablePrefix>all</mariadb.SystemTablePrefix>
+    <maxdb.SQLFormatterProfileConnectionDefault>default</maxdb.SQLFormatterProfileConnectionDefault>
+    <maxdb.SystemTablePrefix>all</maxdb.SystemTablePrefix>
+    <mimer.SQLFormatterProfileConnectionDefault>default</mimer.SQLFormatterProfileConnectionDefault>
+    <mimer.SystemTablePrefix>all</mimer.SystemTablePrefix>
+    <mongodb.SQLFormatterProfileConnectionDefault>default</mongodb.SQLFormatterProfileConnectionDefault>
+    <mongodb.SystemTablePrefix>all</mongodb.SystemTablePrefix>
+    <msaccess.SQLFormatterProfileConnectionDefault>default</msaccess.SQLFormatterProfileConnectionDefault>
+    <msaccess.SystemTablePrefix>all</msaccess.SystemTablePrefix>
+    <mysql.SQLFormatterProfileConnectionDefault>default</mysql.SQLFormatterProfileConnectionDefault>
+    <mysql.SystemTablePrefix>all</mysql.SystemTablePrefix>
+    <neo4j.SQLFormatterProfileConnectionDefault>default</neo4j.SQLFormatterProfileConnectionDefault>
+    <neo4j.SystemTablePrefix>all</neo4j.SystemTablePrefix>
+    <netezza.SQLFormatterProfileConnectionDefault>default</netezza.SQLFormatterProfileConnectionDefault>
+    <netezza.SystemTablePrefix>all</netezza.SystemTablePrefix>
+    <nonstopsql.SQLFormatterProfileConnectionDefault>default</nonstopsql.SQLFormatterProfileConnectionDefault>
+    <nonstopsql.SystemTablePrefix>all</nonstopsql.SystemTablePrefix>
+    <nuodb.SQLFormatterProfileConnectionDefault>default</nuodb.SQLFormatterProfileConnectionDefault>
+    <nuodb.SystemTablePrefix>all</nuodb.SystemTablePrefix>
+    <oracle.SQLFormatterProfileConnectionDefault>default</oracle.SQLFormatterProfileConnectionDefault>
+    <pervasive.SQLFormatterProfileConnectionDefault>default</pervasive.SQLFormatterProfileConnectionDefault>
+    <pervasive.SystemTablePrefix>all</pervasive.SystemTablePrefix>
+    <postgresql.SQLFormatterProfileConnectionDefault>default</postgresql.SQLFormatterProfileConnectionDefault>
+    <postgresql.SystemTablePrefix>all</postgresql.SystemTablePrefix>
+    <presto.SQLFormatterProfileConnectionDefault>default</presto.SQLFormatterProfileConnectionDefault>
+    <presto.SystemTablePrefix>all</presto.SystemTablePrefix>
+    <progress.SQLFormatterProfileConnectionDefault>default</progress.SQLFormatterProfileConnectionDefault>
+    <progress.SystemTablePrefix>all</progress.SystemTablePrefix>
+    <questdb.SQLFormatterProfileConnectionDefault>default</questdb.SQLFormatterProfileConnectionDefault>
+    <questdb.SystemTablePrefix>all</questdb.SystemTablePrefix>
+    <redis.SQLFormatterProfileConnectionDefault>default</redis.SQLFormatterProfileConnectionDefault>
+    <redis.SystemTablePrefix>all</redis.SystemTablePrefix>
+    <redshift.SQLFormatterProfileConnectionDefault>default</redshift.SQLFormatterProfileConnectionDefault>
+    <redshift.SystemTablePrefix>all</redshift.SystemTablePrefix>
+    <sap-hana.SQLFormatterProfileConnectionDefault>default</sap-hana.SQLFormatterProfileConnectionDefault>
+    <sap-hana.SystemTablePrefix>all</sap-hana.SystemTablePrefix>
+    <singlestore.SQLFormatterProfileConnectionDefault>default</singlestore.SQLFormatterProfileConnectionDefault>
+    <singlestore.SystemTablePrefix>all</singlestore.SystemTablePrefix>
+    <snowflake.SQLFormatterProfileConnectionDefault>default</snowflake.SQLFormatterProfileConnectionDefault>
+    <snowflake.SystemTablePrefix>all</snowflake.SystemTablePrefix>
+    <sqlite.SQLFormatterProfileConnectionDefault>default</sqlite.SQLFormatterProfileConnectionDefault>
+    <sqlite.SystemTablePrefix>all</sqlite.SystemTablePrefix>
+    <sqlserver.SQLFormatterProfileConnectionDefault>default</sqlserver.SQLFormatterProfileConnectionDefault>
+    <sqlserver.SystemTablePrefix>all</sqlserver.SystemTablePrefix>
+    <sybase-asa.SQLFormatterProfileConnectionDefault>default</sybase-asa.SQLFormatterProfileConnectionDefault>
+    <sybase-asa.SystemTablePrefix>all</sybase-asa.SystemTablePrefix>
+    <sybase-ase.SQLFormatterProfileConnectionDefault>default</sybase-ase.SQLFormatterProfileConnectionDefault>
+    <sybase-ase.SystemTablePrefix>all</sybase-ase.SystemTablePrefix>
+    <sybase-iq.SQLFormatterProfileConnectionDefault>default</sybase-iq.SQLFormatterProfileConnectionDefault>
+    <sybase-iq.SystemTablePrefix>all</sybase-iq.SystemTablePrefix>
+    <teradata.SQLFormatterProfileConnectionDefault>default</teradata.SQLFormatterProfileConnectionDefault>
+    <teradata.SystemTablePrefix>all</teradata.SystemTablePrefix>
+    <tibco.SQLFormatterProfileConnectionDefault>default</tibco.SQLFormatterProfileConnectionDefault>
+    <tibco.SystemTablePrefix>all</tibco.SystemTablePrefix>
+    <trino.SQLFormatterProfileConnectionDefault>default</trino.SQLFormatterProfileConnectionDefault>
+    <trino.SystemTablePrefix>all</trino.SystemTablePrefix>
+    <valkey.SQLFormatterProfileConnectionDefault>default</valkey.SQLFormatterProfileConnectionDefault>
+    <valkey.SystemTablePrefix>all</valkey.SystemTablePrefix>
+    <vertica.SQLFormatterProfileConnectionDefault>default</vertica.SQLFormatterProfileConnectionDefault>
+    <vertica.SystemTablePrefix>all</vertica.SystemTablePrefix>
+    <yellowbrick.SQLFormatterProfileConnectionDefault>default</yellowbrick.SQLFormatterProfileConnectionDefault>
+    <yellowbrick.SystemTablePrefix>all</yellowbrick.SystemTablePrefix>
+  </General>
+  <ObjectViewSettings />
+</DbVisualizer>

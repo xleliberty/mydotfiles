@@ -1,0 +1,11 @@
+# DbVisualizer license key
+dbvis.license.product        = DbVisualizer
+dbvis.license.edition        = Personal
+dbvis.license.id             = 481756228 / #1
+dbvis.license.name           = E-LIBERTY
+dbvis.license.org            = E-LIBERTY
+dbvis.license.activation     = 2024-10-13
+dbvis.license.expire         = 2099-01-01
+dbvis.license.upgrade.expire = 2027-06-09
+dbvis.license.seal           = MCwCFGvcK6VrtXtoLs2oZqTS42Wxd8++AhQt4PV8Ogpa0is7sq7Z7IVw2DfS9Q==
+dbvis.license.version        = 5.*

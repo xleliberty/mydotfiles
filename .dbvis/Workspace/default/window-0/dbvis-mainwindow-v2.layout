@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><LayoutPersistence>
+    <DockableBarManager frameState="6" persistenceName="0" version="20">
+        <UndockedBounds height="1168" width="1854" x="66" y="32"/>
+        <DockableBarContext currentDockSide="1" currentMode="2" dockId="0" dockedHeight="0" dockedWidth="0" initIndex="1" initMode="2" initPosition="1" initSide="1" key="Main Toolbar">
+            <DockableBarPreviousState dockId="0" fcId="0" mode="2" newRow="1" row="0" side="1" start="0" type="close"/>
+        </DockableBarContext>
+        <DockableBarContainer side="1">
+            <DockableBarList>
+                <DockableBarItem start="0">
+                    <DockableBar key="Main Toolbar" preferredRowCount="0"/>
+                </DockableBarItem>
+            </DockableBarList>
+        </DockableBarContainer>
+    </DockableBarManager>
+    <DockingManager frameState="6" persistenceName="1" version="20">
+        <Bounds height="1168" width="1854" x="66" y="32"/>
+        <DockContext autohideHeight="0" autohideWidth="0" available="0" canMode="15" currentDockSide="8" currentMode="4" dockId="47218" dockedHeight="300" dockedWidth="350" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="8" key="favorites">
+            <UndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <InitUndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <DockPreviousState dockId="47218" fcId="344" index="0" mode="4" rootId="2" side="8" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockChild dockId="21346"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+            <DockPreviousState dockId="47218" fcId="344" index="0" mode="4" rootId="2" side="8" type="available">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <DockContext autohideHeight="0" autohideWidth="0" available="1" canMode="15" currentDockSide="8" currentMode="4" dockId="47262" dockedHeight="300" dockedWidth="350" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="8" key="databases">
+            <UndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <InitUndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <DockPreviousState dockId="47262" fcId="344" index="0" mode="4" rootId="2" side="8" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockChild dockId="21346"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <DockContext autohideHeight="0" autohideWidth="0" available="0" canMode="15" currentDockSide="8" currentMode="4" dockId="44681" dockedHeight="300" dockedWidth="350" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="8" key="versionControl">
+            <UndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <InitUndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <DockPreviousState dockId="44681" fcId="344" index="0" mode="4" rootId="2" side="8" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockChild dockId="21346"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+            <DockPreviousState dockId="44681" fcId="344" index="0" mode="4" rootId="2" side="8" type="available">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <DockContext autohideHeight="0" autohideWidth="0" available="0" canMode="15" currentDockSide="2" currentMode="4" dockId="14375" dockedHeight="0" dockedWidth="0" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="2" key="versionControlLog">
+            <UndockedBounds height="300" width="900" x="-1" y="-1"/>
+            <InitUndockedBounds height="300" width="900" x="-1" y="-1"/>
+            <DockPreviousState dockId="14375" fcId="47338" index="0" mode="4" rootId="2" side="2" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="33354"/>
+                <DockChild dockId="14375"/>
+                <DockParentState ccId="28374" dockId="47338" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+            <DockPreviousState dockId="14375" fcId="47338" index="0" mode="4" rootId="2" side="2" type="available">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockParentState ccId="28374" dockId="47338" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <DockContext autohideHeight="0" autohideWidth="0" available="0" canMode="15" currentDockSide="8" currentMode="4" dockId="21346" dockedHeight="300" dockedWidth="350" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="8" key="scripts">
+            <UndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <InitUndockedBounds height="400" width="350" x="-1" y="-1"/>
+            <DockPreviousState dockId="21346" fcId="344" index="0" mode="4" rootId="2" side="8" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockChild dockId="21346"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+            <DockPreviousState dockId="21346" fcId="344" index="0" mode="4" rootId="2" side="8" type="available">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="47262"/>
+                <DockChild dockId="44681"/>
+                <DockChild dockId="47218"/>
+                <DockChild dockId="21346"/>
+                <DockParentState ccId="17423" dockId="344" orientation="1">
+                    <DockChild dockId="344"/>
+                    <DockChild dockId="38462"/>
+                </DockParentState>
+                <DockParentState ccId="28374" dockId="17423" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <DockContext autohideHeight="0" autohideWidth="0" available="0" canMode="15" currentDockSide="2" currentMode="4" dockId="33354" dockedHeight="0" dockedWidth="0" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="2" key="sqlHistory">
+            <UndockedBounds height="300" width="900" x="-1" y="-1"/>
+            <InitUndockedBounds height="300" width="900" x="-1" y="-1"/>
+            <DockPreviousState dockId="33354" fcId="47338" index="0" mode="4" rootId="2" side="2" type="close">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="33354"/>
+                <DockChild dockId="14375"/>
+                <DockParentState ccId="28374" dockId="47338" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+            <DockPreviousState dockId="33354" fcId="47338" index="0" mode="4" rootId="2" side="2" type="available">
+                <Bounds height="1076" width="1779" x="0" y="0"/>
+                <DockChild dockId="14375"/>
+                <DockParentState ccId="28374" dockId="47338" orientation="0">
+                    <DockChild dockId="17423"/>
+                    <DockChild dockId="47338"/>
+                </DockParentState>
+            </DockPreviousState>
+        </DockContext>
+        <ContainerContainer dockId="28374" initiallyEven="0" orientation="0" proportionLayout="0">
+            <ContainerContainer dockId="17423" initiallyEven="0" orientation="1" proportionLayout="0">
+                <FrameContainer dockId="344" selectedIndex="0">
+                    <DockableFrame key="databases"/>
+                </FrameContainer>
+                <ContainerContainer dockId="38462" initiallyEven="0" orientation="0" proportionLayout="0">
+                    <Workspace acceptDockableFrame="0"/>
+                </ContainerContainer>
+            </ContainerContainer>
+        </ContainerContainer>
+        <AutoHideContainer side="3"/>
+        <AutoHideContainer side="7"/>
+        <AutoHideContainer side="5"/>
+        <AutoHideContainer side="1"/>
+    </DockingManager>
+</LayoutPersistence>

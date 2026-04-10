@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DriverTypeInfo id="ac7c1472-d7be-4758-b2db-a5e53a5fb5a5" setThreadContext="false" useLegacyClassLoader="false">
+  <hidden>false</hidden>
+  <supported>true</supported>
+  <Label>PostgreSQL</Label>
+  <OriginId>postgresql</OriginId>
+  <OldName/>
+  <DefaultClass>org.postgresql.Driver</DefaultClass>
+  <DatabaseType>postgresql</DatabaseType>
+  <Description/>
+  <IsSupported>true</IsSupported>
+  <IconName/>
+  <DriverCategoryId>postgresql</DriverCategoryId>
+  <Properties/>
+  <PropertyGroups/>
+  <Identifier>jdbc:postgresql</Identifier>
+  <URLFormat><![CDATA[jdbc:postgresql://@<server>:<port5432>/<database>]]></URLFormat>
+  <WizardURLFormats/>
+  <MessageWhenChosen/>
+  <WebSite/>
+  <ArtifactBundle>
+    <Artifacts>
+      <Artifact type="maven">
+        <Label/>
+        <Description/>
+        <Active>true</Active>
+        <Deprecated>false</Deprecated>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.10</version>
+        <extension/>
+        <DownloadDependencies>false</DownloadDependencies>
+        <versionRange/>
+      </Artifact>
+    </Artifacts>
+  </ArtifactBundle>
+  <BelongsToDatabaseCategory/>
+  <UpdateMessage/>
+  <DefaultUserid/>
+</DriverTypeInfo>

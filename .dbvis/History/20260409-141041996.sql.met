@@ -1,0 +1,15 @@
+#Extended file properties defined by DbVisualizer
+#Thu Apr 09 14:10:41 CEST 2026
+exec.catalog=redpill_prod
+exec.connection_id=edc2AtoaQMKqDCILNGNPW
+exec.schema=public
+file.comment=
+file.encoding=
+last.affected_row_count=526
+last.database_type=PostgreSQL
+last.elapsed_time=0.293
+last.execution_count=1
+last.execution_error_count=0
+last.execution_success_count=1
+last.execution_time=1775736641976
+last.sql_preview=SELECT id FROM contractors WHERE provider_type \='s
