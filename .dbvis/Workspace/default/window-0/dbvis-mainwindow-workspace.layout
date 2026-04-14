@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><LayoutPersistence>
-    <DockingManager frameState="6" persistenceName="0" version="20">
-        <Bounds height="1168" width="1854" x="66" y="32"/>
+    <DockingManager activeFrame="sql-commander" frameState="6" persistenceName="0" version="20">
+        <Bounds height="0" width="0" x="0" y="0"/>
         <DockContext autohideHeight="200" autohideWidth="200" available="1" canMode="15" currentDockSide="8" currentMode="4" dockId="24001" dockedHeight="200" dockedWidth="556" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="0" initSide="8" key="sql-commander1">
             <UndockedBounds height="500" width="800" x="-1" y="-1"/>
             <InitUndockedBounds height="500" width="800" x="-1" y="-1"/>
             <DockPreviousState dockId="24001" fcId="4805" index="0" mode="4" rootId="2" side="8" type="close">
                 <Bounds height="1076" width="1421" x="0" y="0"/>
-                <DockChild dockId="42032"/>
-                <DockChild dockId="61303"/>
-                <DockChild dockId="24001"/>
-                <DockParentState ccId="36796" dockId="4805" orientation="1">
-                    <DockChild dockId="4805"/>
-                    <DockChild dockId="-1"/>
-                </DockParentState>
-            </DockPreviousState>
-        </DockContext>
-        <DockContext autohideHeight="200" autohideWidth="200" available="1" canMode="15" currentDockSide="8" currentMode="4" dockId="42032" dockedHeight="200" dockedWidth="200" initAutohideHeight="200" initAutohideWidth="200" initIndex="0" initMode="4" initPosition="1" initSide="8" key="object-view">
-            <UndockedBounds height="500" width="800" x="-1" y="-1"/>
-            <InitUndockedBounds height="500" width="800" x="-1" y="-1"/>
-            <DockPreviousState dockId="42032" fcId="4805" index="0" mode="4" rootId="2" side="8" type="close">
-                <Bounds height="1076" width="1421" x="0" y="0"/>
-                <DockChild dockId="42032"/>
                 <DockChild dockId="61303"/>
                 <DockChild dockId="24001"/>
                 <DockParentState ccId="36796" dockId="4805" orientation="1">
@@ -34,7 +19,6 @@
             <InitUndockedBounds height="500" width="800" x="-1" y="-1"/>
             <DockPreviousState dockId="61303" fcId="4805" index="0" mode="4" rootId="2" side="8" type="close">
                 <Bounds height="1076" width="1421" x="0" y="0"/>
-                <DockChild dockId="42032"/>
                 <DockChild dockId="61303"/>
                 <DockChild dockId="24001"/>
                 <DockParentState ccId="36796" dockId="4805" orientation="1">
@@ -45,8 +29,7 @@
         </DockContext>
         <ContainerContainer dockId="19139" initiallyEven="0" orientation="0" proportionLayout="0">
             <ContainerContainer dockId="36796" initiallyEven="0" orientation="1" proportionLayout="0">
-                <FrameContainer dockId="4805" selectedIndex="1">
-                    <DockableFrame key="object-view"/>
+                <FrameContainer dockId="4805" selectedIndex="0">
                     <DockableFrame key="sql-commander"/>
                     <DockableFrame key="sql-commander1"/>
                 </FrameContainer>

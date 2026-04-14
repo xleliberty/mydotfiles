@@ -20,3 +20,7 @@ SELECT count(*) FROM orders WHERE webinstance_id in (
 SELECT count(*) FROM users WHERE webinstance_id in (
 29,287,1992) AND state='confirmed' AND completed_at > '2025-10-01 00:00:00'
 
+
+
+SELECT * FROM orders WHERE state='confirmed' AND completed_at > '2026-04-10 09:00:00'
+AND transfer_state='init' and webinstance_id=837

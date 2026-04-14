@@ -136,3 +136,75 @@ ApplicationName=dbvis^PGDBNAME=postgres^PGHOST=rds-prod.awstack^PGPORT=5432^adap
 2026-04-10 20:14:17.150 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] Shutdown time: 1.756
 2026-04-10 20:14:17.150 INFO     4 [AWT-EventQueue-0 - DbVisualizerGUI.b] DbVisualizer: STOPPED. ExitType: NORMAL
 
+2026-04-11 11:31:30.057 INFO   166 [AWT-EventQueue-0 - g.initialize] DbVisualizer: STARTING
+2026-04-11 11:31:30.063 CONFIG 166 [AWT-EventQueue-0 - g.g] Product: DbVisualizer 26.1.1 (build: 4689)
+2026-04-11 11:31:30.064 CONFIG 166 [AWT-EventQueue-0 - g.g] OS: Linux
+2026-04-11 11:31:30.064 CONFIG 166 [AWT-EventQueue-0 - g.g] OS Version: 6.14.0-33-generic
+2026-04-11 11:31:30.064 CONFIG 166 [AWT-EventQueue-0 - g.g] OS Arch: amd64
+2026-04-11 11:31:30.065 CONFIG 166 [AWT-EventQueue-0 - g.g] Java Version: 25.0.2
+2026-04-11 11:31:30.066 CONFIG 166 [AWT-EventQueue-0 - g.g] Java VM: OpenJDK 64-Bit Server VM
+2026-04-11 11:31:30.066 CONFIG 166 [AWT-EventQueue-0 - g.g] Java Vendor: Eclipse Adoptium
+2026-04-11 11:31:30.066 CONFIG 166 [AWT-EventQueue-0 - g.g] Java Home: /opt/DbVisualizer/jre
+2026-04-11 11:31:30.067 CONFIG 166 [AWT-EventQueue-0 - g.g] DbVis Home: /opt/DbVisualizer
+2026-04-11 11:31:30.067 CONFIG 166 [AWT-EventQueue-0 - g.g] User Home: /home/xav
+2026-04-11 11:31:30.067 CONFIG 166 [AWT-EventQueue-0 - g.g] PrefsDir: /home/xav/.dbvis
+2026-04-11 11:31:30.067 CONFIG 166 [AWT-EventQueue-0 - g.g] DefaultLocale: fr-FR
+2026-04-11 11:31:30.068 CONFIG 166 [AWT-EventQueue-0 - g.g] SessionId: 166
+2026-04-11 11:31:30.070 CONFIG 166 [AWT-EventQueue-0 - g.g] Java Arguments: <none>
+2026-04-11 11:31:30.070 CONFIG 166 [AWT-EventQueue-0 - g.g] Java Properties: 
+--add-exports=java.desktop/sun.awt.image=ALL-UNNAMED
+--add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing.table=ALL-UNNAMED
+--add-exports=java.desktop/sun.swing=ALL-UNNAMED
+--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED
+--add-exports=java.xml/com.sun.org.apache.xerces.internal.parsers=ALL-UNNAMED
+--add-modules=com.install4j.runtime
+--add-modules=javafx.controls,javafx.web,javafx.swing
+--add-opens=java.base/java.nio=ALL-UNNAMED
+--add-opens=java.base/java.util=ALL-UNNAMED
+--add-opens=java.desktop/java.awt.event=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.text.html=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED
+--add-opens=java.desktop/javax.swing=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.image=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt.shell=ALL-UNNAMED
+--add-opens=java.desktop/sun.awt=ALL-UNNAMED
+--add-opens=java.xml/com.sun.org.apache.xerces.internal.util=ALL-UNNAMED
+--enable-native-access=ALL-UNNAMED
+--enable-native-access=javafx.graphics
+--enable-native-access=javafx.web
+--module-path=/opt/DbVisualizer/.install4j/i4jruntime.jar:/opt/DbVisualizer/lib/javafx
+-Ddbvis.home=/opt/DbVisualizer/
+-Dsun.java2d.xrender=false
+-XX:StringTableSize=1000003
+-Xmx4096M
+2026-04-11 11:31:30.070 CONFIG 166 [AWT-EventQueue-0 - g.g] Default Charset: UTF-8
+2026-04-11 11:31:31.360 INFO   166 [AWT-EventQueue-0 - v.ed] Loaded connections. Successful: 1 Errors: 0.  Total time :219
+2026-04-11 11:31:31.473 INFO   166 [AWT-EventQueue-0 - bb.s] Cleaning any old driver files
+2026-04-11 11:31:31.474 INFO   166 [AWT-EventQueue-0 - bb.s] Finished cleaning old driver dirs. Time: 0ms
+2026-04-11 11:31:31.480 INFO   166 [AWT-EventQueue-0 - OraTNSUtil.getTNSDirectory] The TNS_ADMIN environment variable is not set. Trying ORACLE_HOME
+2026-04-11 11:31:31.480 INFO   166 [AWT-EventQueue-0 - OraTNSUtil.getTNSDirectory] The ORACLE_HOME environment variable is not set. TNS names cannot be used for Oracle connections
+2026-04-11 11:31:31.671 INFO   166 [AWT-EventQueue-0 - pb.h] Existing beans: 'G1 Old Gen' max: 4294967296
+2026-04-11 11:31:31.673 INFO   166 [AWT-EventQueue-0 - pb.h] Memory monitor initialized for MxBean: 'G1 Old Gen' Notification threshold: 41943040 Low memory threshold: 25165824 release buffer: 1048576 Usage threshold: 4253024256
+2026-04-11 11:31:31.701 INFO   166 [AWT-EventQueue-0 - k.d] User icons file: /home/xav/.dbvis/ext/profiles/icons-db.prefs doesn't exist. Ignoring
+2026-04-11 11:31:35.008 INFO   166 [ExecutorRunner-pool-5-thread-1 - d.g] Migration not needed since /home/xav/.dbvis/config253 was not created during session
+2026-04-11 11:31:35.248 INFO   166 [ExecutorRunner-pool-5-thread-1 - d.y] Internal cache driver loaded: /opt/DbVisualizer/lib/confined/h2-2.4.240.jar. Driver version: 2.4
+2026-04-11 11:31:35.561 INFO   166 [ExecutorRunner-pool-5-thread-1 - d.i] Internal cache connected: jdbc:h2:async:/home/xav/.dbvis/cache/metadata/MetaDataCache-v9;AUTO_SERVER=false
+2026-04-11 11:31:35.564 INFO   166 [AWT-EventQueue-0 - h.d] Starting check for stale metadata (threshold=60)
+2026-04-11 11:31:36.296 INFO   166 [AWT-EventQueue-0 - c.c] Load workspace time: 0.669
+2026-04-11 11:31:36.298 INFO   166 [AWT-EventQueue-0 - qc.f] Workspace auto saver thread started. Interval: 30 sec
+2026-04-11 11:31:36.299 INFO   166 [AWT-EventQueue-0 - vb.c] Connection keep-alive thread started. Interval: 10 sec
+2026-04-11 11:31:36.301 INFO   166 [AWT-EventQueue-0 - DbVisualizerGUI.b] Workspace file modification monitor thread started. Interval: 30 sec
+2026-04-11 11:31:36.311 INFO   166 [AWT-EventQueue-0 - DbVisualizerGUI.b] Window(s) visible at: 4.570. Workspace load time: 0.694. Total startup time: 7.660
+2026-04-11 11:31:45.054 INFO   166 [AWT-EventQueue-0 - y.flush] SLF4J(W): No SLF4J providers were found.
+
+2026-04-11 11:31:45.055 INFO   166 [AWT-EventQueue-0 - y.flush] SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+
+2026-04-11 11:31:45.055 INFO   166 [AWT-EventQueue-0 - y.flush] SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+
+2026-04-11 11:34:36.988 INFO   166 [DbVisScheduledVersionCheck-10 - g.tle] Starting checking artifact versions for 1 drivers
+2026-04-11 11:34:37.746 INFO   166 [DbVisScheduledVersionCheck-10 - g.tle] Check version of all artifacts. Successful: 1 of 1. Duration: 760ms

@@ -1,5 +1,5 @@
 #Extended file properties defined by DbVisualizer
-#Fri Apr 10 20:14:16 CEST 2026
+#Sat Apr 11 11:32:36 CEST 2026
 chart.bar_gap=2
 chart.bar_group_gap=4
 chart.bar_type=Flat
@@ -45,7 +45,7 @@ file.encoding=UTF-8
 monitor.default_view=Grid
 monitor.frame_bounds=
 workspace.customtitle=
-workspace.isautosaved=false
+workspace.isautosaved=true
 workspace.ismodified=true
 workspace.ispinned=false
 workspace.scroll.position=55,0,0

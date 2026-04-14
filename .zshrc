@@ -117,6 +117,11 @@ export PATH="/home/xav/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
 #custom alias
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dc="docker compose"
+alias dcc="docker compose exec php composer"
+alias dcsf="docker compose exec php ./bin/console"
 
 
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
